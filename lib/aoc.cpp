@@ -8,12 +8,12 @@
 #include <filesystem>
 
 namespace aoc {
-    std::ifstream get_ifstream(std::string filename) {
+    std::ifstream get_ifstream(const std::string &filename) {
         std::ifstream stream(filename); // copied by CMake
 
         if (stream.fail()) {
             std::filesystem::path error_path = std::filesystem::current_path() / filename;
-            std::cerr << "Failed to open file: " << error_path << "\n";
+            std::cerr << "Failed to open file: " << error_path.string() << "\n";
             exit(1);
         }
 
