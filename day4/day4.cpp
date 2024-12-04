@@ -6,9 +6,9 @@ namespace day4 {
 
 std::optional<char> Grid::get_square(int x, int y) const {
     int offset = y * this->width;
-    auto index = static_cast<std::vector<char>::size_type>(offset + x);
+    int index = offset + x;
 
-    if (index < 0 || index > this->squares.size()) {
+    if (index < 0 || index > static_cast<int>(this->squares.size())) {
         return std::nullopt;
     }
 

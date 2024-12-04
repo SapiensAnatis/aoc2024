@@ -5,6 +5,9 @@
 #ifndef AOC2024_DAY1_H
 #define AOC2024_DAY1_H
 
+#include <vector>
+#include <string>
+
 namespace day1 {
     struct ParsedInput {
         std::vector<int> left;
