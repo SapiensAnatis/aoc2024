@@ -4,7 +4,6 @@
 
 #include <vector>
 #include <sstream>
-#include <cassert>
 #include "day2.h"
 
 namespace day2 {

@@ -4,7 +4,6 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <map>
 #include "day1.h"
 
 namespace day1 {

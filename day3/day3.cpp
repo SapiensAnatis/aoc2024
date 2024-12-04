@@ -62,7 +62,7 @@ namespace day3 {
             this->counter += (instruction.multiplier * instruction.multiplicand);
         }
 
-        int get_result() const { return this->counter; }
+        [[nodiscard]] int get_result() const { return this->counter; }
 
     private:
         int counter = 0;
