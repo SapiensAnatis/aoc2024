@@ -1,5 +1,5 @@
-#ifndef AOC2024_DAY1_H
-#define AOC2024_DAY1_H
+#ifndef AOC2024_DAY3_H
+#define AOC2024_DAY3_H
 
 #include <iostream>
 #include <variant>
@@ -39,4 +39,4 @@ int part1(const ParsedInput &input);
 int part2(const ParsedInput &input);
 } // namespace day3
 
-#endif // AOC2024_DAY1_H
+#endif // AOC2024_DAY3_H

@@ -5,56 +5,56 @@
 using namespace day3;
 
 TEST(part1, example) {
-    std::ifstream inputStream("example.txt");
+    std::ifstream input_stream("example.txt");
 
-    if (inputStream.fail()) {
+    if (input_stream.fail()) {
         std::cerr << "Failed to load file!\n";
         exit(1);
     }
 
-    ParsedInput parsed = parse_input(inputStream);
+    ParsedInput parsed = parse_input(input_stream);
     int result = part1(parsed);
 
     std::cout << result << "\n";
 }
 
 TEST(part1, real) {
-    std::ifstream inputStream("input.txt");
+    std::ifstream input_stream("input.txt");
 
-    if (inputStream.fail()) {
+    if (input_stream.fail()) {
         std::cerr << "Failed to load file!\n";
         exit(1);
     }
 
-    ParsedInput parsed = parse_input(inputStream);
+    ParsedInput parsed = parse_input(input_stream);
     int result = part1(parsed);
 
     std::cout << result << "\n";
 }
 
 TEST(part2, example) {
-    std::ifstream inputStream("example2.txt");
+    std::ifstream input_stream("example2.txt");
 
-    if (inputStream.fail()) {
+    if (input_stream.fail()) {
         std::cerr << "Failed to load file!\n";
         exit(1);
     }
 
-    ParsedInput parsed = parse_input(inputStream);
+    ParsedInput parsed = parse_input(input_stream);
     int result = part2(parsed);
 
     std::cout << result << "\n";
 }
 
 TEST(part2, real) {
-    std::ifstream inputStream("input.txt");
+    std::ifstream input_stream("input.txt");
 
-    if (inputStream.fail()) {
+    if (input_stream.fail()) {
         std::cerr << "Failed to load file!\n";
         exit(1);
     }
 
-    ParsedInput parsed = parse_input(inputStream);
+    ParsedInput parsed = parse_input(input_stream);
     int result = part2(parsed);
 
     std::cout << result << "\n";

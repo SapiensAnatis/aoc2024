@@ -16,6 +16,8 @@ ParsedInput parse_input(std::istream &input) {
                         (std::istreambuf_iterator<char>()));
     std::vector<InstructionVariant> instructions;
 
+    // This could probably be made more extensible by not using a regex and
+    // parsing manually
     std::regex multiply_regex(R"((mul|don't|do)\((?:(\d+),(\d+))?\))");
 
     auto content_begin =
