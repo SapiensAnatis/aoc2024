@@ -10,6 +10,8 @@
 namespace aoc {
     std::ifstream get_example_ifstream();
 
+    std::ifstream get_example_ifstream(int example_num);
+
     std::ifstream get_real_ifstream();
 }
 
