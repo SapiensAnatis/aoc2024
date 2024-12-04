@@ -1,5 +1,6 @@
 #include "day3.h"
 
+#include <cassert>
 #include <cstring>
 #include <optional>
 #include <regex>
@@ -38,19 +39,23 @@ ParsedInput parse_input(std::istream &input) {
          match++) {
         auto instruction = *match;
 
-        if (instruction.str() == "do()") {
-            instructions.push_back(EnableInstruction(instruction.position()));
-        } else if (instruction.str() == "don't()") {
-            instructions.push_back(DisableInstruction(instruction.position()));
-        }
+        assert((instruction.str() == "do()" ||
+                instruction.str() == "don't()")); // Regex fail
+
+        bool shouldEnableCounter = instruction.str() == "do()";
+
+        instructions.push_back(EnableDisableInstruction(
+            shouldEnableCounter, instruction.position()));
     }
 
     return ParsedInput{instructions};
 }
 
 struct InstructionVisitor {
-    void operator()(EnableInstruction &instruction) { this->enabled = true; }
-    void operator()(DisableInstruction &instruction) { this->enabled = false; }
+    void operator()(EnableDisableInstruction &instruction) {
+        this->enabled = instruction.shouldEnableCounter;
+    }
+
     void operator()(MultiplyInstruction &instruction) {
         if (!this->enabled) {
             return;
@@ -58,11 +63,12 @@ struct InstructionVisitor {
 
         this->counter += (instruction.multiplier * instruction.multiplicand);
     }
+
     int get_result() { return this->counter; }
 
   private:
-    int counter;
-    bool enabled;
+    int counter = 0;
+    bool enabled = true;
 };
 
 int part1(const ParsedInput &input) {
@@ -79,4 +85,4 @@ int part1(const ParsedInput &input) {
 
     return result;
 }
-}
+} // namespace day3

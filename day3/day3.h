@@ -25,15 +25,16 @@ struct MultiplyInstruction : Instruction {
     }
 };
 
-struct EnableInstruction : Instruction {
-    EnableInstruction(std::ptrdiff_t position) : Instruction(position) {}
+struct EnableDisableInstruction : Instruction {
+    bool shouldEnableCounter;
+
+    EnableDisableInstruction(bool shouldEnableCounter, std::ptrdiff_t position)
+        : Instruction(position) {
+        this->shouldEnableCounter = shouldEnableCounter;
+    }
 };
 
-struct DisableInstruction : Instruction {
-    DisableInstruction(std::ptrdiff_t position) : Instruction(position) {}
-};
-
-typedef std::variant<MultiplyInstruction, EnableInstruction, DisableInstruction>
+typedef std::variant<MultiplyInstruction, EnableDisableInstruction>
     InstructionVariant;
 
 struct ParsedInput {
