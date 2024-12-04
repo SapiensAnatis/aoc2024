@@ -5,10 +5,18 @@
 namespace day4 {
 
 std::optional<char> Grid::get_square(int x, int y) const {
+    if (x < 0 || x >= this->width) {
+        return std::nullopt;
+    }
+
+    if (y < 0 || y >= this->height) {
+        return std::nullopt;
+    }
+
     int offset = y * this->width;
     int index = offset + x;
 
-    if (index < 0 || index > static_cast<int>(this->squares.size())) {
+    if (index < 0 || index >= static_cast<int>(this->squares.size())) {
         return std::nullopt;
     }
 
@@ -22,14 +30,14 @@ Grid parse_input(std::ifstream &input) {
 
     std::getline(input, line);
     assert(!input.fail() && "Failed to read first line");
-    width = line.length();
+    width = static_cast<int>(line.length());
     std::copy(line.begin(), line.end(), std::back_inserter(grid));
 
     while (std::getline(input, line)) {
         std::copy(line.begin(), line.end(), std::back_inserter(grid));
     }
 
-    return Grid(grid, width);
+    return {grid, width};
 }
 
 bool can_find_xmas_in_direction(const Grid &grid, int x_origin, int y_origin,
