@@ -49,3 +49,6 @@ cmake-build-debug/
 
 # AoC asks not to redistribute inputs
 input.txt
+
+# Other CMake config from VScode
+build/
