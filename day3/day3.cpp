@@ -1,28 +1,82 @@
 #include "day3.h"
 
+#include <cstring>
 #include <optional>
+#include <regex>
+#include <variant>
+
 using namespace day3;
 
-std::optional<MultiplyInstruction> try_parse_instruction(std::istream &input) {
-    std::vector<char> buffer;
-    buffer.reserve(3);
-    input.read(buffer.data(), 3);
+namespace day3 {
 
-    if (input.fail() || input.eof() || buffer.data() != "mul") {
-        return std::nullopt;
+ParsedInput parse_input(std::istream &input) {
+    std::string content((std::istreambuf_iterator<char>(input)),
+                        (std::istreambuf_iterator<char>()));
+    std::vector<InstructionVariant> instructions;
+
+    std::regex multiply_regex(R"(mul\((\d+),(\d+)\))");
+
+    auto content_begin =
+        std::sregex_iterator(content.begin(), content.end(), multiply_regex);
+    auto content_end = std::sregex_iterator();
+
+    for (std::sregex_iterator match = content_begin; match != content_end;
+         match++) {
+        auto instruction = *match;
+        int multiplier = std::stoi(instruction.str(1));
+        int multiplicand = std::stoi(instruction.str(2));
+
+        instructions.push_back(MultiplyInstruction(multiplier, multiplicand,
+                                                   instruction.position()));
     }
-}
 
-ParsedInput day3::parse_input(std::istream &input) {
-    std::vector<MultiplyInstruction> instructions;
+    std::regex enable_disable_regex(R"((do|don't)\(\))");
+    content_begin = std::sregex_iterator(content.begin(), content.end(),
+                                         enable_disable_regex);
 
-    while (!input.fail() && !input.eof()) {
-        if (auto instruction = try_parse_instruction(input)) {
-            instructions.push_back(*instruction);
+    for (std::sregex_iterator match = content_begin; match != content_end;
+         match++) {
+        auto instruction = *match;
+
+        if (instruction.str() == "do()") {
+            instructions.push_back(EnableInstruction(instruction.position()));
+        } else if (instruction.str() == "don't()") {
+            instructions.push_back(DisableInstruction(instruction.position()));
         }
     }
 
     return ParsedInput{instructions};
 }
 
-int day3::part1(const ParsedInput &input) { return 0; }
+struct InstructionVisitor {
+    void operator()(EnableInstruction &instruction) { this->enabled = true; }
+    void operator()(DisableInstruction &instruction) { this->enabled = false; }
+    void operator()(MultiplyInstruction &instruction) {
+        if (!this->enabled) {
+            return;
+        }
+
+        this->counter += (instruction.multiplier * instruction.multiplicand);
+    }
+    int get_result() { return this->counter; }
+
+  private:
+    int counter;
+    bool enabled;
+};
+
+int part1(const ParsedInput &input) {
+    int result = 0;
+
+    for (auto instruction : input.instructions) {
+        if (std::holds_alternative<MultiplyInstruction>(instruction)) {
+            MultiplyInstruction multiply_instruction =
+                std::get<MultiplyInstruction>(instruction);
+            result += multiply_instruction.multiplicand *
+                      multiply_instruction.multiplier;
+        }
+    }
+
+    return result;
+}
+}

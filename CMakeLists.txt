@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.30)
 project(aoc2024)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS:FILEPATH /usr/lib/llvm-17/bin/clang-scan-deps)
 
 include(FetchContent)
 
@@ -12,7 +13,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-add_compile_options("-Wall -Wpedantic -Werror")
+add_compile_options(-Wall -Wextra -Wpedantic)
 
 add_subdirectory("day1")
 add_subdirectory("day3")

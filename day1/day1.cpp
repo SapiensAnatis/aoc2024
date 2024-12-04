@@ -1,9 +1,9 @@
-#include <fstream>
-#include <string>
-#include <algorithm>
-#include <vector>
-#include <map>
 #include "day1.h"
+#include <algorithm>
+#include <fstream>
+#include <map>
+#include <string>
+#include <vector>
 
 ParsedInput parse_input(const std::string &path) {
     std::ifstream inputStream(path);
@@ -25,7 +25,7 @@ ParsedInput parse_input(const std::string &path) {
         right.push_back(std::stoi(rightToken));
     }
 
-    return ParsedInput { .left =  left, .right =  right };
+    return ParsedInput{.left = left, .right = right};
 }
 
 int part1(ParsedInput &input) {
@@ -34,7 +34,7 @@ int part1(ParsedInput &input) {
 
     int totalDistance = 0;
 
-    for (int i = 0; i < input.left.size(); i++) {
+    for (std::vector<int>::size_type i = 0; i < input.left.size(); i++) {
         int leftNum = input.left[i];
         int rightNum = input.right[i];
 
@@ -49,7 +49,8 @@ int part2(const ParsedInput &input) {
     std::map<int, int> numberOccurrenceCounts;
 
     for (auto num : input.right) {
-        auto [iter, inserted] = numberOccurrenceCounts.insert(std::map<int, int>::value_type(num, 0));
+        auto [iter, inserted] = numberOccurrenceCounts.insert(
+            std::map<int, int>::value_type(num, 0));
         iter->second += 1;
     }
 
@@ -57,7 +58,8 @@ int part2(const ParsedInput &input) {
 
     for (auto num : input.left) {
         auto occurrenceCountIter = numberOccurrenceCounts.find(num);
-        auto occurrenceCount = (occurrenceCountIter != numberOccurrenceCounts.end())
+        auto occurrenceCount =
+            (occurrenceCountIter != numberOccurrenceCounts.end())
                 ? occurrenceCountIter->second
                 : 0;
         similarityScore += num * occurrenceCount;
