@@ -7,29 +7,20 @@
 
 namespace day3 {
 
-struct Instruction {
-    std::ptrdiff_t position;
-
-    Instruction(std::ptrdiff_t position) { this->position = position; }
-};
-
-struct MultiplyInstruction : Instruction {
+struct MultiplyInstruction {
     int multiplier;
     int multiplicand;
 
-    MultiplyInstruction(int multiplier, int multiplicand,
-                        std::ptrdiff_t position)
-        : Instruction(position) {
+    MultiplyInstruction(int multiplier, int multiplicand) {
         this->multiplier = multiplier;
         this->multiplicand = multiplicand;
     }
 };
 
-struct EnableDisableInstruction : Instruction {
+struct EnableDisableInstruction {
     bool shouldEnableCounter;
 
-    EnableDisableInstruction(bool shouldEnableCounter, std::ptrdiff_t position)
-        : Instruction(position) {
+    EnableDisableInstruction(bool shouldEnableCounter) {
         this->shouldEnableCounter = shouldEnableCounter;
     }
 };
@@ -41,9 +32,11 @@ struct ParsedInput {
     std::vector<InstructionVariant> instructions;
 };
 
-day3::ParsedInput parse_input(std::istream &input);
+ParsedInput parse_input(std::istream &input);
 
-int part1(const day3::ParsedInput &input);
+int part1(const ParsedInput &input);
+
+int part2(const ParsedInput &input);
 } // namespace day3
 
 #endif // AOC2024_DAY1_H
