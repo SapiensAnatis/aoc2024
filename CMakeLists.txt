@@ -12,6 +12,11 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
+#set(CMAKE_CXX_CLANG_TIDY
+#        clang-tidy;
+#        -header-filter=.;
+#        -checks=*;
+#        -warnings-as-errors=*;)
 add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 
 add_subdirectory("lib")

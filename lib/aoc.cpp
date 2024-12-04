@@ -7,22 +7,24 @@
 #include <iostream>
 #include <filesystem>
 
-std::ifstream get_ifstream(bool example) {
-    std::string filename = example ? "example.txt" : "input.txt";
-    std::ifstream stream(filename); // copied by CMake
+namespace aoc {
+    std::ifstream get_ifstream(bool example) {
+        std::string filename = example ? "example.txt" : "input.txt";
+        std::ifstream stream(filename); // copied by CMake
 
-    if (stream.fail()) {
-        std::cerr << "Failed to open file: " << std::filesystem::current_path() << "/" << filename << "\n";
-        exit(1);
+        if (stream.fail()) {
+            std::cerr << "Failed to open file: " << std::filesystem::current_path() << "/" << filename << "\n";
+            exit(1);
+        }
+
+        return stream;
     }
 
-    return stream;
-}
+    std::ifstream get_example_ifstream() {
+        return get_ifstream(true);
+    }
 
-std::ifstream aoc::get_example_ifstream() {
-    return get_ifstream(true);
-}
-
-std::ifstream aoc::get_real_ifstream() {
-    return get_ifstream(false);
+    std::ifstream get_real_ifstream() {
+        return get_ifstream(false);
+    }
 }

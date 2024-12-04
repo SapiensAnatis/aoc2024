@@ -72,64 +72,6 @@ namespace day4 {
         return true;
     }
 
-    bool can_find_x_shaped_mas(const Grid &grid, int x, int y) {
-        if (grid.get_square(x, y) != 'A') {
-            return false;
-        }
-
-        // Check +x +y and +x -y lines
-        // +x +y: \     +x -y:   /
-        //         \            /
-        //          \          /
-        char plusXPlusY[3];
-        if (auto first = grid.get_square(x - 1, y - 1)) {
-            plusXPlusY[0] = *first;
-        } else {
-            return false;
-        }
-        if (auto second = grid.get_square(x, y)) {
-            plusXPlusY[1] = *second;
-        } else {
-            return false;
-        }
-        if (auto third = grid.get_square(x + 1, y + 1)) {
-            plusXPlusY[2] = *third;
-        } else {
-            return false;
-        }
-
-        std::string plus_x_plus_y_str(plusXPlusY, 3);
-
-        if (plus_x_plus_y_str != "MAS" && plus_x_plus_y_str != "SAM") {
-            return false;
-        }
-
-        char plusXMinusY[3];
-        if (auto first = grid.get_square(x - 1, y + 1)) {
-            plusXMinusY[0] = *first;
-        } else {
-            return false;
-        }
-        if (auto second = grid.get_square(x, y)) {
-            plusXMinusY[1] = *second;
-        } else {
-            return false;
-        }
-        if (auto third = grid.get_square(x + 1, y - 1)) {
-            plusXMinusY[2] = *third;
-        } else {
-            return false;
-        }
-
-        std::string plus_x_minus_y_str(plusXMinusY, 3);
-
-        if (plus_x_minus_y_str != "MAS" && plus_x_minus_y_str != "SAM") {
-            return false;
-        }
-
-        return true;
-    }
-
     int part1(const Grid &grid) {
         int xmas_count = 0;
 
@@ -173,6 +115,50 @@ namespace day4 {
 
         return xmas_count;
     }
+
+    std::optional<std::string> get_diagonal_string(const Grid &grid, int x_origin, int y_origin, int dx, int dy) {
+        char literal[3];
+
+        int x = x_origin - dx;
+        int y = y_origin - dy;
+
+        for (char &i: literal) {
+            if (auto square = grid.get_square(x, y)) {
+                i = *square;
+            } else {
+                return std::nullopt;
+            }
+
+            x += dx;
+            y += dy;
+        }
+
+        return std::string(literal, 3);
+    }
+
+
+    bool can_find_x_shaped_mas(const Grid &grid, int x, int y) {
+        if (grid.get_square(x, y) != 'A') {
+            return false;
+        }
+
+        // Check +x +y and +x -y lines
+        // +x +y: \     +x -y:   /
+        //         \            /
+        //          \          /
+        auto plus_x_plus_y_str = get_diagonal_string(grid, x, y, 1, 1);
+        if (plus_x_plus_y_str != "MAS" && plus_x_plus_y_str != "SAM") {
+            return false;
+        }
+
+        auto plus_x_minus_y_str = get_diagonal_string(grid, x, y, 1, -1);
+        if (plus_x_minus_y_str != "MAS" && plus_x_minus_y_str != "SAM") {
+            return false;
+        }
+
+        return true;
+    }
+
 
     int part2(const Grid &grid) {
         int x_shaped_mas_count = 0;
