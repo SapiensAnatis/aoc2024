@@ -4,6 +4,8 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <map>
+#include "day1.h"
 
 ParsedInput parse_input(const std::string &path) {
     std::ifstream inputStream(path);

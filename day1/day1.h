@@ -5,17 +5,17 @@
 #ifndef AOC2024_DAY1_H
 #define AOC2024_DAY1_H
 
-#include <vector>
-#include <string>
+namespace day1 {
+    struct ParsedInput {
+        std::vector<int> left;
+        std::vector<int> right;
+    };
 
-struct ParsedInput {
-    std::vector<int> left;
-    std::vector<int> right;
-};
+    ParsedInput parse_input(const std::string &path);
 
-ParsedInput parse_input(const std::string &path);
+    int part1(ParsedInput &input);
 
-int part1(ParsedInput &input);
-int part2(const ParsedInput &input);
+    int part2(const ParsedInput &input);
+}
 
-#endif // AOC2024_DAY1_H
+#endif //AOC2024_DAY1_H
