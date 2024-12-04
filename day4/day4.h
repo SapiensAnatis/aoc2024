@@ -8,25 +8,28 @@
 namespace day4 {
 
 // TODO: make shared if needed
-class Grid {
-  public:
-    Grid(std::vector<char> squares, int width) {
-        this->squares = squares;
-        this->width = width;
-        this->height = squares.size() / this->width;
-    }
+    class Grid {
+    public:
+        Grid(const std::vector<char> &squares, int width) {
+            this->squares = squares;
+            this->width = width;
+            this->height = static_cast<int>(squares.size()) / this->width;
+        }
 
-    std::optional<char> get_square(int x, int y) const;
-    int width;
-    int height;
+        [[nodiscard]] std::optional<char> get_square(int x, int y) const;
 
-  private:
-    std::vector<char> squares;
-};
+        int width;
+        int height;
 
-Grid parse_input(std::ifstream &input);
+    private:
+        std::vector<char> squares;
+    };
 
-int part1(const Grid &grid);
+    Grid parse_input(std::ifstream &input);
+
+    int part1(const Grid &grid);
+
+    int part2(const Grid &grid);
 
 } // namespace day4
 

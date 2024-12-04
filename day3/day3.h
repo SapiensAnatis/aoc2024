@@ -6,37 +6,36 @@
 #include <vector>
 
 namespace day3 {
+    struct MultiplyInstruction {
+        int multiplier;
+        int multiplicand;
 
-struct MultiplyInstruction {
-    int multiplier;
-    int multiplicand;
+        MultiplyInstruction(int multiplier, int multiplicand) {
+            this->multiplier = multiplier;
+            this->multiplicand = multiplicand;
+        }
+    };
 
-    MultiplyInstruction(int multiplier, int multiplicand) {
-        this->multiplier = multiplier;
-        this->multiplicand = multiplicand;
-    }
-};
+    struct EnableDisableInstruction {
+        bool shouldEnableCounter;
 
-struct EnableDisableInstruction {
-    bool shouldEnableCounter;
+        explicit EnableDisableInstruction(bool shouldEnableCounter) {
+            this->shouldEnableCounter = shouldEnableCounter;
+        }
+    };
 
-    EnableDisableInstruction(bool shouldEnableCounter) {
-        this->shouldEnableCounter = shouldEnableCounter;
-    }
-};
+    typedef std::variant<MultiplyInstruction, EnableDisableInstruction>
+            InstructionVariant;
 
-typedef std::variant<MultiplyInstruction, EnableDisableInstruction>
-    InstructionVariant;
+    struct ParsedInput {
+        std::vector<InstructionVariant> instructions;
+    };
 
-struct ParsedInput {
-    std::vector<InstructionVariant> instructions;
-};
+    ParsedInput parse_input(std::istream &input);
 
-ParsedInput parse_input(std::istream &input);
+    int part1(const ParsedInput &input);
 
-int part1(const ParsedInput &input);
-
-int part2(const ParsedInput &input);
+    int part2(const ParsedInput &input);
 } // namespace day3
 
 #endif // AOC2024_DAY3_H
