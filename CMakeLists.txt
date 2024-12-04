@@ -12,5 +12,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
+add_compile_options("-Wall -Wpedantic -Werror")
+
 add_subdirectory("day1")
 add_subdirectory("day3")
