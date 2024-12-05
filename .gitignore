@@ -52,3 +52,6 @@ input.txt
 
 # Other CMake config from VScode
 build/
+
+# clangd
+.cache/clangd
