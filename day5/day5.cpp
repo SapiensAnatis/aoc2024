@@ -23,7 +23,7 @@ namespace day5 {
             }
         }
 
-        if (!(before_index && !after_index)) {
+        if (!(before_index && after_index)) {
             return true;
         }
 
@@ -35,6 +35,6 @@ namespace day5 {
                                                                                          rules(rules) {}
 
     ParsedInput parse_input(const std::istream &input) {
-        
+
     }
 }
