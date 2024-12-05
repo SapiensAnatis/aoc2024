@@ -14,7 +14,4 @@ RUN if [ "${REINSTALL_CMAKE_VERSION_FROM_SOURCE}" != "none" ]; then \
 # RUN su vscode -c "${VCPKG_ROOT}/vcpkg install <your-port-name-here>"
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends clang-format clang-tidy clang-tools-18
-
-# https://stackoverflow.com/questions/77800212/clang-scan-deps-was-not-found-while-trying-to-build-c-20-modules
-RUN ln -s /usr/lib/llvm-18/bin/clang-scan-deps /usr/local/bin
+    && apt-get -y install --no-install-recommends clang-format clang-tidy clangd
