@@ -1,7 +1,7 @@
 #include <fstream>
 
-#include "day4.h"
 #include "../lib/aoc.h"
+#include "day4.h"
 #include "gtest/gtest.h"
 
 using namespace day4;

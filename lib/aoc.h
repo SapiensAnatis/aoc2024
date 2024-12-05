@@ -8,11 +8,11 @@
 #include <fstream>
 
 namespace aoc {
-    std::ifstream get_example_ifstream();
+std::ifstream get_example_ifstream();
 
-    std::ifstream get_example_ifstream(int example_num);
+std::ifstream get_example_ifstream(int example_num);
 
-    std::ifstream get_real_ifstream();
-}
+std::ifstream get_real_ifstream();
+} // namespace aoc
 
-#endif //AOC2024_AOC_H
+#endif // AOC2024_AOC_H

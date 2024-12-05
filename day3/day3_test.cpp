@@ -1,6 +1,6 @@
+#include "../lib/aoc.h"
 #include "day3.h"
 #include "gtest/gtest.h"
-#include "../lib/aoc.h"
 #include <fstream>
 
 using namespace day3;

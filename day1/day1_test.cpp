@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
 #include "day1.h"
+#include "gtest/gtest.h"
 #include <iostream>
 
 using namespace day1;
