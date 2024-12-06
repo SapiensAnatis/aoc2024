@@ -6,18 +6,20 @@
 #include <algorithm>
 #include <optional>
 #include <iostream>
+#include <cassert>
 
 namespace day5 {
 
     Update::Update(std::vector<int> pages) : pages(std::move(pages)) {}
 
     int Update::get_middle() const {
-        if (this->pages.size() % 2 == 0) {
-            std::cerr << "Middle is undefined\n";
-            return 0;
-        }
+        assert(this->pages.size() % 2 != 0 && "Update had even number of pages - middle is undefined");
 
-        return (static_cast<int>(this->pages.size()) / 2) + 1;
+        int index = static_cast<int>(this->pages.size()) / 2;
+
+        assert(index > 0 && index < static_cast<int>(this->pages.size()) && "Middle index bounds check failure");
+
+        return this->pages[index];
     }
 
     PageRule::PageRule(int before, int after) : before(before), after(after) {}
@@ -87,10 +89,14 @@ namespace day5 {
         int sum = 0;
 
         for (auto &update: input.updates) {
+            bool valid = true;
+
             for (auto &rule: input.rules) {
-                if (rule.validate(update)) {
-                    sum += update.get_middle();
-                }
+                valid &= rule.validate(update);
+            }
+
+            if (valid) {
+                sum += update.get_middle();
             }
         }
 
