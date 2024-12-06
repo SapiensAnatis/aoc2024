@@ -118,12 +118,12 @@ int part1(const Grid &grid) {
 
 std::optional<std::string> get_diagonal_string(const Grid &grid, int x_origin,
                                                int y_origin, int dx, int dy) {
-    char literal[3];
+    char buffer[3];
 
     int x = x_origin - dx;
     int y = y_origin - dy;
 
-    for (char &i : literal) {
+    for (char &i : buffer) {
         if (auto square = grid.get_square(x, y)) {
             i = *square;
         } else {
@@ -134,7 +134,7 @@ std::optional<std::string> get_diagonal_string(const Grid &grid, int x_origin,
         y += dy;
     }
 
-    return std::string(literal, 3);
+    return std::string(buffer, 3);
 }
 
 bool can_find_x_shaped_mas(const Grid &grid, int x, int y) {
