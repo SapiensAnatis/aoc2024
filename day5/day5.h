@@ -18,13 +18,12 @@ namespace day5 {
         std::vector<int> pages;
     };
 
-    class PageRule {
+    struct PageRule {
     public:
         PageRule(int before, int after);
 
         [[nodiscard]] bool validate(const Update &update) const;
 
-    private:
         int before;
         int after;
     };
@@ -39,6 +38,8 @@ namespace day5 {
     ParsedInput parse_input(std::istream &input);
 
     int part1(const ParsedInput &input);
+
+    int part2(const ParsedInput &input);
 }
 
 #endif //AOC2024_DAY5_H
