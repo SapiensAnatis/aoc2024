@@ -26,6 +26,17 @@ namespace day5 {
     PageRule::PageRule(int before, int after) : before(before), after(after) {}
 
     bool PageRule::validate(const Update &update) const {
+        const auto [before_index, after_index] = get_before_and_after_index(update);
+
+        if (!(before_index && after_index)) {
+            return true;
+        }
+
+        return before_index < after_index;
+    }
+
+    std::tuple<std::optional<int>, std::optional<int>>
+    PageRule::get_before_and_after_index(const Update &update) const {
         std::optional<int> before_index;
         std::optional<int> after_index;
 
@@ -37,11 +48,22 @@ namespace day5 {
             }
         }
 
+        return {before_index, after_index};
+    }
+
+    bool PageRule::fix_with_swap(Update &update) const {
+        const auto [before_index, after_index] = get_before_and_after_index(update);
+
         if (!(before_index && after_index)) {
-            return true;
+            return false;
         }
 
-        return before_index < after_index;
+        if (before_index < after_index) {
+            return false;
+        }
+
+        std::iter_swap(update.pages.begin() + *before_index, update.pages.begin() + *after_index);
+        return true;
     }
 
 
@@ -123,11 +145,13 @@ namespace day5 {
             return previous_left_positions[page];
         }
 
-        const auto &with_rules = pages.at(page);
         int min_pos = 1;
 
-        for (auto preceding_page: with_rules.goes_after) {
-            min_pos += get_position_from_left(preceding_page, pages);
+        const auto &with_rules = pages.find(page);
+        if (with_rules != pages.end()) {
+            for (auto preceding_page: with_rules->second.goes_after) {
+                min_pos += get_position_from_left(preceding_page, pages);
+            }
         }
 
         previous_left_positions[page] = min_pos;
@@ -142,11 +166,13 @@ namespace day5 {
             return previous_right_positions[page];
         }
 
-        PageWithRules with_rules = pages.at(page);
         int min_pos = 1;
 
-        for (auto succeeding_page: with_rules.goes_before) {
-            min_pos += get_position_from_right(succeeding_page, pages);
+        if (pages.contains(page)) {
+            const auto &with_rules = pages.at(page);
+            for (auto succeeding_page: with_rules.goes_before) {
+                min_pos += get_position_from_right(succeeding_page, pages);
+            }
         }
 
         previous_right_positions[page] = min_pos;
@@ -191,29 +217,28 @@ namespace day5 {
 
 
     int part2(const ParsedInput &input) {
-        auto position_map = get_page_position_map(input);
-        int fixed_sum = 0;
+        auto updates_clone = input.updates;
+        int fixed_middle_sum = 0;
 
-        for (auto &update: input.updates) {
-            bool valid = true;
+        for (auto &update: updates_clone) {
+            int fixed_count = 0;
+            int total_fixed_count = 0;
 
-            for (auto &rule: input.rules) {
-                valid &= rule.validate(update);
+            do {
+                fixed_count = 0;
+                for (auto &rule: input.rules) {
+                    if (rule.fix_with_swap(update)) {
+                        fixed_count++;
+                        total_fixed_count++;
+                    }
+                }
+            } while (fixed_count > 0);
 
-                if (!valid) { break; }
-            }
-
-            if (!valid) {
-                Update fixed_update = update;
-
-                std::sort(fixed_update.pages.begin(), fixed_update.pages.end(), [&position_map](int a, int b) {
-                    return position_map.at(a) < position_map.at(b);
-                });
-
-                fixed_sum += fixed_update.get_middle();
+            if (total_fixed_count > 0) {
+                fixed_middle_sum += update.get_middle();
             }
         }
 
-        return fixed_sum;
+        return fixed_middle_sum;
     }
 }

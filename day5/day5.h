@@ -8,6 +8,7 @@
 #include <vector>
 #include <tuple>
 #include <iostream>
+#include <optional>
 
 namespace day5 {
     struct Update {
@@ -24,8 +25,13 @@ namespace day5 {
 
         [[nodiscard]] bool validate(const Update &update) const;
 
+        bool fix_with_swap(Update &update) const;
+
         int before;
         int after;
+
+    private:
+        std::tuple<std::optional<int>, std::optional<int>> get_before_and_after_index(const Update &update) const;
     };
 
     struct ParsedInput {
