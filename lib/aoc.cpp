@@ -58,8 +58,7 @@ std::optional<char> Grid::get_square(int x, int y) const {
         return std::nullopt;
     }
 
-    int offset = y * this->width;
-    int index = offset + x;
+    int index = this->calculate_array_index(x, y);
 
     assert((index >= 0 || index < static_cast<int>(this->squares.size())) &&
            "Grid bounds check failure");
@@ -95,6 +94,17 @@ std::optional<Point> Grid::find_character(char to_find) const {
     int x = index % this->width;
 
     return Point(x, y, this->weak_from_this());
+}
+std::shared_ptr<Grid> Grid::with_mutation(int x, int y, char new_value) {
+    auto new_vec = this->squares;
+    new_vec[calculate_array_index(x, y)] = new_value;
+    return std::make_shared<Grid>(new_vec, this->width);
+}
+
+int Grid::calculate_array_index(int x, int y) const {
+    int offset = y * this->width;
+    int index = offset + x;
+    return index;
 }
 
 std::shared_ptr<Grid> parse_grid(std::ifstream &input) {

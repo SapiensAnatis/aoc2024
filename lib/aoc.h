@@ -19,8 +19,10 @@ struct Point;
 class Grid : public std::enable_shared_from_this<Grid> {
   public:
     static std::shared_ptr<Grid> create(std::vector<char> squares, int width) {
-        return std::shared_ptr<Grid>(new Grid(std::move(squares), width));
+        return std::make_shared<Grid>(std::move(squares), width);
     }
+
+    Grid(std::vector<char> squares, int width);
 
     Grid(const Grid &) = delete;
 
@@ -28,12 +30,14 @@ class Grid : public std::enable_shared_from_this<Grid> {
     [[nodiscard]] std::optional<char> get_square(const Point &point) const;
     [[nodiscard]] int get_width() const;
     [[nodiscard]] int get_height() const;
+    [[nodiscard]] std::shared_ptr<Grid> with_mutation(int x, int y,
+                                                      char new_value);
 
     // TODO: Consider making an iterator to enable std::find?
     [[nodiscard]] std::optional<Point> find_character(char to_find) const;
 
   private:
-    Grid(std::vector<char> squares, int width);
+    int calculate_array_index(int x, int y) const;
 
     int width;
     int height;

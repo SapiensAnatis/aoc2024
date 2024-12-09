@@ -12,6 +12,8 @@ struct Velocity {
 
     Velocity(int x, int y) : x(x), y(y) {}
 
+    bool operator==(const Velocity &other) const;
+
     void rotate_90deg_clockwise() {
         // Matrix multiplication with rotational matrix:
         // x' = x cos(pi / 2) - y sin(pi / 2) = -y
@@ -21,6 +23,10 @@ struct Velocity {
         this->y = temp;
     }
 };
+
+bool Velocity::operator==(const Velocity &other) const {
+    return this->x == other.x && this->y == other.y;
+}
 
 struct GuardState {
     aoc::Point position;
@@ -46,15 +52,17 @@ ParsedInput parse_input(std::ifstream &input) {
     return {std::move(grid), *guard_start};
 }
 
-int simulate_finite_guard_walk(const ParsedInput &input) {
-    GuardState state(input.guard_start_point, Velocity(0, -1));
-    std::set<aoc::Point> visited_squares{input.guard_start_point};
+std::set<aoc::Point>
+simulate_finite_guard_walk(const std::shared_ptr<aoc::Grid> &grid,
+                           const aoc::Point &guard_start_point) {
+    GuardState state(guard_start_point, Velocity(0, -1));
+    std::set<aoc::Point> visited_squares{guard_start_point};
 
     while (true) {
         int proposed_next_x = state.position.x + state.direction.x;
         int proposed_next_y = state.position.y + state.direction.y;
         std::optional<char> next_square =
-            input.grid->get_square(proposed_next_x, proposed_next_y);
+            grid->get_square(proposed_next_x, proposed_next_y);
 
         if (next_square == '#') {
             // Obstacle hit, turn right
@@ -62,19 +70,69 @@ int simulate_finite_guard_walk(const ParsedInput &input) {
         } else if (next_square) {
             state.position.x += state.direction.x;
             state.position.y += state.direction.y;
-            auto [it, added] = visited_squares.insert(state.position);
-            std::cout << std::boolalpha << "Reached position " << state.position
-                      << ". Added: " << added << "\n";
+            visited_squares.insert(state.position);
         } else {
             break;
         }
     }
 
-    return static_cast<int>(visited_squares.size());
+    return visited_squares;
+}
+
+bool check_for_cycle(const std::shared_ptr<aoc::Grid> &grid,
+                     const aoc::Point &guard_start_point) {
+    auto advance_state = [&grid](GuardState &state) {
+        int proposed_next_x = state.position.x + state.direction.x;
+        int proposed_next_y = state.position.y + state.direction.y;
+        std::optional<char> next_square =
+            grid->get_square(proposed_next_x, proposed_next_y);
+
+        if (next_square == '#') {
+            // Obstacle hit, turn right
+            state.direction.rotate_90deg_clockwise();
+        } else {
+            state.position.x += state.direction.x;
+            state.position.y += state.direction.y;
+        }
+    };
+
+    GuardState hare_state(guard_start_point, Velocity(0, -1));
+    GuardState tortoise_state(guard_start_point, Velocity(0, -1));
+
+    while (grid->get_square(hare_state.position)) {
+        advance_state(hare_state);
+        advance_state(hare_state);
+        advance_state(tortoise_state);
+
+        if (hare_state.position == tortoise_state.position &&
+            hare_state.direction == tortoise_state.direction) {
+            // The hare has lapped the tortoise - this is an infinite loop
+            return true;
+        }
+    }
+
+    // Hare has exited the grid
+    return false;
 }
 
 int part1(const ParsedInput &input) {
-    return simulate_finite_guard_walk(input);
+    auto path = simulate_finite_guard_walk(input.grid, input.guard_start_point);
+    return static_cast<int>(path.size());
+}
+
+int part2(const ParsedInput &input) {
+    auto path = simulate_finite_guard_walk(input.grid, input.guard_start_point);
+    int infinite_loop_opportunities = 0;
+
+    for (auto &point : path) {
+        auto grid_with_obstacle_here =
+            input.grid->with_mutation(point.x, point.y, '#');
+        if (check_for_cycle(grid_with_obstacle_here, input.guard_start_point)) {
+            infinite_loop_opportunities++;
+        }
+    }
+
+    return infinite_loop_opportunities;
 }
 
 } // namespace day6
