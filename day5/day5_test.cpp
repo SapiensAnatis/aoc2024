@@ -1,7 +1,7 @@
 #include <fstream>
 
-#include "day5.h"
 #include "../lib/aoc.h"
+#include "day5.h"
 #include "gtest/gtest.h"
 
 using namespace day5;
@@ -23,7 +23,6 @@ TEST(day_5_part_1, real) {
 
     std::cout << result << "\n";
 }
-
 
 TEST(day_5_part_2, example) {
     std::ifstream input_stream = aoc::get_example_ifstream();

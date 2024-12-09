@@ -7,20 +7,34 @@
 
 #include <fstream>
 #include <optional>
-#include <ranges>
-#include <vector>
 #include <string_view>
+#include <vector>
 
 namespace aoc {
-    std::ifstream get_example_ifstream();
 
-    std::ifstream get_example_ifstream(int example_num);
+class Grid {
+  public:
+    Grid(std::vector<char> squares, int width);
 
-    std::ifstream get_real_ifstream();
+    [[nodiscard]] std::optional<char> get_square(int x, int y) const;
+    [[nodiscard]] int get_width() const;
+    [[nodiscard]] int get_height() const;
 
-    std::optional<int> stoi(const std::string_view &input);
+  private:
+    int width;
+    int height;
+    std::vector<char> squares;
+};
 
-    std::vector<std::string_view> split(const std::string &str, char separator);
+std::ifstream get_example_ifstream();
+
+std::ifstream get_example_ifstream(int example_num);
+
+std::ifstream get_real_ifstream();
+
+std::optional<int> stoi(const std::string_view &input);
+
+std::vector<std::string_view> split(const std::string &str, char separator);
 } // namespace aoc
 
 #endif // AOC2024_AOC_H

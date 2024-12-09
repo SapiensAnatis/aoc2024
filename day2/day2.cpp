@@ -58,7 +58,7 @@ bool is_safe_2(const std::vector<int> &report) {
                 without_j.erase(
                     without_j.begin() +
                     static_cast<std::vector<int>::difference_type>(j));
-                
+
                 if (is_safe(without_j)) {
                     return true;
                 }

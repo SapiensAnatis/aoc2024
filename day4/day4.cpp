@@ -1,28 +1,9 @@
 #include "day4.h"
 #include <cassert>
-#include <fstream>
 
 namespace day4 {
-std::optional<char> Grid::get_square(int x, int y) const {
-    if (x < 0 || x >= this->width) {
-        return std::nullopt;
-    }
 
-    if (y < 0 || y >= this->height) {
-        return std::nullopt;
-    }
-
-    int offset = y * this->width;
-    int index = offset + x;
-
-    if (index < 0 || index >= static_cast<int>(this->squares.size())) {
-        return std::nullopt;
-    }
-
-    return this->squares[offset + x];
-}
-
-Grid parse_input(std::ifstream &input) {
+aoc::Grid parse_input(std::ifstream &input) {
     std::vector<char> grid;
     std::string line;
     int width;
@@ -39,8 +20,8 @@ Grid parse_input(std::ifstream &input) {
     return {grid, width};
 }
 
-bool can_find_xmas_in_direction(const Grid &grid, int x_origin, int y_origin,
-                                int dx, int dy) {
+bool can_find_xmas_in_direction(const aoc::Grid &grid, int x_origin,
+                                int y_origin, int dx, int dy) {
     int x = x_origin;
     int y = y_origin;
 
@@ -72,11 +53,11 @@ bool can_find_xmas_in_direction(const Grid &grid, int x_origin, int y_origin,
     return true;
 }
 
-int part1(const Grid &grid) {
+int part1(const aoc::Grid &grid) {
     int xmas_count = 0;
 
-    for (int y = 0; y < grid.height; y++) {
-        for (int x = 0; x < grid.width; x++) {
+    for (int y = 0; y < grid.get_height(); y++) {
+        for (int x = 0; x < grid.get_width(); x++) {
             // One 'X' square can lead to multiple occurrences of XMAS
             // North
             if (can_find_xmas_in_direction(grid, x, y, 0, -1)) {
@@ -116,8 +97,9 @@ int part1(const Grid &grid) {
     return xmas_count;
 }
 
-std::optional<std::string> get_diagonal_string(const Grid &grid, int x_origin,
-                                               int y_origin, int dx, int dy) {
+std::optional<std::string> get_diagonal_string(const aoc::Grid &grid,
+                                               int x_origin, int y_origin,
+                                               int dx, int dy) {
     char buffer[3];
 
     int x = x_origin - dx;
@@ -137,7 +119,7 @@ std::optional<std::string> get_diagonal_string(const Grid &grid, int x_origin,
     return std::string(buffer, 3);
 }
 
-bool can_find_x_shaped_mas(const Grid &grid, int x, int y) {
+bool can_find_x_shaped_mas(const aoc::Grid &grid, int x, int y) {
     if (grid.get_square(x, y) != 'A') {
         return false;
     }
@@ -159,11 +141,11 @@ bool can_find_x_shaped_mas(const Grid &grid, int x, int y) {
     return true;
 }
 
-int part2(const Grid &grid) {
+int part2(const aoc::Grid &grid) {
     int x_shaped_mas_count = 0;
 
-    for (int y = 0; y < grid.height; y++) {
-        for (int x = 0; x < grid.width; x++) {
+    for (int y = 0; y < grid.get_height(); y++) {
+        for (int x = 0; x < grid.get_width(); x++) {
             if (can_find_x_shaped_mas(grid, x, y)) {
                 x_shaped_mas_count++;
             }

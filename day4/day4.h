@@ -1,35 +1,15 @@
 #ifndef AOC2024_DAY4_H
 #define AOC2024_DAY4_H
 
-#include <iostream>
-#include <optional>
-#include <vector>
+#include "../lib/aoc.h"
 
 namespace day4 {
 
-// TODO: make shared if needed
-class Grid {
-  public:
-    Grid(const std::vector<char> &squares, int width) {
-        this->squares = squares;
-        this->width = width;
-        this->height = static_cast<int>(squares.size()) / this->width;
-    }
+aoc::Grid parse_input(std::ifstream &input);
 
-    [[nodiscard]] std::optional<char> get_square(int x, int y) const;
+int part1(const aoc::Grid &grid);
 
-    int width;
-    int height;
-
-  private:
-    std::vector<char> squares;
-};
-
-Grid parse_input(std::ifstream &input);
-
-int part1(const Grid &grid);
-
-int part2(const Grid &grid);
+int part2(const aoc::Grid &grid);
 
 } // namespace day4
 
