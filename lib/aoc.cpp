@@ -3,13 +3,24 @@
 //
 
 #include "aoc.h"
+#include <algorithm>
+#include <cassert>
 #include <charconv>
 #include <filesystem>
 #include <iostream>
+#include <optional>
 #include <ranges>
 #include <string>
 
 namespace aoc {
+
+bool Point::operator==(const Point &other) const {
+    return other.x == this->x && other.y == this->y;
+}
+
+bool Point::operator<(const Point &other) const {
+    return this->x < other.x && this->y < other.y;
+}
 
 Grid::Grid(std::vector<char> squares, int width)
     : width(width), squares(std::move(squares)) {
@@ -32,11 +43,14 @@ std::optional<char> Grid::get_square(int x, int y) const {
     int offset = y * this->width;
     int index = offset + x;
 
-    if (index < 0 || index >= static_cast<int>(this->squares.size())) {
-        return std::nullopt;
-    }
+    assert(index >= 0 || index < static_cast<int>(this->squares.size()) &&
+                             "Grid bounds check failure");
 
-    return this->squares[offset + x];
+    return this->squares[index];
+}
+
+std::optional<char> Grid::get_square(Point point) const {
+    return this->get_square(point.x, point.y);
 }
 
 std::ifstream get_ifstream(const std::string &filename) {
@@ -50,6 +64,36 @@ std::ifstream get_ifstream(const std::string &filename) {
     }
 
     return stream;
+}
+
+std::optional<Point> Grid::find_character(char to_find) const {
+    auto it = std::find(this->squares.begin(), this->squares.end(), to_find);
+    if (it == this->squares.end()) {
+        return std::nullopt;
+    }
+
+    int index = static_cast<int>(it - this->squares.begin());
+    int y = index / this->width;
+    int x = index % this->width;
+
+    return Point{x, y};
+}
+
+Grid parse_grid(std::ifstream &input) {
+    std::vector<char> grid;
+    std::string line;
+    int width;
+
+    std::getline(input, line);
+    assert(!input.fail() && "Failed to read first line");
+    width = static_cast<int>(line.length());
+    std::copy(line.begin(), line.end(), std::back_inserter(grid));
+
+    while (std::getline(input, line)) {
+        std::copy(line.begin(), line.end(), std::back_inserter(grid));
+    }
+
+    return {std::move(grid), width};
 }
 
 std::ifstream get_example_ifstream() { return get_ifstream("example.txt"); }

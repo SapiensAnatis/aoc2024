@@ -3,22 +3,7 @@
 
 namespace day4 {
 
-aoc::Grid parse_input(std::ifstream &input) {
-    std::vector<char> grid;
-    std::string line;
-    int width;
-
-    std::getline(input, line);
-    assert(!input.fail() && "Failed to read first line");
-    width = static_cast<int>(line.length());
-    std::copy(line.begin(), line.end(), std::back_inserter(grid));
-
-    while (std::getline(input, line)) {
-        std::copy(line.begin(), line.end(), std::back_inserter(grid));
-    }
-
-    return {grid, width};
-}
+aoc::Grid parse_input(std::ifstream &input) { return aoc::parse_grid(input); }
 
 bool can_find_xmas_in_direction(const aoc::Grid &grid, int x_origin,
                                 int y_origin, int dx, int dy) {
