@@ -6,26 +6,26 @@
 #define AOC2024_AOC_H
 
 #include <fstream>
+#include <memory>
 #include <optional>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 namespace aoc {
 
-struct Point {
-    int x;
-    int y;
+struct Point;
 
-    bool operator==(const Point &other) const;
-    bool operator<(const Point &other) const;
-};
-
-class Grid {
+class Grid : public std::enable_shared_from_this<Grid> {
   public:
-    Grid(std::vector<char> squares, int width);
+    static std::shared_ptr<Grid> create(std::vector<char> squares, int width) {
+        return std::shared_ptr<Grid>(new Grid(std::move(squares), width));
+    }
+
+    Grid(const Grid &) = delete;
 
     [[nodiscard]] std::optional<char> get_square(int x, int y) const;
-    [[nodiscard]] std::optional<char> get_square(Point point) const;
+    [[nodiscard]] std::optional<char> get_square(const Point &point) const;
     [[nodiscard]] int get_width() const;
     [[nodiscard]] int get_height() const;
 
@@ -33,12 +33,29 @@ class Grid {
     [[nodiscard]] std::optional<Point> find_character(char to_find) const;
 
   private:
+    Grid(std::vector<char> squares, int width);
+
     int width;
     int height;
     std::vector<char> squares;
 };
 
-Grid parse_grid(std::ifstream &input);
+struct Point {
+    int x;
+    int y;
+
+    Point(int x, int y, const std::weak_ptr<const Grid> &grid_ref);
+
+    friend std::ostream &operator<<(std::ostream &stream, Point const &point);
+
+    bool operator==(const Point &other) const;
+    bool operator<(const Point &other) const;
+
+  private:
+    std::weak_ptr<const aoc::Grid> grid_ptr;
+};
+
+std::shared_ptr<Grid> parse_grid(std::ifstream &input);
 
 std::ifstream get_example_ifstream();
 

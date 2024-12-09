@@ -3,7 +3,9 @@
 
 namespace day4 {
 
-aoc::Grid parse_input(std::ifstream &input) { return aoc::parse_grid(input); }
+std::shared_ptr<aoc::Grid> parse_input(std::ifstream &input) {
+    return aoc::parse_grid(input);
+}
 
 bool can_find_xmas_in_direction(const aoc::Grid &grid, int x_origin,
                                 int y_origin, int dx, int dy) {

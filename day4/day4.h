@@ -5,7 +5,7 @@
 
 namespace day4 {
 
-aoc::Grid parse_input(std::ifstream &input);
+std::shared_ptr<aoc::Grid> parse_input(std::ifstream &input);
 
 int part1(const aoc::Grid &grid);
 
