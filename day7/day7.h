@@ -8,6 +8,7 @@ namespace day7 {
 struct Operation {
     int result;
     std::vector<int> operands;
+    bool possible;
 
     Operation(int result, std::vector<int> operands);
 };
@@ -20,7 +21,7 @@ struct ParsedInput {
 
 ParsedInput parse_input(std::ifstream &input_stream);
 
-int part1(const ParsedInput &input);
+long part1(const ParsedInput &input);
 
 int part2(const ParsedInput &input);
 

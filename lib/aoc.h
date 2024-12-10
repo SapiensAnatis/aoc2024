@@ -5,7 +5,6 @@
 #ifndef AOC2024_AOC_H
 #define AOC2024_AOC_H
 
-#include <array>
 #include <fstream>
 #include <memory>
 #include <optional>
@@ -62,34 +61,13 @@ struct Point {
 
 std::shared_ptr<Grid> parse_grid(std::ifstream &input);
 
-template <typename TNode> class BinaryTreeNode {
-  public:
-    explicit BinaryTreeNode<TNode>(TNode value);
-    BinaryTreeNode<TNode> get_first_child();
-    BinaryTreeNode<TNode> get_second_child();
-    TNode get_value();
-    bool add_child(TNode item);
-
-  private:
-    TNode value;
-    std::array<std::unique_ptr<BinaryTreeNode<TNode>>, 2> children;
-    int child_count = 0;
-};
-
-template <typename TNode> class BinaryTree {
-  public:
-    explicit BinaryTree(TNode root_value);
-    BinaryTreeNode<TNode> get_root();
-
-  private:
-    BinaryTreeNode<TNode> root;
-};
-
 std::ifstream get_example_ifstream();
 
 std::ifstream get_example_ifstream(int example_num);
 
 std::ifstream get_real_ifstream();
+
+std::optional<long> stol(const std::string_view &input);
 
 std::optional<int> stoi(const std::string_view &input);
 

@@ -1,2 +1,1 @@
-
-add_library(lib aoc.cpp aoc.h)
+add_library(lib aoc.cpp aoc.h binary_tree.hpp)
