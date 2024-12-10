@@ -1,6 +1,6 @@
 #include "day7.h"
 #include "../lib/aoc.h"
-#include "../lib/binary_tree.hpp"
+#include "../lib/tree.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cmath>
