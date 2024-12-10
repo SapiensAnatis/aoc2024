@@ -1,1 +1,1 @@
-add_library(lib aoc.cpp aoc.h tree.hpp)
+add_library(lib aoc.cpp aoc.h tree.hpp grid.h grid.cpp)

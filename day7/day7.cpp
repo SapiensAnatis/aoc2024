@@ -89,11 +89,11 @@ NodeType concat(NodeType a, NodeType b) {
     NodeType next_operand = op.operands[level + 1];
 
     node->add_child(node->get_value() * next_operand);
-    node->add_child(node->get_value() + next_operand);
 
     write_node_children(op, level + 1, node->get_child(0), enable_concat);
 
     if (!op.possible) {
+        node->add_child(node->get_value() + next_operand);
         write_node_children(op, level + 1, node->get_child(1), enable_concat);
     }
 

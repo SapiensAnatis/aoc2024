@@ -1,7 +1,7 @@
 #ifndef AOC2024_DAY4_H
 #define AOC2024_DAY4_H
 
-#include "../lib/aoc.h"
+#include "../lib/grid.h"
 
 namespace day4 {
 
