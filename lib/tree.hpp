@@ -1,5 +1,5 @@
-#ifndef AOC2024_BINARY_TREE_H
-#define AOC2024_BINARY_TREE_H
+#ifndef AOC2024_TREE_H
+#define AOC2024_TREE_H
 
 #include <cassert>
 #include <memory>
@@ -12,7 +12,7 @@ class TreeNode : public std::enable_shared_from_this<TreeNode<TNode>> {
   public:
     TreeNode(TNode value, const std::shared_ptr<TreeNode<TNode>> &parent)
         : value(value),
-          children(std::vector<std::shared_ptr<TreeNode<TNode>>>{}),
+          children(std::vector<std::shared_ptr<TreeNode<TNode>>>()),
           parent{parent} {}
 
     explicit TreeNode<TNode>(TNode value) : TreeNode(value, nullptr) {}
@@ -50,4 +50,4 @@ template <typename TNode> class Tree {
 
 } // namespace aoc
 
-#endif // AOC2024_BINARY_TREE_H
+#endif // AOC2024_TREE_H
