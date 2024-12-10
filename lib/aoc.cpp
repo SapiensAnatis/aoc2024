@@ -3,7 +3,6 @@
 //
 
 #include "aoc.h"
-#include <algorithm>
 #include <cassert>
 #include <charconv>
 #include <filesystem>
@@ -11,7 +10,6 @@
 #include <optional>
 #include <ranges>
 #include <string>
-#include <utility>
 
 namespace aoc {
 

@@ -1,7 +1,7 @@
 
 #include "day6.h"
 #include <iostream>
-#include <set>
+#include <unordered_set>
 #include <utility>
 
 namespace day6 {
@@ -33,12 +33,12 @@ struct GuardState {
     Velocity direction;
 
     GuardState(aoc::Point position, Velocity direction)
-        : position(std::move(position)), direction(direction) {}
+        : position(position), direction(direction) {}
 };
 
 ParsedInput::ParsedInput(std::shared_ptr<aoc::Grid> grid,
                          aoc::Point guard_start_point)
-    : grid(std::move(grid)), guard_start_point(std::move(guard_start_point)) {}
+    : grid(std::move(grid)), guard_start_point(guard_start_point) {}
 
 ParsedInput parse_input(std::ifstream &input) {
     auto grid = aoc::parse_grid(input);
@@ -52,11 +52,11 @@ ParsedInput parse_input(std::ifstream &input) {
     return {std::move(grid), *guard_start};
 }
 
-std::set<aoc::Point>
+std::unordered_set<aoc::Point>
 simulate_finite_guard_walk(const std::shared_ptr<aoc::Grid> &grid,
                            const aoc::Point &guard_start_point) {
     GuardState state(guard_start_point, Velocity(0, -1));
-    std::set<aoc::Point> visited_squares{guard_start_point};
+    std::unordered_set<aoc::Point> visited_squares{guard_start_point};
 
     while (true) {
         int proposed_next_x = state.position.x + state.direction.x;
@@ -125,7 +125,7 @@ int part2(const ParsedInput &input) {
     int infinite_loop_opportunities = 0;
 
     for (auto &point : path) {
-        auto grid_with_obstacle_here =
+        std::shared_ptr<aoc::Grid> grid_with_obstacle_here =
             input.grid->with_mutation(point.x, point.y, '#');
         if (check_for_cycle(grid_with_obstacle_here, input.guard_start_point)) {
             infinite_loop_opportunities++;

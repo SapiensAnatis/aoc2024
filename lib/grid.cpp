@@ -5,25 +5,10 @@
 
 namespace aoc {
 
-Point::Point(int x, int y, const std::weak_ptr<const Grid> &grid_ref)
-    : x(x), y(y), grid_ptr(grid_ref) {
-    assert(!grid_ref.expired() && "Expired grid_ref");
-}
+Point::Point(int x, int y) : x(x), y(y) {}
 
 bool Point::operator==(const Point &other) const {
     return other.x == this->x && other.y == this->y;
-}
-
-bool Point::operator<(const Point &other) const {
-    auto this_grid_ptr = this->grid_ptr.lock();
-    assert(this_grid_ptr && "Failed to acquire this->grid_ptr");
-    int this_grid_arr_idx = this->y * this_grid_ptr->get_width() + this->x;
-
-    auto other_grid_ptr = other.grid_ptr.lock();
-    assert(other_grid_ptr && "Failed to acquire other.grid_ptr");
-    int other_grid_arr_idx = other.y * other_grid_ptr->get_width() + other.x;
-
-    return this_grid_arr_idx < other_grid_arr_idx;
 }
 
 std::ostream &operator<<(std::ostream &stream, const Point &point) {
@@ -70,13 +55,13 @@ std::optional<Point> Grid::find_character(char to_find) const {
     int y = index / this->width;
     int x = index % this->width;
 
-    return Point(x, y, this->weak_from_this());
+    return Point(x, y);
 }
 
-std::shared_ptr<Grid> Grid::with_mutation(int x, int y, char new_value) {
+std::unique_ptr<Grid> Grid::with_mutation(int x, int y, char new_value) {
     auto new_vec = this->squares;
     new_vec[calculate_array_index(x, y)] = new_value;
-    return std::make_shared<Grid>(new_vec, this->width);
+    return std::make_unique<Grid>(new_vec, this->width);
 }
 
 int Grid::calculate_array_index(int x, int y) const {
@@ -86,10 +71,10 @@ int Grid::calculate_array_index(int x, int y) const {
 }
 
 Point operator+(const Point &point, const Vector &vector) {
-    return {point.x + vector.dx, point.y + vector.dy, point.grid_ptr};
+    return {point.x + vector.dx, point.y + vector.dy};
 }
 
-std::shared_ptr<Grid> parse_grid(std::ifstream &input) {
+std::unique_ptr<Grid> parse_grid(std::ifstream &input) {
     std::vector<char> grid;
     std::string line;
     int width;
@@ -107,3 +92,12 @@ std::shared_ptr<Grid> parse_grid(std::ifstream &input) {
 }
 
 } // namespace aoc
+
+namespace std {
+size_t hash<aoc::Point>::operator()(const aoc::Point &p) const {
+    size_t h1 = hash<int>()(p.x);
+    size_t h2 = hash<int>()(p.y);
+
+    return h1 ^ (h2 << 1);
+}
+} // namespace std

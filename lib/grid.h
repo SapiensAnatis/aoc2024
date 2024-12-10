@@ -16,28 +16,26 @@ struct Vector {
     Vector(int dx, int dy);
 };
 
-class Grid : public std::enable_shared_from_this<Grid> {
+class Grid {
   public:
-    static std::shared_ptr<Grid> create(std::vector<char> squares, int width) {
-        return std::make_shared<Grid>(std::move(squares), width);
+    static std::unique_ptr<Grid> create(std::vector<char> squares, int width) {
+        return std::make_unique<Grid>(std::move(squares), width);
     }
 
     Grid(std::vector<char> squares, int width);
-
-    Grid(const Grid &) = delete;
 
     [[nodiscard]] std::optional<char> get_square(int x, int y) const;
     [[nodiscard]] std::optional<char> get_square(const Point &point) const;
     [[nodiscard]] int get_width() const;
     [[nodiscard]] int get_height() const;
-    [[nodiscard]] std::shared_ptr<Grid> with_mutation(int x, int y,
+    [[nodiscard]] std::unique_ptr<Grid> with_mutation(int x, int y,
                                                       char new_value);
 
     // TODO: Consider making an iterator to enable std::find?
     [[nodiscard]] std::optional<Point> find_character(char to_find) const;
 
   private:
-    int calculate_array_index(int x, int y) const;
+    [[nodiscard]] int calculate_array_index(int x, int y) const;
 
     int width;
     int height;
@@ -48,19 +46,23 @@ struct Point {
     int x;
     int y;
 
-    Point(int x, int y, const std::weak_ptr<const Grid> &grid_ref);
+    Point(int x, int y);
 
     friend Point operator+(const Point &point, const Vector &vector);
 
     bool operator==(const Point &other) const;
-    bool operator<(const Point &other) const;
-
-  private:
-    std::weak_ptr<const aoc::Grid> grid_ptr;
 };
 
-std::shared_ptr<Grid> parse_grid(std::ifstream &input);
+std::ostream &operator<<(std::ostream &stream, const Point &point);
+
+std::unique_ptr<Grid> parse_grid(std::ifstream &input);
 
 } // namespace aoc
+
+namespace std {
+template <> struct hash<aoc::Point> {
+    size_t operator()(const aoc::Point &p) const;
+};
+} // namespace std
 
 #endif // AOC_2024_GRID_H
