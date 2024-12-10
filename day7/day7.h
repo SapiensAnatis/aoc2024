@@ -6,7 +6,7 @@
 
 namespace day7 {
 
-typedef long long NodeType;
+typedef long NodeType;
 
 struct Operation {
     NodeType result;

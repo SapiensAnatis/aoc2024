@@ -22,7 +22,7 @@ ParsedInput parse_input(std::ifstream &input_stream) {
         auto split = aoc::split(line, ':');
         assert(split.size() == 2 && "Malformed line");
 
-        std::optional<NodeType> result = aoc::stoll(split[0]);
+        std::optional<NodeType> result = aoc::stol(split[0]);
         assert(result && "Failed to parse result to integer");
         assert(result > 0 && "Result was not positive - potential overflow");
 
@@ -92,9 +92,12 @@ NodeType concat(NodeType a, NodeType b) {
     node->add_child(node->get_value() + next_operand);
 
     write_node_children(op, level + 1, node->get_child(0), enable_concat);
-    write_node_children(op, level + 1, node->get_child(1), enable_concat);
 
-    if (enable_concat) {
+    if (!op.possible) {
+        write_node_children(op, level + 1, node->get_child(1), enable_concat);
+    }
+
+    if (!op.possible && enable_concat) {
         node->add_child(concat(node->get_value(), next_operand));
         write_node_children(op, level + 1, node->get_child(2), enable_concat);
     }
