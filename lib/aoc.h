@@ -69,6 +69,8 @@ std::ifstream get_real_ifstream();
 
 std::optional<long> stol(const std::string_view &input);
 
+std::optional<long long> stoll(const std::string_view &input);
+
 std::optional<int> stoi(const std::string_view &input);
 
 std::vector<std::string_view> split(const std::string_view &str,

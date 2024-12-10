@@ -6,10 +6,16 @@
 
 namespace aoc {
 
-template <typename TNode> class BinaryTreeNode {
+template <typename TNode>
+class BinaryTreeNode
+    : public std::enable_shared_from_this<BinaryTreeNode<TNode>> {
   public:
+    BinaryTreeNode(TNode value,
+                   const std::shared_ptr<BinaryTreeNode<TNode>> &parent)
+        : value(value), children{{nullptr, nullptr}}, parent{parent} {}
+
     explicit BinaryTreeNode<TNode>(TNode value)
-        : value(value), children{{nullptr, nullptr}} {}
+        : BinaryTreeNode(value, nullptr) {}
 
     std::shared_ptr<BinaryTreeNode<TNode>> get_first_child() const {
         return this->children[0];
@@ -19,11 +25,16 @@ template <typename TNode> class BinaryTreeNode {
         return this->children[1];
     }
 
+    std::weak_ptr<BinaryTreeNode<TNode>> get_parent() const {
+        return this->parent;
+    }
+
     TNode get_value() const { return this->value; }
 
     bool add_child(TNode item) {
         std::shared_ptr<BinaryTreeNode<TNode>> new_child =
-            std::make_shared<BinaryTreeNode<TNode>>(item);
+            std::make_shared<BinaryTreeNode<TNode>>(item,
+                                                    this->shared_from_this());
 
         if (!this->children[0]) {
             this->children[0] = new_child;
@@ -39,6 +50,7 @@ template <typename TNode> class BinaryTreeNode {
   private:
     TNode value;
     std::array<std::shared_ptr<BinaryTreeNode<TNode>>, 2> children;
+    std::weak_ptr<BinaryTreeNode<TNode>> parent;
 };
 
 template <typename TNode> class BinaryTree {

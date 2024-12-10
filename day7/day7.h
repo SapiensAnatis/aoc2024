@@ -1,27 +1,30 @@
 #ifndef AOC2024_DAY7_H
 #define AOC2024_DAY7_H
 
-#include "../lib/aoc.h"
+#include <fstream>
+#include <vector>
 
 namespace day7 {
 
+typedef long long NodeType;
+
 struct Operation {
-    int result;
+    NodeType result;
     std::vector<int> operands;
     bool possible;
 
-    Operation(int result, std::vector<int> operands);
+    Operation(NodeType result, std::vector<int> operands);
 };
 
 struct ParsedInput {
     std::vector<Operation> operations;
 
-    ParsedInput(std::vector<Operation> operations);
+    explicit ParsedInput(std::vector<Operation> operations);
 };
 
 ParsedInput parse_input(std::ifstream &input_stream);
 
-long part1(const ParsedInput &input);
+NodeType part1(const ParsedInput &input);
 
 int part2(const ParsedInput &input);
 

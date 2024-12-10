@@ -163,6 +163,19 @@ std::optional<long> stol(const std::string_view &input) {
     return out;
 }
 
+std::optional<long long> stoll(const std::string_view &input) {
+    long long out;
+    const std::from_chars_result result =
+        std::from_chars(input.data(), input.data() + input.size(), out);
+
+    if (result.ec == std::errc::invalid_argument ||
+        result.ec == std::errc::result_out_of_range) {
+        return std::nullopt;
+    }
+
+    return out;
+}
+
 std::vector<std::string_view> split(const std::string_view &str,
                                     char separator) {
     std::vector<std::string_view> results;

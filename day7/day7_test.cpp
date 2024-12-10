@@ -12,6 +12,9 @@ TEST(day_7_part_1, example) {
 }
 
 TEST(day_7_part_1, real) {
+    long long test = 11230549368122;
+    std::cout << test << "\n";
+
     auto input_stream = aoc::get_real_ifstream();
     auto input = day7::parse_input(input_stream);
 
