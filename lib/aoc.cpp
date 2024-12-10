@@ -150,7 +150,8 @@ std::optional<int> stoi(const std::string_view &input) {
     return out;
 }
 
-std::vector<std::string_view> split(const std::string &str, char separator) {
+std::vector<std::string_view> split(const std::string_view &str,
+                                    char separator) {
     std::vector<std::string_view> results;
 
     auto split = std::ranges::views::split(str, separator);
@@ -158,7 +159,14 @@ std::vector<std::string_view> split(const std::string &str, char separator) {
         split, [](auto &&range) -> std::string_view {
             return std::string_view(range.begin(), range.end());
         });
+    auto filter = std::ranges::views::filter(
+        transform, [](auto &&r) { return r.length() > 0; });
 
-    return {transform.begin(), transform.end()};
+    return {filter.begin(), filter.end()};
 }
+
+std::vector<std::string_view> split(const std::string &str, char separator) {
+    return split(std::string_view(str), separator);
+}
+
 } // namespace aoc

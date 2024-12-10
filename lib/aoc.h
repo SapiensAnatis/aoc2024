@@ -69,6 +69,9 @@ std::ifstream get_real_ifstream();
 
 std::optional<int> stoi(const std::string_view &input);
 
+std::vector<std::string_view> split(const std::string_view &str,
+                                    char separator);
+
 std::vector<std::string_view> split(const std::string &str, char separator);
 } // namespace aoc
 
