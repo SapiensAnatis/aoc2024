@@ -41,8 +41,9 @@ std::ifstream get_example_ifstream(int example_num) {
 
 std::ifstream get_real_ifstream() { return get_ifstream("input.txt"); }
 
-std::optional<int> stoi(const std::string_view &input) {
-    int out;
+template <typename TNumber>
+std::optional<TNumber> try_parse(const std::string_view &input) {
+    TNumber out;
     const std::from_chars_result result =
         std::from_chars(input.data(), input.data() + input.size(), out);
 
@@ -52,32 +53,18 @@ std::optional<int> stoi(const std::string_view &input) {
     }
 
     return out;
+}
+
+std::optional<int> stoi(const std::string_view &input) {
+    return try_parse<int>(input);
 }
 
 std::optional<long> stol(const std::string_view &input) {
-    long out;
-    const std::from_chars_result result =
-        std::from_chars(input.data(), input.data() + input.size(), out);
-
-    if (result.ec == std::errc::invalid_argument ||
-        result.ec == std::errc::result_out_of_range) {
-        return std::nullopt;
-    }
-
-    return out;
+    return try_parse<long>(input);
 }
 
 std::optional<long long> stoll(const std::string_view &input) {
-    long long out;
-    const std::from_chars_result result =
-        std::from_chars(input.data(), input.data() + input.size(), out);
-
-    if (result.ec == std::errc::invalid_argument ||
-        result.ec == std::errc::result_out_of_range) {
-        return std::nullopt;
-    }
-
-    return out;
+    return try_parse<long long>(input);
 }
 
 std::vector<std::string_view> split(const std::string_view &str,
