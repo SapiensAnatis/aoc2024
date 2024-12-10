@@ -26,7 +26,7 @@ ParsedInput parse_input(std::ifstream &input_stream);
 
 NodeType part1(const ParsedInput &input);
 
-int part2(const ParsedInput &input);
+NodeType part2(const ParsedInput &input);
 
 } // namespace day7
 

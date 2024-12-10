@@ -1,66 +1,51 @@
 #ifndef AOC2024_BINARY_TREE_H
 #define AOC2024_BINARY_TREE_H
 
-#include <array>
+#include <cassert>
 #include <memory>
+#include <vector>
 
 namespace aoc {
 
 template <typename TNode>
-class BinaryTreeNode
-    : public std::enable_shared_from_this<BinaryTreeNode<TNode>> {
+class TreeNode : public std::enable_shared_from_this<TreeNode<TNode>> {
   public:
-    BinaryTreeNode(TNode value,
-                   const std::shared_ptr<BinaryTreeNode<TNode>> &parent)
-        : value(value), children{{nullptr, nullptr}}, parent{parent} {}
+    TreeNode(TNode value, const std::shared_ptr<TreeNode<TNode>> &parent)
+        : value(value),
+          children(std::vector<std::shared_ptr<TreeNode<TNode>>>{}),
+          parent{parent} {}
 
-    explicit BinaryTreeNode<TNode>(TNode value)
-        : BinaryTreeNode(value, nullptr) {}
+    explicit TreeNode<TNode>(TNode value) : TreeNode(value, nullptr) {}
 
-    std::shared_ptr<BinaryTreeNode<TNode>> get_first_child() const {
-        return this->children[0];
+    std::shared_ptr<TreeNode<TNode>> get_child(int index) const {
+        assert(index >= 0 && index < static_cast<int>(this->children.size()) &&
+               "get_child: bounds check failure");
+
+        return this->children[index];
     }
 
-    std::shared_ptr<BinaryTreeNode<TNode>> get_second_child() const {
-        return this->children[1];
-    }
-
-    std::weak_ptr<BinaryTreeNode<TNode>> get_parent() const {
-        return this->parent;
-    }
+    std::weak_ptr<TreeNode<TNode>> get_parent() const { return this->parent; }
 
     TNode get_value() const { return this->value; }
 
-    bool add_child(TNode item) {
-        std::shared_ptr<BinaryTreeNode<TNode>> new_child =
-            std::make_shared<BinaryTreeNode<TNode>>(item,
-                                                    this->shared_from_this());
-
-        if (!this->children[0]) {
-            this->children[0] = new_child;
-            return true;
-        } else if (!this->children[1]) {
-            this->children[1] = new_child;
-            return true;
-        }
-
-        return false;
+    void add_child(TNode item) {
+        this->children.push_back(
+            std::make_shared<TreeNode<TNode>>(item, this->shared_from_this()));
     }
 
   private:
     TNode value;
-    std::array<std::shared_ptr<BinaryTreeNode<TNode>>, 2> children;
-    std::weak_ptr<BinaryTreeNode<TNode>> parent;
+    std::vector<std::shared_ptr<TreeNode<TNode>>> children;
+    std::weak_ptr<TreeNode<TNode>> parent;
 };
 
-template <typename TNode> class BinaryTree {
+template <typename TNode> class Tree {
   public:
-    explicit BinaryTree(TNode root)
-        : root(std::make_shared<BinaryTreeNode<TNode>>(root)) {}
-    std::shared_ptr<BinaryTreeNode<TNode>> get_root() { return this->root; }
+    explicit Tree(TNode root) : root(std::make_shared<TreeNode<TNode>>(root)) {}
+    std::shared_ptr<TreeNode<TNode>> get_root() { return this->root; }
 
   private:
-    std::shared_ptr<BinaryTreeNode<TNode>> root;
+    std::shared_ptr<TreeNode<TNode>> root;
 };
 
 } // namespace aoc
