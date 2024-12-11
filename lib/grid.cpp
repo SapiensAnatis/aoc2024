@@ -115,6 +115,10 @@ Vector operator-(const Point &a, const Point &b) {
     return {a.x - b.x, a.y - b.y};
 }
 
+Vector operator/(const Vector &a, int b) { return {a.dx / b, a.dy / b}; }
+
+Vector operator*(const Vector &a, int b) { return {a.dx * b, a.dy * b}; }
+
 std::unique_ptr<Grid> parse_grid(std::ifstream &input) {
     std::vector<char> grid;
     std::string line;

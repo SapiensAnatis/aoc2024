@@ -81,7 +81,10 @@ struct Point {
 Point operator+(const Point &point, const Vector &vector);
 Point operator-(const Point &point, const Vector &vector);
 Vector operator-(const Point &a, const Point &b);
+Vector operator/(const Vector &a, int b);
+Vector operator*(const Vector &a, int b);
 std::ostream &operator<<(std::ostream &stream, const Point &point);
+std::ostream &operator<<(std::ostream &stream, const Vector &vector);
 
 std::unique_ptr<Grid> parse_grid(std::ifstream &input);
 
