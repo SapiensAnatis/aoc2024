@@ -65,6 +65,14 @@ std::optional<long long> stoll(const std::string_view &input) {
     return try_parse<long long>(input);
 }
 
+std::optional<int> ctoi(char c) {
+    if (c < '0' && c > '9') {
+        return std::nullopt;
+    }
+
+    return c - '0';
+}
+
 std::vector<std::string_view> split(const std::string_view &str,
                                     char separator) {
     std::vector<std::string_view> results;

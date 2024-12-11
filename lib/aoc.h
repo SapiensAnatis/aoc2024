@@ -24,6 +24,8 @@ std::optional<long long> stoll(const std::string_view &input);
 
 std::optional<int> stoi(const std::string_view &input);
 
+std::optional<int> ctoi(char c);
+
 std::vector<std::string_view> split(const std::string_view &str,
                                     char separator);
 
