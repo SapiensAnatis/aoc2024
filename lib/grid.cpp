@@ -7,13 +7,7 @@ namespace aoc {
 
 Point::Point(int x, int y) : x(x), y(y) {}
 
-bool Point::operator==(const Point &other) const {
-    return other.x == this->x && other.y == this->y;
-}
-
-std::ostream &operator<<(std::ostream &stream, const Point &point) {
-    return stream << "(" << point.x << ", " << point.y << ")";
-}
+Vector::Vector(int dx, int dy) : dx(dx), dy(dy) {}
 
 Grid::Grid(std::vector<char> squares, int width)
     : width(width), squares(std::move(squares)) {
@@ -45,19 +39,6 @@ std::optional<char> Grid::get_square(const Point &point) const {
     return this->get_square(point.x, point.y);
 }
 
-std::optional<Point> Grid::find_character(char to_find) const {
-    auto it = std::find(this->squares.begin(), this->squares.end(), to_find);
-    if (it == this->squares.end()) {
-        return std::nullopt;
-    }
-
-    int index = static_cast<int>(it - this->squares.begin());
-    int y = index / this->width;
-    int x = index % this->width;
-
-    return Point(x, y);
-}
-
 std::unique_ptr<Grid> Grid::with_mutation(int x, int y, char new_value) {
     auto new_vec = this->squares;
     new_vec[calculate_array_index(x, y)] = new_value;
@@ -70,8 +51,68 @@ int Grid::calculate_array_index(int x, int y) const {
     return index;
 }
 
+Grid::Iterator Grid::begin() { return Grid::Iterator(this->squares.begin()); }
+
+Grid::Iterator Grid::end() { return Grid::Iterator(this->squares.end()); }
+
+Point Grid::get_point(const Grid::Iterator &it) {
+    auto index = static_cast<int>(it - this->begin());
+    int x = index % this->width;
+    int y = index / this->width;
+
+    return {x, y};
+}
+
+Grid::Iterator::Iterator(std::vector<char>::iterator vec_iterator)
+    : vec_iterator(vec_iterator) {}
+
+Grid::Iterator::Iterator() = default;
+
+char Grid::Iterator::operator*() const { return *this->vec_iterator; }
+
+Grid::Iterator &Grid::Iterator::operator++() {
+    this->vec_iterator++;
+    return *this;
+}
+
+Grid::Iterator::difference_type operator-(const Grid::Iterator &a,
+                                          const Grid::Iterator &b) {
+    return a.vec_iterator - b.vec_iterator;
+}
+
+// NOLINTNEXTLINE(cert-dcl21-cpp)
+Grid::Iterator Grid::Iterator::operator++(int) {
+    Grid::Iterator tmp = *this;
+    ++(*this);
+    return tmp;
+}
+
+bool operator==(const Grid::Iterator &a, const Grid::Iterator &b) {
+    return a.vec_iterator == b.vec_iterator;
+}
+
+bool operator!=(const Grid::Iterator &a, const Grid::Iterator &b) {
+    return a.vec_iterator != b.vec_iterator;
+}
+
+bool Point::operator==(const Point &other) const {
+    return other.x == this->x && other.y == this->y;
+}
+
+std::ostream &operator<<(std::ostream &stream, const Point &point) {
+    return stream << "(" << point.x << ", " << point.y << ")";
+}
+
 Point operator+(const Point &point, const Vector &vector) {
     return {point.x + vector.dx, point.y + vector.dy};
+}
+
+Point operator-(const Point &point, const Vector &vector) {
+    return {point.x - vector.dx, point.y - vector.dy};
+}
+
+Vector operator-(const Point &a, const Point &b) {
+    return {a.x - b.x, a.y - b.y};
 }
 
 std::unique_ptr<Grid> parse_grid(std::ifstream &input) {

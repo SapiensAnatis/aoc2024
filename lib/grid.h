@@ -1,6 +1,7 @@
 #ifndef AOC_2024_GRID_H
 #define AOC_2024_GRID_H
 
+#include <iterator>
 #include <memory>
 #include <optional>
 #include <vector>
@@ -31,8 +32,34 @@ class Grid {
     [[nodiscard]] std::unique_ptr<Grid> with_mutation(int x, int y,
                                                       char new_value);
 
-    // TODO: Consider making an iterator to enable std::find?
-    [[nodiscard]] std::optional<Point> find_character(char to_find) const;
+    struct Iterator {
+        using iterator_category = std::input_iterator_tag;
+        using difference_type = std::vector<char>::iterator::difference_type;
+        using value_type = char;
+
+        Iterator();
+        explicit Iterator(std::vector<char>::iterator vec_iterator);
+
+        char operator*() const;
+
+        Iterator &operator++();
+        // NOLINTNEXTLINE(cert-dcl21-cpp)
+        Iterator operator++(int);
+
+        friend bool operator==(const Iterator &a, const Iterator &b);
+        friend bool operator!=(const Iterator &a, const Iterator &b);
+
+        friend difference_type operator-(const Iterator &a, const Iterator &b);
+
+      private:
+        std::vector<char>::iterator vec_iterator;
+    };
+
+    static_assert(std::input_iterator<Iterator>);
+
+    Iterator begin();
+    Iterator end();
+    Point get_point(const Iterator &iterator);
 
   private:
     [[nodiscard]] int calculate_array_index(int x, int y) const;
@@ -48,11 +75,12 @@ struct Point {
 
     Point(int x, int y);
 
-    friend Point operator+(const Point &point, const Vector &vector);
-
     bool operator==(const Point &other) const;
 };
 
+Point operator+(const Point &point, const Vector &vector);
+Point operator-(const Point &point, const Vector &vector);
+Vector operator-(const Point &a, const Point &b);
 std::ostream &operator<<(std::ostream &stream, const Point &point);
 
 std::unique_ptr<Grid> parse_grid(std::ifstream &input);

@@ -1,5 +1,6 @@
 
 #include "day6.h"
+#include <algorithm>
 #include <iostream>
 #include <unordered_set>
 #include <utility>
@@ -42,14 +43,16 @@ ParsedInput::ParsedInput(std::shared_ptr<aoc::Grid> grid,
 
 ParsedInput parse_input(std::ifstream &input) {
     auto grid = aoc::parse_grid(input);
-    auto guard_start = grid->find_character('^');
+    auto guard_start = std::find(grid->begin(), grid->end(), '^');
 
-    if (!guard_start) {
+    if (guard_start == grid->end()) {
         std::cerr << "Failed to find guard\n";
         exit(1);
     }
 
-    return {std::move(grid), *guard_start};
+    auto guard_start_point = grid->get_point(guard_start);
+
+    return {std::move(grid), guard_start_point};
 }
 
 std::unordered_set<aoc::Point>

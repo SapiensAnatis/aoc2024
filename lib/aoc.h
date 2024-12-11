@@ -6,15 +6,11 @@
 #define AOC2024_AOC_H
 
 #include <fstream>
-#include <memory>
 #include <optional>
 #include <string_view>
-#include <utility>
 #include <vector>
 
 namespace aoc {
-
-
 
 std::ifstream get_example_ifstream();
 
@@ -32,6 +28,7 @@ std::vector<std::string_view> split(const std::string_view &str,
                                     char separator);
 
 std::vector<std::string_view> split(const std::string &str, char separator);
+
 } // namespace aoc
 
 #endif // AOC2024_AOC_H
