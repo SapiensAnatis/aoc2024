@@ -14,11 +14,17 @@ ParsedInput parse_input(std::ifstream &input_stream) {
 struct Antenna {
     aoc::Point position;
     char frequency;
-}
+};
 
 int part1(const ParsedInput &input) {
     std::vector<Antenna> antennae;
-    
+    for (auto it = input.grid->begin(); it != input.grid->end(); it++) {
+        if (*it != '.') {
+            antennae.emplace_back(aoc::Point(input.grid->get_point(it)), *it);
+        }
+    }
+
+    return 0;
 }
 
 } // namespace day8
