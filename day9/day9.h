@@ -14,6 +14,8 @@ class Block {
     virtual ~Block() = default;
     [[nodiscard]] virtual BlockType get_type() const = 0;
     [[nodiscard]] virtual std::string get_display_string() const = 0;
+    virtual bool operator==(const Block &other) = 0;
+    bool operator!=(const Block &other);
 };
 
 std::ostream &operator<<(std::ostream &stream, const Block &block);
@@ -23,6 +25,7 @@ class FreeSpaceBlock : public Block {
     ~FreeSpaceBlock() override = default;
     [[nodiscard]] BlockType get_type() const override;
     [[nodiscard]] std::string get_display_string() const override;
+    bool operator==(const Block &other) override;
 };
 
 class FileBlock : public Block {
@@ -32,6 +35,7 @@ class FileBlock : public Block {
     [[nodiscard]] BlockType get_type() const override;
     [[nodiscard]] std::string get_display_string() const override;
     [[nodiscard]] int get_id() const;
+    bool operator==(const Block &other) override;
 
   private:
     int id;

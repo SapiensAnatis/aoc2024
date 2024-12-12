@@ -17,9 +17,15 @@ std::ostream &operator<<(std::ostream &stream, const Block &block) {
     return stream;
 }
 
+bool Block::operator!=(const Block &other) { return !(*this == other); }
+
 BlockType FreeSpaceBlock::get_type() const { return BlockType::FreeSpace; }
 
 std::string FreeSpaceBlock::get_display_string() const { return "."; }
+
+bool FreeSpaceBlock::operator==(const Block &other) {
+    return other.get_type() == BlockType::FreeSpace;
+}
 
 FileBlock::FileBlock(int id) : id(id) {}
 
@@ -31,28 +37,36 @@ std::string FileBlock::get_display_string() const {
 
 int FileBlock::get_id() const { return this->id; }
 
+bool FileBlock::operator==(const Block &other) {
+    if (other.get_type() == BlockType::FreeSpace) {
+        return false;
+    }
+
+    auto file_other = dynamic_cast<const FileBlock &>(other);
+    return this->get_id() == file_other.get_id();
+}
+
 ParsedInput parse_input(std::ifstream &input_stream) {
     std::vector<std::shared_ptr<Block>> blocks;
     int id_counter = 0;
 
-    char next_char;
+    std::vector<char> input_vec = {std::istream_iterator<char>(input_stream),
+                                   std::istream_iterator<char>()};
 
-    while (!input_stream.eof() && !input_stream.fail()) {
-        int position = static_cast<int>(input_stream.tellg());
-        bool is_file = position % 2 == 0;
-        input_stream.get(next_char);
+    for (std::vector<char>::size_type i = 0; i < input_vec.size(); i++) {
+        bool is_file = i % 2 == 0;
 
-        std::optional<int> block_count = aoc::ctoi(next_char);
+        std::optional<int> block_count = aoc::ctoi(input_vec[i]);
         assert(block_count && "Failed to parse block count");
 
         if (is_file) {
             int file_id = id_counter++;
-            for (int i = 0; i < *block_count; i++) {
+            for (int j = 0; j < *block_count; j++) {
                 auto block = std::make_shared<FileBlock>(file_id);
                 blocks.push_back(std::move(block));
             }
         } else {
-            for (int i = 0; i < *block_count; i++) {
+            for (int j = 0; j < *block_count; j++) {
                 auto block = std::make_shared<FreeSpaceBlock>();
                 blocks.push_back(std::move(block));
             }
@@ -108,123 +122,34 @@ long part1(const ParsedInput &input) {
     return checksum;
 }
 
-typedef std::vector<std::shared_ptr<Block>>::iterator BlockVectorIterator;
-typedef std::vector<std::shared_ptr<Block>>::reverse_iterator
-    ReverseBlockVectorIterator;
-
-std::pair<BlockVectorIterator, BlockVectorIterator> greedy_find_if(
-    const BlockVectorIterator &start, const BlockVectorIterator &end,
-    const std::function<bool(const std::shared_ptr<Block> &)> &predicate) {
-    auto it = std::find_if(start, end, predicate);
-    if (it == end) {
-        return {end, end};
-    }
-
-    auto next = it;
-    while (next != end && predicate(*next)) {
-        next++;
-    }
-
-    return {it, next - 1};
-}
-
-std::pair<ReverseBlockVectorIterator, ReverseBlockVectorIterator>
-greedy_find_file(const ReverseBlockVectorIterator &start,
-                 const ReverseBlockVectorIterator &end) {
-    auto it = std::find_if(start, end, [](const std::shared_ptr<Block> &block) {
-        return block->get_type() == BlockType::File;
-    });
-
-    auto start_file_block = std::dynamic_pointer_cast<FileBlock>(*it);
-    assert(start_file_block && "greedy_find_file: failed dynamic cast");
-
-    if (it == end) {
-        return {end, end};
-    }
-
-    auto block_pred = [&start_file_block](const std::shared_ptr<Block> &block) {
-        if (block->get_type() != BlockType::File) {
-            return false;
-        }
-
-        auto file_block = std::dynamic_pointer_cast<FileBlock>(block);
-        assert(file_block &&
-               "greedy_find_file: failed dynamic cast in block_pred");
-
-        if (file_block->get_id() != start_file_block->get_id()) {
-            return false;
-        }
-
-        return true;
-    };
-
-    auto next = it;
-    while (next != end && block_pred(*next)) {
-        next++;
-    }
-
-    return {it, next - 1};
-}
+struct ContiguousBlock {
+    std::shared_ptr<Block> block;
+    int size;
+};
 
 long part2(const ParsedInput &input) {
-    std::vector<std::shared_ptr<Block>> blocks_copy = input.blocks;
+    std::vector<ContiguousBlock> continguous_blocks;
 
-    auto cursor = blocks_copy.begin();
+    print_filesystem(input.blocks, 0);
 
-    while (cursor < blocks_copy.end()) {
-        print_filesystem(blocks_copy, 0);
+    for (auto it = input.blocks.begin(); it != input.blocks.end();) {
+        auto region_end = std::find_if(
+            it, input.blocks.end(),
+            [&it](const std::shared_ptr<Block> &x) { return *x != **it; });
 
-        auto [free_space_start, free_space_end] = greedy_find_if(
-            cursor, blocks_copy.end(), [](const std::shared_ptr<Block> &block) {
-                return block->get_type() == BlockType::FreeSpace;
-            });
+        long contig_size = region_end - it;
 
-        if (free_space_start == blocks_copy.end()) {
-            break;
-        }
+        continguous_blocks.emplace_back(*it, contig_size);
 
-        // If we have two pointers ...
-        //                         ^ ^
-        //                         A B
-        // then B - A = 2, but block size is 3 = B - A + 1
-        long free_space_size = free_space_end - free_space_start + 1;
+        std::cout << "Contiguous block: " << **it << " of size " << contig_size
+                  << "\n";
 
-        // std::cout << "Found free space block of length: " << free_space_size
-        //           << "\n";
-
-        auto file_cursor = blocks_copy.rbegin();
-
-        while (true) {
-            auto [file_start, file_end] =
-                greedy_find_file(file_cursor, blocks_copy.rend());
-
-            if (file_start == blocks_copy.rend()) {
-                break;
-            }
-
-            long file_size = file_end - file_start + 1;
-
-            // std::cout << "Found file block of length: " << file_size << "\n";
-
-            if (file_size > free_space_size) {
-                file_cursor = file_end + 1;
-                continue;
-            }
-
-            std::swap_ranges(free_space_start, free_space_start + file_size,
-                             file_start);
-
-            cursor = free_space_start + file_size;
-
-            break;
-        }
-
-        cursor++;
+        it += contig_size;
     }
 
     long checksum = 0;
-    for (std::vector<Block>::size_type i = 0; i < blocks_copy.size(); i++) {
-        auto curr = blocks_copy[i];
+    for (std::vector<Block>::size_type i = 0; i < input.blocks.size(); i++) {
+        auto curr = input.blocks[i];
         if (auto file_block = std::dynamic_pointer_cast<FileBlock>(curr)) {
             checksum += file_block->get_id() * static_cast<int>(i);
         }
