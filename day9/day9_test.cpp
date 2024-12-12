@@ -29,4 +29,11 @@ TEST(day_9_part_2, example) {
     std::cout << result << "\n";
 }
 
-TEST(day_9_part_2, real) {}
+TEST(day_9_part_2, real) {
+    auto input_stream = aoc::get_real_ifstream();
+    auto input = day9::parse_input(input_stream);
+
+    long result = day9::part2(input);
+
+    std::cout << result << "\n";
+}

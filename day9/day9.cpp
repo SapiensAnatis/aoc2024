@@ -7,6 +7,7 @@
 #include <iterator>
 #include <memory>
 #include <optional>
+#include <ranges>
 #include <utility>
 #include <vector>
 
@@ -124,11 +125,16 @@ long part1(const ParsedInput &input) {
 
 struct ContiguousBlock {
     std::shared_ptr<Block> block;
+    int position;
     int size;
+
+    ContiguousBlock(std::shared_ptr<Block> block, int position, int size)
+        : block(std::move(block)), position(position), size(size) {}
 };
 
 long part2(const ParsedInput &input) {
-    std::vector<ContiguousBlock> continguous_blocks;
+    auto blocks_copy = input.blocks;
+    std::vector<ContiguousBlock> contiguous_blocks;
 
     print_filesystem(input.blocks, 0);
 
@@ -138,18 +144,68 @@ long part2(const ParsedInput &input) {
             [&it](const std::shared_ptr<Block> &x) { return *x != **it; });
 
         long contig_size = region_end - it;
+        long position = it - input.blocks.begin();
 
-        continguous_blocks.emplace_back(*it, contig_size);
+        contiguous_blocks.emplace_back(*it, position, contig_size);
 
         std::cout << "Contiguous block: " << **it << " of size " << contig_size
-                  << "\n";
+                  << " at position " << position << "\n";
 
         it += contig_size;
     }
 
+    for (const auto &contiguous_block :
+         std::ranges::reverse_view(contiguous_blocks)) {
+        if (contiguous_block.block->get_type() != BlockType::File) {
+            continue;
+        }
+
+        // std::cout << "Attempting to move block " << *contiguous_block.block
+        //           << " of size " << contiguous_block.size << "\n";
+
+        auto is_free_space = [](const std::shared_ptr<Block> &block) {
+            return block->get_type() == BlockType::FreeSpace;
+        };
+
+        auto space_search_iter = blocks_copy.begin();
+        while (space_search_iter != blocks_copy.end() &&
+               space_search_iter - blocks_copy.begin() <
+                   contiguous_block.position) {
+            auto space_iter = std::find_if(space_search_iter, blocks_copy.end(),
+                                           is_free_space);
+            auto space_end_iter = space_iter;
+
+            while (space_end_iter != blocks_copy.end() &&
+                   is_free_space(*space_end_iter)) {
+                space_end_iter++;
+            }
+
+            long space_size = space_end_iter - space_iter;
+            int file_size = contiguous_block.size;
+
+            // std::cout << "Found free space of size " << space_size << "\n";
+
+            if (space_size >= file_size) {
+                // std::cout << "Performing swap\n";
+                std::swap_ranges(space_iter, space_iter + file_size,
+                                 blocks_copy.begin() +
+                                     contiguous_block.position);
+                space_search_iter = space_iter + file_size;
+
+                // print_filesystem(blocks_copy, 0);
+                break;
+
+            } else {
+                // std::cout << "Space was not sufficient\n";
+                space_search_iter = space_end_iter;
+                continue;
+            }
+        }
+    }
+
     long checksum = 0;
-    for (std::vector<Block>::size_type i = 0; i < input.blocks.size(); i++) {
-        auto curr = input.blocks[i];
+    for (std::vector<Block>::size_type i = 0; i < blocks_copy.size(); i++) {
+        auto curr = blocks_copy[i];
         if (auto file_block = std::dynamic_pointer_cast<FileBlock>(curr)) {
             checksum += file_block->get_id() * static_cast<int>(i);
         }
