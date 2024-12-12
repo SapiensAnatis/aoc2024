@@ -18,7 +18,11 @@ touch ./${day_name}/example.txt
 
 tee ./${day_name}/CMakeLists.txt <<EOF > /dev/null
 configure_file("\${CMAKE_CURRENT_SOURCE_DIR}/example.txt" "\${CMAKE_CURRENT_BINARY_DIR}/example.txt" COPYONLY)
-configure_file("\${CMAKE_CURRENT_SOURCE_DIR}/input.txt" "\${CMAKE_CURRENT_BINARY_DIR}/input.txt" COPYONLY)
+
+# input.txt is gitignored and can cause CMake errors when pulling down into a local repo
+if (EXISTS "\${CMAKE_CURRENT_SOURCE_DIR}/input.txt")
+    configure_file("\${CMAKE_CURRENT_SOURCE_DIR}/input.txt" "\${CMAKE_CURRENT_BINARY_DIR}/input.txt" COPYONLY)
+endif ()
 
 add_executable(day${day}_test day${day}.cpp
         day${day}_test.cpp

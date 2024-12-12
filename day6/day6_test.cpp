@@ -31,11 +31,13 @@ TEST(day_6_part_2, example) {
 }
 
 TEST(day_6_part_2, real) {
+    auto t1 = std::chrono::high_resolution_clock::now();
+
     auto input_stream = aoc::get_real_ifstream();
     auto input = day6::parse_input(input_stream);
 
-    auto t1 = std::chrono::high_resolution_clock::now();
     int result = day6::part2(input);
+    
     auto t2 = std::chrono::high_resolution_clock::now();
 
     std::cout << result << "\n";

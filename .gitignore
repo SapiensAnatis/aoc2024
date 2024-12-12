@@ -46,6 +46,7 @@ CMakeUserPresets.json
 
 .idea/
 cmake-build-debug/
+cmake-build-release/
 
 # AoC asks not to redistribute inputs
 input.txt
