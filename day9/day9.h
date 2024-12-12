@@ -45,6 +45,8 @@ ParsedInput parse_input(std::ifstream &input_stream);
 
 long part1(const ParsedInput &input);
 
+long part2(const ParsedInput &input);
+
 } // namespace day9
 
 #endif // AOC2024_DAY9_H
