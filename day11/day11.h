@@ -11,20 +11,18 @@ struct StoneBlinkResult;
 
 class Stone {
   public:
-    explicit Stone(int number) : number(number) {}
+    explicit Stone(long number);
 
     [[nodiscard]] StoneBlinkResult blink() const;
 
-    friend std::iostream &operator<<(const std::iostream &stream,
-                                     const Stone &sone);
+    friend std::ostream &operator<<(std::ostream &stream, const Stone &stone);
 
   private:
-    int number;
+    long number;
 };
 
 struct StoneBlinkResult {
-    StoneBlinkResult(Stone stone, std::optional<Stone> second_stone)
-        : stone(stone), second_stone(second_stone) {}
+    StoneBlinkResult(Stone stone, std::optional<Stone> second_stone);
 
     Stone stone;
     std::optional<Stone> second_stone;
