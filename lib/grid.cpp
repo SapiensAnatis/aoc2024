@@ -45,6 +45,30 @@ std::unique_ptr<Grid> Grid::with_mutation(int x, int y, char new_value) {
     return std::make_unique<Grid>(new_vec, this->width);
 }
 
+std::vector<Point> Grid::get_adjacent_points(Point point) const {
+    Point north = {point.x, point.y - 1};
+    Point east = {point.x + 1, point.y};
+    Point south = {point.x, point.y + 1};
+    Point west = {point.x - 1, point.y};
+
+    std::vector<Point> vec;
+
+    if (this->get_square(north)) {
+        vec.push_back(north);
+    }
+    if (this->get_square(east)) {
+        vec.push_back(east);
+    }
+    if (this->get_square(south)) {
+        vec.push_back(south);
+    }
+    if (this->get_square(west)) {
+        vec.push_back(west);
+    }
+
+    return vec;
+}
+
 int Grid::calculate_array_index(int x, int y) const {
     int offset = y * this->width;
     int index = offset + x;

@@ -31,6 +31,7 @@ class Grid {
     [[nodiscard]] int get_height() const;
     [[nodiscard]] std::unique_ptr<Grid> with_mutation(int x, int y,
                                                       char new_value);
+    std::vector<Point> get_adjacent_points(Point point) const;
 
     struct Iterator {
         using iterator_category = std::input_iterator_tag;
