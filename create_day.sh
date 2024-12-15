@@ -9,8 +9,7 @@ if [ -z "$day" ]; then
     exit 1
 fi
 
-day_name="day${1}"
-
+printf -v $day_name "day%02d" $day
 mkdir -p $day_name
 
 touch ./${day_name}/input.txt
@@ -23,11 +22,11 @@ if (EXISTS "\${CMAKE_CURRENT_SOURCE_DIR}/input.txt")
     configure_file("\${CMAKE_CURRENT_SOURCE_DIR}/input.txt" "\${CMAKE_CURRENT_BINARY_DIR}/input.txt" COPYONLY)
 endif ()
 
-add_executable(day${day}_test day${day}.cpp
-        day${day}_test.cpp
-        day${day}.h)
+add_executable(${day_name}_test ${day_name}.cpp
+        ${day_name}_test.cpp
+        ${day_name}.h)
 
-target_link_libraries(day${day}_test gtest_main)
+target_link_libraries(${day_name}_test gtest_main)
 EOF
 
 tee ./${day_name}/${day_name}.cpp <<EOF > /dev/null
@@ -37,7 +36,7 @@ namespace ${day_name} {
 } // namespace ${day_name}
 EOF
 
-include_guard="AOC2024_DAY${day}_H"
+include_guard="AOC2024_${day_name}_H"
 
 tee ./${day_name}/${day_name}.h <<EOF > /dev/null
 #ifndef ${include_guard}
@@ -54,16 +53,16 @@ tee ./${day_name}/${day_name}_test.cpp <<EOF > /dev/null
 #include "${day_name}.h"
 #include "gtest/gtest.h"
 
-TEST(day_${day}_part_1, example) {
+TEST(${day_name}_part1, example) {
 }
 
-TEST(day_${day}_part_1, real) {
+TEST(${day_name}_part1, real) {
 }
 
-TEST(day_${day}_part_2, example) {
+TEST(${day_name}_part2, example) {
 }
 
-TEST(day_${day}_part_2, real) {
+TEST(${day_name}_part2, real) {
 }
 EOF
 

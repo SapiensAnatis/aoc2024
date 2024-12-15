@@ -15,7 +15,7 @@ class TreeNode : public std::enable_shared_from_this<TreeNode<TNode>> {
           children(std::vector<std::shared_ptr<TreeNode<TNode>>>()),
           parent{parent} {}
 
-    explicit TreeNode<TNode>(TNode value) : TreeNode(value, nullptr) {}
+    explicit TreeNode(TNode value) : TreeNode(value, nullptr) {}
 
     std::shared_ptr<TreeNode<TNode>> get_child(int index) const {
         assert(index >= 0 && index < static_cast<int>(this->children.size()) &&
