@@ -21,11 +21,13 @@ StoneBlinkResult Stone::blink() const {
         return {Stone(1), std::nullopt};
     }
 
-    int digit_count =
-        static_cast<int>(std::floor(std::log10(this->number)) + 1.0);
+    std::string number_str = std::to_string(this->number);
+    int digit_count = static_cast<int>(number_str.length());
+
+    // std::cout << "digit_count(" << this->number << ") = " << digit_count
+    //           << "\n";
 
     if (digit_count % 2 == 0) {
-        std::string number_str = std::to_string(this->number);
         std::string_view first_half_str(number_str.begin(),
                                         number_str.begin() + (digit_count / 2));
         std::string_view second_half_str(number_str.begin() + (digit_count / 2),
@@ -62,7 +64,7 @@ ParsedInput parse_input(std::ifstream &input_stream) {
 }
 
 int part1(const ParsedInput &input) {
-    int num_blinks = 25;
+    int num_blinks = 6;
     std::vector<Stone> current_stone_array = input.stones;
     std::vector<Stone> next_stone_array;
     next_stone_array.reserve(current_stone_array.size());
