@@ -40,7 +40,7 @@ ParsedInput parse_input(std::ifstream &input_stream);
 
 int part1(const ParsedInput &input, int num_blinks);
 
-int part2(const ParsedInput &input, int num_blinks);
+long part2(const ParsedInput &input, int num_blinks);
 
 } // namespace day11
 

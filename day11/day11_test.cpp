@@ -27,7 +27,7 @@ TEST(day_11_part_2, example) {
 
     auto input = day11::parse_input(input_stream);
 
-    int result = day11::part2(input, 6);
+    long result = day11::part2(input, 6);
 
     std::cout << result << "\n";
 }
@@ -37,7 +37,7 @@ TEST(day_11_part_2, example_part1_real) {
 
     auto input = day11::parse_input(input_stream);
 
-    int result = day11::part2(input, 25);
+    long result = day11::part2(input, 25);
 
     std::cout << result << "\n";
 }
@@ -47,7 +47,7 @@ TEST(day_11_part_2, real) {
 
     auto input = day11::parse_input(input_stream);
 
-    int result = day11::part2(input, 75);
+    long result = day11::part2(input, 75);
 
     std::cout << result << "\n";
 }
