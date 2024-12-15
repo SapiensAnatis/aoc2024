@@ -100,32 +100,28 @@ bool operator==(const Stone &a, const Stone &b) {
 }
 
 long part2(const ParsedInput &input, int num_blinks) {
-    std::unordered_map<long, long> stone_occurrence_counts;
+    std::unordered_map<Stone, long> stone_occurrence_counts;
 
     for (const auto &stone : input.stones) {
-        auto [it, inserted] =
-            stone_occurrence_counts.emplace(stone.get_number(), 0);
+        auto [it, inserted] = stone_occurrence_counts.emplace(stone, 0);
         (*it).second++;
     }
 
     for (int blink = 0; blink < num_blinks; blink++) {
         std::cout << "Blink: " << blink << "\n";
 
-        std::unordered_map<long, long> new_stone_occurrence_counts;
+        std::unordered_map<Stone, long> new_stone_occurrence_counts;
         new_stone_occurrence_counts.reserve(stone_occurrence_counts.size());
 
-        for (const auto &[stone_number, count] : stone_occurrence_counts) {
-            Stone stone(stone_number);
-
+        for (const auto &[stone, count] : stone_occurrence_counts) {
             auto result = stone.blink();
 
-            auto [it, _] = new_stone_occurrence_counts.emplace(
-                result.stone.get_number(), 0);
+            auto [it, _] = new_stone_occurrence_counts.emplace(result.stone, 0);
             (*it).second += count;
 
             if (result.second_stone) {
                 auto [it_2, _] = new_stone_occurrence_counts.emplace(
-                    (*result.second_stone).get_number(), 0);
+                    *result.second_stone, 0);
                 (*it_2).second += count;
             }
         }
@@ -136,7 +132,7 @@ long part2(const ParsedInput &input, int num_blinks) {
 
         long sum = std::accumulate(
             stone_occurrence_counts.begin(), stone_occurrence_counts.end(), 0L,
-            [](const long acc, const std::pair<long, long> pair) {
+            [](const long acc, const std::pair<Stone, long> pair) {
                 return acc + pair.second;
             });
 
@@ -145,7 +141,7 @@ long part2(const ParsedInput &input, int num_blinks) {
 
     return std::accumulate(
         stone_occurrence_counts.begin(), stone_occurrence_counts.end(), 0L,
-        [](const long acc, const std::pair<long, long> pair) {
+        [](const long acc, const std::pair<Stone, long> pair) {
             return acc + pair.second;
         });
 }
