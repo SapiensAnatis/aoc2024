@@ -3,7 +3,7 @@
 #include "gtest/gtest.h"
 #include <chrono>
 
-TEST(day_6_part_1, example) {
+TEST(day06_part1, example) {
     auto input_stream = aoc::get_example_ifstream();
     auto input = day6::parse_input(input_stream);
 
@@ -12,7 +12,7 @@ TEST(day_6_part_1, example) {
     std::cout << result << "\n";
 }
 
-TEST(day_6_part_1, real) {
+TEST(day06_part1, real) {
     auto input_stream = aoc::get_real_ifstream();
     auto input = day6::parse_input(input_stream);
 
@@ -21,7 +21,7 @@ TEST(day_6_part_1, real) {
     std::cout << result << "\n";
 }
 
-TEST(day_6_part_2, example) {
+TEST(day06_part2, example) {
     auto input_stream = aoc::get_example_ifstream();
     auto input = day6::parse_input(input_stream);
 
@@ -30,7 +30,7 @@ TEST(day_6_part_2, example) {
     std::cout << result << "\n";
 }
 
-TEST(day_6_part_2, real) {
+TEST(day06_part2, real) {
     auto t1 = std::chrono::high_resolution_clock::now();
 
     auto input_stream = aoc::get_real_ifstream();

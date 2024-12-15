@@ -5,7 +5,7 @@
 
 using namespace day3;
 
-TEST(day_3_part_1, example) {
+TEST(day03_part1, example) {
     std::ifstream input_stream = aoc::get_example_ifstream();
 
     ParsedInput parsed = parse_input(input_stream);
@@ -14,7 +14,7 @@ TEST(day_3_part_1, example) {
     std::cout << result << "\n";
 }
 
-TEST(day_3_part_1, real) {
+TEST(day03_part1, real) {
     std::ifstream input_stream = aoc::get_real_ifstream();
 
     ParsedInput parsed = parse_input(input_stream);
@@ -23,7 +23,7 @@ TEST(day_3_part_1, real) {
     std::cout << result << "\n";
 }
 
-TEST(day_3_part_2, example) {
+TEST(day03_part2, example) {
     std::ifstream input_stream = aoc::get_example_ifstream(2);
 
     ParsedInput parsed = parse_input(input_stream);
@@ -32,7 +32,7 @@ TEST(day_3_part_2, example) {
     std::cout << result << "\n";
 }
 
-TEST(day_3_part_2, real) {
+TEST(day03_part2, real) {
     std::ifstream input_stream = aoc::get_real_ifstream();
 
     ParsedInput parsed = parse_input(input_stream);

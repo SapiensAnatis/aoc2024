@@ -6,7 +6,7 @@
 
 using namespace day4;
 
-TEST(day_4_part_1, example) {
+TEST(day04_part1, example) {
     std::ifstream input_stream = aoc::get_example_ifstream();
 
     auto grid = parse_input(input_stream);
@@ -17,7 +17,7 @@ TEST(day_4_part_1, example) {
     std::cout << count << "\n";
 }
 
-TEST(day_4_part_1, real) {
+TEST(day04_part1, real) {
     std::ifstream input_stream = aoc::get_real_ifstream();
 
     auto grid = parse_input(input_stream);
@@ -26,7 +26,7 @@ TEST(day_4_part_1, real) {
     std::cout << count << "\n";
 }
 
-TEST(day_4_part_2, example) {
+TEST(day04_part2, example) {
     std::ifstream input_stream = aoc::get_example_ifstream();
 
     auto grid = parse_input(input_stream);
@@ -35,7 +35,7 @@ TEST(day_4_part_2, example) {
     std::cout << count << "\n";
 }
 
-TEST(day_4_part_2, real) {
+TEST(day04_part2, real) {
     std::ifstream input_stream = aoc::get_real_ifstream();
 
     auto grid = parse_input(input_stream);
