@@ -1,12 +1,15 @@
 #include "day11.h"
 #include "../lib/aoc.h"
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <fstream>
+#include <numeric>
 #include <optional>
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 
 namespace day11 {
 
@@ -17,6 +20,8 @@ std::ostream &operator<<(std::ostream &stream, const Stone &stone) {
 }
 
 StoneBlinkResult Stone::blink() const {
+    assert(this->number >= 0 && "Negative stone number!");
+
     if (this->number == 0) {
         return {Stone(1), std::nullopt};
     }
@@ -44,6 +49,7 @@ StoneBlinkResult Stone::blink() const {
 
     return {Stone(this->number * 2024), std::nullopt};
 }
+long Stone::get_number() const { return this->number; }
 
 StoneBlinkResult::StoneBlinkResult(Stone stone,
                                    std::optional<Stone> second_stone)
@@ -63,13 +69,12 @@ ParsedInput parse_input(std::ifstream &input_stream) {
     return {stones};
 }
 
-int part1(const ParsedInput &input) {
-    int num_blinks = 6;
+int part1(const ParsedInput &input, int num_blinks) {
     std::vector<Stone> current_stone_array = input.stones;
-    std::vector<Stone> next_stone_array;
-    next_stone_array.reserve(current_stone_array.size());
 
     for (int i = 0; i < num_blinks; i++) {
+        std::vector<Stone> next_stone_array;
+        next_stone_array.reserve(current_stone_array.size());
         std::cout << "Blink: " << i << "\n";
 
         for (const auto &stone : current_stone_array) {
@@ -87,7 +92,67 @@ int part1(const ParsedInput &input) {
         current_stone_array = next_stone_array;
     }
 
-    return 0;
+    return static_cast<int>(current_stone_array.size());
+}
+
+bool operator==(const Stone &a, const Stone &b) {
+    return a.get_number() == b.get_number();
+}
+
+int part2(const ParsedInput &input, int num_blinks) {
+    std::unordered_map<Stone, int> stone_occurrence_counts;
+
+    for (const auto &stone : input.stones) {
+        auto [it, inserted] = stone_occurrence_counts.emplace(stone, 0);
+        (*it).second++;
+    }
+
+    for (int blink = 0; blink < num_blinks; blink++) {
+        std::cout << "Blink: " << blink << "\n";
+
+        std::unordered_map<Stone, int> new_stone_occurrence_counts;
+        new_stone_occurrence_counts.reserve(stone_occurrence_counts.size());
+
+        for (const auto &[stone, count] : stone_occurrence_counts) {
+            for (int stone_num = 0; stone_num < count; stone_num++) {
+                auto result = stone.blink();
+
+                auto [it, _] =
+                    new_stone_occurrence_counts.emplace(result.stone, 0);
+                (*it).second++;
+
+                if (result.second_stone) {
+                    auto [it_2, _] = new_stone_occurrence_counts.emplace(
+                        *result.second_stone, 0);
+                    (*it_2).second++;
+                }
+            }
+        }
+
+        stone_occurrence_counts = new_stone_occurrence_counts;
+
+        std::cout << "Key count: " << stone_occurrence_counts.size() << "\n";
+
+        int sum = std::accumulate(
+            stone_occurrence_counts.begin(), stone_occurrence_counts.end(), 0,
+            [](const int acc, const std::pair<Stone, int> pair) {
+                return acc + pair.second;
+            });
+
+        std::cout << "Stone count: " << sum << "\n";
+    }
+
+    return std::accumulate(stone_occurrence_counts.begin(),
+                           stone_occurrence_counts.end(), 0,
+                           [](const int acc, const std::pair<Stone, int> pair) {
+                               return acc + pair.second;
+                           });
 }
 
 } // namespace day11
+
+namespace std {
+size_t hash<day11::Stone>::operator()(const day11::Stone &stone) const {
+    return hash<long>()(stone.get_number());
+}
+} // namespace std
