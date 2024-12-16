@@ -77,6 +77,32 @@ std::vector<Point> Grid::get_adjacent_points(Point point) const {
     return vec;
 }
 
+std::vector<std::optional<Point>>
+Grid::get_optional_adjacent_points(Point point) const {
+    Point north = {point.x, point.y - 1};
+    Point east = {point.x + 1, point.y};
+    Point south = {point.x, point.y + 1};
+    Point west = {point.x - 1, point.y};
+
+    std::vector<std::optional<Point>> vec = {std::nullopt, std::nullopt,
+                                             std::nullopt, std::nullopt};
+
+    if (this->get_square(north)) {
+        vec[0] = north;
+    }
+    if (this->get_square(east)) {
+        vec[1] = east;
+    }
+    if (this->get_square(south)) {
+        vec[2] = south;
+    }
+    if (this->get_square(west)) {
+        vec[3] = west;
+    }
+
+    return vec;
+}
+
 int Grid::calculate_array_index(int x, int y) const {
     int offset = y * this->width;
     int index = offset + x;
