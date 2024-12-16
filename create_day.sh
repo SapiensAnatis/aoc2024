@@ -9,7 +9,7 @@ if [ -z "$day" ]; then
     exit 1
 fi
 
-printf -v $day_name "day%02d" $day
+day_name=$(printf "day%02d" $day)
 mkdir -p $day_name
 
 touch ./${day_name}/input.txt

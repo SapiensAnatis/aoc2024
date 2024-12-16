@@ -27,6 +27,14 @@ std::optional<char> Grid::get_square(int x, int y) const {
         return std::nullopt;
     }
 
+    return get_square_unsafe(x, y);
+}
+
+std::optional<char> Grid::get_square(const Point &point) const {
+    return this->get_square(point.x, point.y);
+}
+
+char Grid::get_square_unsafe(int x, int y) const {
     int index = this->calculate_array_index(x, y);
 
     assert((index >= 0 || index < static_cast<int>(this->squares.size())) &&
@@ -35,8 +43,8 @@ std::optional<char> Grid::get_square(int x, int y) const {
     return this->squares[index];
 }
 
-std::optional<char> Grid::get_square(const Point &point) const {
-    return this->get_square(point.x, point.y);
+char Grid::get_square_unsafe(const Point &point) const {
+    return this->get_square_unsafe(point.x, point.y);
 }
 
 std::unique_ptr<Grid> Grid::with_mutation(int x, int y, char new_value) {
