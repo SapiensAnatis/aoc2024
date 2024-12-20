@@ -36,7 +36,7 @@ namespace ${day_name} {
 } // namespace ${day_name}
 EOF
 
-include_guard="AOC2024_${day_name}_H"
+include_guard="AOC2024_${day_name^^}_H"
 
 tee ./${day_name}/${day_name}.h <<EOF > /dev/null
 #ifndef ${include_guard}

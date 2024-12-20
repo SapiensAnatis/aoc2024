@@ -1,5 +1,5 @@
-#ifndef AOC2024_day12_H
-#define AOC2024_day12_H
+#ifndef AOC2024_DAY12_H
+#define AOC2024_DAY12_H
 
 #include "../lib/grid.h"
 #include <memory>
@@ -31,4 +31,4 @@ template <> struct hash<day12::Edge> {
 };
 } // namespace std
 
-#endif // AOC2024_day12_H
+#endif // AOC2024_DAY12_H
