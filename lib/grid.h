@@ -83,6 +83,8 @@ struct Point {
     bool operator==(const Point &other) const;
 };
 
+enum class Direction { North, East, South, West };
+
 Point operator+(const Point &point, const Vector &vector);
 Point operator-(const Point &point, const Vector &vector);
 Vector operator-(const Point &a, const Point &b);

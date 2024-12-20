@@ -1,4 +1,6 @@
 #include "day12.h"
+#include "../lib/hash.hpp"
+#include <algorithm>
 #include <cassert>
 #include <iostream>
 #include <queue>
@@ -87,10 +89,84 @@ struct Part2Region {
     std::unordered_set<aoc::Point> points;
 };
 
+bool operator==(const Edge &a, const Edge &b) {
+    return a.direction == b.direction && a.point == b.point;
+}
+
+int get_num_sides_from_edge_points(const std::vector<Edge> &edges) {
+    std::unordered_set<Edge> accounted_for_edges;
+    int edge_count = 0;
+    std::vector<std::pair<Edge, int>> edge_sizes;
+
+    for (const auto &edge : edges) {
+        if (accounted_for_edges.contains(edge)) {
+            continue;
+        }
+
+        edge_count++;
+        accounted_for_edges.insert(edge);
+
+        aoc::Vector negative_vec{0, 0};
+        aoc::Vector positive_vec{0, 0};
+
+        if (edge.direction == aoc::Direction::North ||
+            edge.direction == aoc::Direction::South) {
+            negative_vec = {-1, 0};
+            positive_vec = {1, 0};
+        } else {
+            negative_vec = {0, -1};
+            positive_vec = {0, 1};
+        }
+
+        auto negative_sibling = std::find_if(
+            edges.begin(), edges.end(), [&edge, &negative_vec](auto &e) {
+                return e.direction == edge.direction &&
+                       e.point == edge.point + negative_vec;
+            });
+        auto positive_sibling = std::find_if(
+            edges.begin(), edges.end(), [&edge, &positive_vec](auto &e) {
+                return e.direction == edge.direction &&
+                       e.point == edge.point + positive_vec;
+            });
+
+        int size = 1;
+
+        while (positive_sibling != edges.end() ||
+               negative_sibling != edges.end()) {
+            if (positive_sibling != edges.end()) {
+                size++;
+                accounted_for_edges.insert(*positive_sibling);
+                positive_sibling = std::find_if(
+                    edges.begin(), edges.end(),
+                    [&positive_sibling, &positive_vec](auto &e) {
+                        return e.direction == positive_sibling->direction &&
+                               e.point ==
+                                   (*positive_sibling).point + positive_vec;
+                    });
+            }
+            if (negative_sibling != edges.end()) {
+                size++;
+                accounted_for_edges.insert(*negative_sibling);
+                negative_sibling = std::find_if(
+                    edges.begin(), edges.end(),
+                    [&negative_sibling, &negative_vec](auto &e) {
+                        return e.direction == negative_sibling->direction &&
+                               e.point ==
+                                   (*negative_sibling).point + negative_vec;
+                    });
+            }
+        }
+
+        edge_sizes.emplace_back(edge, size);
+    }
+
+    return edge_count;
+}
+
 Part2Region find_region_bfs_part2(aoc::Point start, const ParsedInput &input) {
     std::queue<aoc::Point> queue;
     std::unordered_set<aoc::Point> explored;
-    int corners = 0;
+    std::vector<Edge> edges;
 
     queue.push(start);
     explored.insert(start);
@@ -101,56 +177,44 @@ Part2Region find_region_bfs_part2(aoc::Point start, const ParsedInput &input) {
         auto v = queue.front();
         queue.pop();
 
-        auto adjacent = input.grid->get_optional_adjacent_points(v);
-        int border_square_count = 0;
+        aoc::Point north = {v.x, v.y - 1};
+        aoc::Point east = {v.x + 1, v.y};
+        aoc::Point south = {v.x, v.y + 1};
+        aoc::Point west = {v.x - 1, v.y};
 
-        for (auto edge : adjacent) {
-            if (!edge || input.grid->get_square_unsafe(*edge) != region_name) {
-                border_square_count++;
-                continue;
-            }
-
-            if (explored.contains(*edge)) {
-                continue;
-            }
-
-            explored.insert(*edge);
-            queue.push(*edge);
+        if (input.grid->get_square(north) != region_name) {
+            edges.emplace_back(aoc::Direction::North, v);
         }
 
-        // Considering that get_adjacent_points only returns four squares N, E,
-        // S, W, the borders that we find from this can tell us about the
-        // corners.
-        switch (border_square_count) {
-        case 0:
-            // Square is 'landlocked' and not adjacent to any other region
-        case 1:
-            // Square is adjacent to some other region, but only on one side,
-            // this is not a corner
-            break;
-        case 2:
-            // Square could have parallel lines and thus not be a corner
-            // if ()
-            // TODO
-            corners += 1;
-            break;
-        case 3:
-            // Square has two adjacent corners
-            corners += 2;
-            break;
-        case 4:
-            // Square is a region of area 1 and has 4 corners
-            corners += 4;
-            break;
-        default:
-            std::cerr << "Unexpected border square count!" << "\n";
-            exit(1);
+        if (input.grid->get_square(east) != region_name) {
+            edges.emplace_back(aoc::Direction::East, v);
+        }
+
+        if (input.grid->get_square(south) != region_name) {
+            edges.emplace_back(aoc::Direction::South, v);
+        }
+
+        if (input.grid->get_square(west) != region_name) {
+            edges.emplace_back(aoc::Direction::West, v);
+        }
+
+        std::array<aoc::Point, 4> adjacent{north, east, south, west};
+
+        for (auto edge : adjacent) {
+            if (input.grid->get_square(edge) != region_name) {
+                continue;
+            }
+
+            if (explored.contains(edge)) {
+                continue;
+            }
+
+            explored.insert(edge);
+            queue.push(edge);
         }
     }
 
-    // The number of sides of a region is the same as the number of corners it
-    // has
-    int num_sides = corners;
+    int num_sides = get_num_sides_from_edge_points(edges);
 
     return {num_sides, static_cast<int>(explored.size()), explored};
 }
@@ -183,3 +247,13 @@ int part2(const ParsedInput &input) {
 }
 
 } // namespace day12
+
+namespace std {
+size_t hash<day12::Edge>::operator()(const day12::Edge &e) const {
+    size_t seed = 0;
+    aoc::hash_combine(seed, e.point);
+    aoc::hash_combine(seed, e.direction);
+
+    return seed;
+}
+} // namespace std

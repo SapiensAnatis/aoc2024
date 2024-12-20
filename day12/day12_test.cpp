@@ -52,4 +52,42 @@ TEST(day12_part2, example) {
     std::cout << result << "\n";
 }
 
-TEST(day12_part2, real) {}
+TEST(day12_part2, example2) {
+    auto input_stream = aoc::get_example_ifstream(2);
+
+    auto input = day12::parse_input(input_stream);
+
+    int result = day12::part2(input);
+
+    std::cout << result << "\n";
+}
+
+TEST(day12_part2, example3) {
+    auto input_stream = aoc::get_example_ifstream(4);
+
+    auto input = day12::parse_input(input_stream);
+
+    int result = day12::part2(input);
+
+    std::cout << result << "\n";
+}
+
+TEST(day12_part2, example4) {
+    auto input_stream = aoc::get_example_ifstream(5);
+
+    auto input = day12::parse_input(input_stream);
+
+    int result = day12::part2(input);
+
+    std::cout << result << "\n";
+}
+
+TEST(day12_part2, real) {
+    auto input_stream = aoc::get_real_ifstream();
+
+    auto input = day12::parse_input(input_stream);
+
+    int result = day12::part2(input);
+
+    std::cout << result << "\n";
+}

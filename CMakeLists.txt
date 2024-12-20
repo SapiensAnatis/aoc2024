@@ -7,7 +7,7 @@ include(FetchContent)
 
 FetchContent_Declare(
         googletest
-        URL https://github.com/google/googletest/archive/7927f8e93d2cc7788229ab446179fdfda15e75e4.zip
+        URL https://github.com/google/googletest/archive/f3c355f9dd382bc2c323be2713e351a578b68c61.zip
 )
 
 FetchContent_MakeAvailable(googletest)
@@ -16,7 +16,6 @@ FetchContent_MakeAvailable(googletest)
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-config-file=${CMAKE_CURRENT_SOURCE_DIR}/.clang-tidy;-warnings-as-errors=*")
 add_compile_options(-Wall -Wextra -Wpedantic -Werror)
-
 
 add_subdirectory("lib")
 link_libraries(lib)
