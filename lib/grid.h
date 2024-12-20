@@ -15,6 +15,8 @@ struct Vector {
     int dy;
 
     Vector(int dx, int dy);
+
+    Vector operator-() const;
 };
 
 class Grid {

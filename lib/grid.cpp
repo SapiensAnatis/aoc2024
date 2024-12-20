@@ -9,6 +9,8 @@ Point::Point(int x, int y) : x(x), y(y) {}
 
 Vector::Vector(int dx, int dy) : dx(dx), dy(dy) {}
 
+Vector Vector::operator-() const { return {-this->dx, -this->dy}; }
+
 Grid::Grid(std::vector<char> squares, int width)
     : width(width), squares(std::move(squares)) {
     this->height = static_cast<int>(this->squares.size()) / this->width;

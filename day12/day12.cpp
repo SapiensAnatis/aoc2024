@@ -93,10 +93,29 @@ bool operator==(const Edge &a, const Edge &b) {
     return a.direction == b.direction && a.point == b.point;
 }
 
+std::optional<Edge> find_edge(std::unordered_multimap<aoc::Point, Edge> &map,
+                              aoc::Point key, aoc::Direction direction) {
+    const auto [start, end] = map.equal_range(key);
+    auto matching = std::find_if(start, end, [direction](const auto &pair) {
+        return pair.second.direction == direction;
+    });
+
+    if (matching == end) {
+        return std::nullopt;
+    }
+
+    return matching->second;
+}
+
 int get_num_sides_from_edge_points(const std::vector<Edge> &edges) {
     std::unordered_set<Edge> accounted_for_edges;
     int edge_count = 0;
-    std::vector<std::pair<Edge, int>> edge_sizes;
+
+    std::unordered_multimap<aoc::Point, Edge> edges_by_point;
+
+    for (const auto &edge : edges) {
+        edges_by_point.emplace(edge.point, edge);
+    }
 
     for (const auto &edge : edges) {
         if (accounted_for_edges.contains(edge)) {
@@ -106,58 +125,33 @@ int get_num_sides_from_edge_points(const std::vector<Edge> &edges) {
         edge_count++;
         accounted_for_edges.insert(edge);
 
-        aoc::Vector negative_vec{0, 0};
-        aoc::Vector positive_vec{0, 0};
+        bool horizontal = edge.direction == aoc::Direction::North ||
+                          edge.direction == aoc::Direction::South;
 
-        if (edge.direction == aoc::Direction::North ||
-            edge.direction == aoc::Direction::South) {
-            negative_vec = {-1, 0};
-            positive_vec = {1, 0};
-        } else {
-            negative_vec = {0, -1};
-            positive_vec = {0, 1};
-        }
+        aoc::Vector positive_vec =
+            horizontal ? aoc::Vector(1, 0) : aoc::Vector(0, 1);
+        aoc::Vector negative_vec = -positive_vec;
 
-        auto negative_sibling = std::find_if(
-            edges.begin(), edges.end(), [&edge, &negative_vec](auto &e) {
-                return e.direction == edge.direction &&
-                       e.point == edge.point + negative_vec;
-            });
-        auto positive_sibling = std::find_if(
-            edges.begin(), edges.end(), [&edge, &positive_vec](auto &e) {
-                return e.direction == edge.direction &&
-                       e.point == edge.point + positive_vec;
-            });
+        auto negative_sibling = find_edge(
+            edges_by_point, edge.point + negative_vec, edge.direction);
+        auto positive_sibling = find_edge(
+            edges_by_point, edge.point + positive_vec, edge.direction);
 
-        int size = 1;
-
-        while (positive_sibling != edges.end() ||
-               negative_sibling != edges.end()) {
-            if (positive_sibling != edges.end()) {
-                size++;
+        while (positive_sibling || negative_sibling) {
+            if (positive_sibling) {
                 accounted_for_edges.insert(*positive_sibling);
-                positive_sibling = std::find_if(
-                    edges.begin(), edges.end(),
-                    [&positive_sibling, &positive_vec](auto &e) {
-                        return e.direction == positive_sibling->direction &&
-                               e.point ==
-                                   (*positive_sibling).point + positive_vec;
-                    });
+                positive_sibling = find_edge(
+                    edges_by_point, positive_sibling->point + positive_vec,
+                    edge.direction);
             }
-            if (negative_sibling != edges.end()) {
-                size++;
+
+            if (negative_sibling) {
                 accounted_for_edges.insert(*negative_sibling);
-                negative_sibling = std::find_if(
-                    edges.begin(), edges.end(),
-                    [&negative_sibling, &negative_vec](auto &e) {
-                        return e.direction == negative_sibling->direction &&
-                               e.point ==
-                                   (*negative_sibling).point + negative_vec;
-                    });
+                negative_sibling = find_edge(
+                    edges_by_point, negative_sibling->point + negative_vec,
+                    edge.direction);
             }
         }
-
-        edge_sizes.emplace_back(edge, size);
     }
 
     return edge_count;
