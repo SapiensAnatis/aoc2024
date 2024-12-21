@@ -74,6 +74,8 @@ matrix<double> invert_2x2(const matrix<double> &input) {
     double d = input(1, 1);
 
     double determinant = ((a * d) - (b * c));
+    aoc_assert(determinant != 0, "Matrix cannot be inverted");
+
     matrix<double> result(2, 2);
 
     result(0, 0) = d;
@@ -137,6 +139,9 @@ long part1(const ParsedInput &input) {
         double n_b = solution(1, 0);
 
         if (is_integer(n_a) && is_integer(n_b)) {
+            aoc_assert(n_a > 0 && n_b > 0,
+                       "Negative button presses are not valid");
+
             min_cost += static_cast<long>(std::round(n_a) * 3);
             min_cost += static_cast<long>(std::round(n_b));
         }
