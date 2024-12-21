@@ -36,6 +36,7 @@ ParsedInput parse_input(std::ifstream &input_stream,
                         const std::shared_ptr<aoc::Grid> &grid);
 
 int part1(const ParsedInput &input);
+int part2(const ParsedInput &input, const std::shared_ptr<aoc::Grid> &grid);
 
 } // namespace day14
 

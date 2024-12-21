@@ -22,6 +22,16 @@ TEST(day14_part1, real) {
     std::cout << result << std::endl;
 }
 
-TEST(day14_part2, example) {}
+TEST(day14_part2, example) {
+    // N/A, example input will not make a Christmas tree
+}
 
-TEST(day14_part2, real) {}
+TEST(day14_part2, real) {
+    auto input_stream = aoc::get_real_ifstream();
+    std::shared_ptr<aoc::Grid> grid = aoc::Grid::create('.', 101, 103);
+    const auto input = day14::parse_input(input_stream, grid);
+
+    int result = day14::part2(input, grid);
+
+    std::cout << result << std::endl;
+}

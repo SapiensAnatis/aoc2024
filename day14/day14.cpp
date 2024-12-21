@@ -1,5 +1,6 @@
 #include "day14.h"
 #include "../lib/assert.h"
+#include <format>
 #include <fstream>
 #include <iostream>
 #include <numeric>
@@ -115,6 +116,43 @@ int part1(const ParsedInput &input) {
     return std::accumulate(
         quadrant_scores.begin(), quadrant_scores.end(), 1,
         [](int acc, const auto &pair) { return acc * pair.second; });
+}
+
+int part2(const ParsedInput &input,
+          const std::shared_ptr<aoc::Grid> &grid_ptr) {
+    auto robots_copy = input.robots;
+
+    int second = 0;
+    for (; second < 100000; second++) {
+
+        std::unordered_map<aoc::Point, int> robot_positions;
+
+        for (auto &robot : robots_copy) {
+            robot.walk();
+
+            auto [it, _] = robot_positions.emplace(robot.get_position(), 0);
+            it->second++;
+        }
+
+        // CHEATED - had to look this up, otherwise I would have printed out
+        // several thousand grids and checked them myself
+        if (std::all_of(robot_positions.begin(), robot_positions.end(),
+                        [](const auto &pair) { return pair.second == 1; })) {
+
+            aoc::Grid grid_copy = *grid_ptr;
+
+            for (auto &[pos, count] : robot_positions) {
+                char hex_count = std::format("{:x}", count)[0];
+                grid_copy.set_square(pos, hex_count);
+            }
+
+            std::cout << grid_copy << std::endl;
+
+            break;
+        }
+    }
+
+    return second + 1; // elapsed seconds
 }
 
 } // namespace day14

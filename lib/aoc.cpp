@@ -67,7 +67,7 @@ std::optional<long long> stoll(const std::string_view &input) {
 }
 
 std::optional<int> ctoi(char c) {
-    if (c < '0' && c > '9') {
+    if (c < '0' || c > '9') {
         return std::nullopt;
     }
 

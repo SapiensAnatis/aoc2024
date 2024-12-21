@@ -87,16 +87,16 @@ struct Point {
 
     Point(int x, int y);
 
-    bool operator==(const Point &other) const;
+    bool operator==(Point other) const;
 };
 
-Point operator+(const Point &point, const Vector &vector);
-Point operator-(const Point &point, const Vector &vector);
-Vector operator-(const Point &a, const Point &b);
-Vector operator/(const Vector &a, int b);
-Vector operator*(const Vector &a, int b);
-std::ostream &operator<<(std::ostream &stream, const Point &point);
-std::ostream &operator<<(std::ostream &stream, const Vector &vector);
+Point operator+(Point point, Vector vector);
+Point operator-(Point point, Vector vector);
+Vector operator-(Point a, Point b);
+Vector operator/(Vector a, int b);
+Vector operator*(Vector a, int b);
+std::ostream &operator<<(std::ostream &stream, Point point);
+std::ostream &operator<<(std::ostream &stream, const Grid &grid);
 
 std::unique_ptr<Grid> parse_grid(std::istream &input);
 

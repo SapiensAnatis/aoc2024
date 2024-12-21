@@ -1,7 +1,6 @@
 #include "grid.h"
-#include "../lib/assert.h"
+#include "./assert.h"
 #include <algorithm>
-#include <cassert>
 #include <fstream>
 #include <stdexcept>
 
@@ -66,7 +65,7 @@ std::optional<char> Grid::get_square(int x, int y) const {
     return get_square_unsafe(x, y);
 }
 
-std::optional<char> Grid::get_square(const Point &point) const {
+std::optional<char> Grid::get_square(Point point) const {
     return this->get_square(point.x, point.y);
 }
 
@@ -79,7 +78,7 @@ char Grid::get_square_unsafe(int x, int y) const {
     return this->squares[index];
 }
 
-char Grid::get_square_unsafe(const Point &point) const {
+char Grid::get_square_unsafe(Point point) const {
     return this->get_square_unsafe(point.x, point.y);
 }
 
@@ -197,25 +196,23 @@ bool Point::operator==(const Point &other) const {
     return other.x == this->x && other.y == this->y;
 }
 
-std::ostream &operator<<(std::ostream &stream, const Point &point) {
+std::ostream &operator<<(std::ostream &stream, Point point) {
     return stream << "(" << point.x << ", " << point.y << ")";
 }
 
-Point operator+(const Point &point, const Vector &vector) {
+Point operator+(Point point, Vector vector) {
     return {point.x + vector.dx, point.y + vector.dy};
 }
 
-Point operator-(const Point &point, const Vector &vector) {
+Point operator-(Point point, Vector vector) {
     return {point.x - vector.dx, point.y - vector.dy};
 }
 
-Vector operator-(const Point &a, const Point &b) {
-    return {a.x - b.x, a.y - b.y};
-}
+Vector operator-(Point a, Point b) { return {a.x - b.x, a.y - b.y}; }
 
-Vector operator/(const Vector &a, int b) { return {a.dx / b, a.dy / b}; }
+Vector operator/(Vector a, int b) { return {a.dx / b, a.dy / b}; }
 
-Vector operator*(const Vector &a, int b) { return {a.dx * b, a.dy * b}; }
+Vector operator*(Vector a, int b) { return {a.dx * b, a.dy * b}; }
 
 std::unique_ptr<Grid> parse_grid(std::istream &input) {
     std::vector<char> grid;
@@ -223,7 +220,7 @@ std::unique_ptr<Grid> parse_grid(std::istream &input) {
     int width;
 
     std::getline(input, line);
-    assert(!input.fail() && "Failed to read first line");
+    aoc_assert(!input.fail(), "Failed to read first line");
     width = static_cast<int>(line.length());
     std::copy(line.begin(), line.end(), std::back_inserter(grid));
 

@@ -17,9 +17,11 @@
 #endif
 
 namespace aoc {
+
 [[noreturn]] void fail_assert(
     const std::string &message,
     const std::source_location &location = std::source_location::current());
+
 } // namespace aoc
 
 #endif // AOC2024_ASSERT_H
