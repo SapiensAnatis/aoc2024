@@ -72,7 +72,7 @@ int part1(const ParsedInput &input) {
 
         std::cout << "Found region " << region_name
                   << " with perimeter: " << region.perimeter
-                  << " and area: " << region.area << "\n";
+                  << " and area: " << region.area << std::endl;
 
         int price = region.perimeter * region.area;
         total_price += price;
@@ -229,7 +229,7 @@ int part2(const ParsedInput &input) {
 
         std::cout << "Found region " << region_name
                   << " with sides: " << region.num_sides
-                  << " and area: " << region.area << "\n";
+                  << " and area: " << region.area << std::endl;
 
         int price = region.num_sides * region.area;
         total_price += price;

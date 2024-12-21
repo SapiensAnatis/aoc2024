@@ -19,7 +19,8 @@ std::ifstream get_ifstream(const std::string &filename) {
     if (stream.fail()) {
         std::filesystem::path error_path =
             std::filesystem::current_path() / filename;
-        std::cerr << "Failed to open file: " << error_path.string() << "\n";
+        std::cerr << "Failed to open file: " << error_path.string()
+                  << std::endl;
         exit(1);
     }
 

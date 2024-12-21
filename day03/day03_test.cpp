@@ -11,7 +11,7 @@ TEST(day03_part1, example) {
     ParsedInput parsed = parse_input(input_stream);
     int result = part1(parsed);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day03_part1, real) {
@@ -20,7 +20,7 @@ TEST(day03_part1, real) {
     ParsedInput parsed = parse_input(input_stream);
     int result = part1(parsed);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day03_part2, example) {
@@ -29,7 +29,7 @@ TEST(day03_part2, example) {
     ParsedInput parsed = parse_input(input_stream);
     int result = part2(parsed);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day03_part2, real) {
@@ -38,5 +38,5 @@ TEST(day03_part2, real) {
     ParsedInput parsed = parse_input(input_stream);
     int result = part2(parsed);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }

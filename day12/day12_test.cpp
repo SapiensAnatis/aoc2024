@@ -9,7 +9,7 @@ TEST(day12_part1, example) {
 
     int result = day12::part1(input);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day12_part1, example2) {
@@ -19,7 +19,7 @@ TEST(day12_part1, example2) {
 
     int result = day12::part1(input);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day12_part1, example3) {
@@ -29,7 +29,7 @@ TEST(day12_part1, example3) {
 
     int result = day12::part1(input);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day12_part1, real) {
@@ -39,7 +39,7 @@ TEST(day12_part1, real) {
 
     int result = day12::part1(input);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day12_part2, example) {
@@ -49,7 +49,7 @@ TEST(day12_part2, example) {
 
     int result = day12::part2(input);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day12_part2, example2) {
@@ -59,7 +59,7 @@ TEST(day12_part2, example2) {
 
     int result = day12::part2(input);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day12_part2, example3) {
@@ -69,7 +69,7 @@ TEST(day12_part2, example3) {
 
     int result = day12::part2(input);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day12_part2, example4) {
@@ -79,7 +79,7 @@ TEST(day12_part2, example4) {
 
     int result = day12::part2(input);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day12_part2, real) {
@@ -89,5 +89,5 @@ TEST(day12_part2, real) {
 
     int result = day12::part2(input);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }

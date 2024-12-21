@@ -83,7 +83,7 @@ void print_filesystem(std::vector<std::shared_ptr<Block>> vec, int start) {
         std::cout << **it;
     }
 
-    std::cout << "\n";
+    std::cout << std::endl;
 }
 
 long part1(const ParsedInput &input) {
@@ -158,7 +158,7 @@ long part2(const ParsedInput &input) {
         contiguous_blocks.emplace_back(ptr, position, contig_size);
 
         std::cout << "Contiguous block: " << **it << " of size " << contig_size
-                  << " at position " << position << "\n";
+                  << " at position " << position << std::endl;
 
         it += contig_size;
     }
@@ -167,7 +167,8 @@ long part2(const ParsedInput &input) {
          std::ranges::reverse_view(contiguous_blocks)) {
         //        std::cout << "Attempting to move block " <<
         //        *contiguous_block.block
-        //                  << " of size " << contiguous_block.size << "\n";
+        //                  << " of size " << contiguous_block.size <<
+        //                  std::endl;
 
         auto is_free_space = [](const std::shared_ptr<Block> &block) {
             return block->get_type() == BlockType::FreeSpace;
@@ -196,7 +197,7 @@ long part2(const ParsedInput &input) {
             int file_size = contiguous_block.size;
 
             //            std::cout << "Found free space of size " << space_size
-            //            << "\n";
+            //            << std::endl;
 
             if (space_size >= file_size) {
                 //                std::cout << "Performing swap\n";

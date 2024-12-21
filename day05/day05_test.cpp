@@ -12,7 +12,7 @@ TEST(day05_part1, example) {
     auto input = parse_input(input_stream);
     auto result = part1(input);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day05_part1, real) {
@@ -21,7 +21,7 @@ TEST(day05_part1, real) {
     auto input = parse_input(input_stream);
     auto result = part1(input);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day05_part2, example) {
@@ -30,7 +30,7 @@ TEST(day05_part2, example) {
     auto input = parse_input(input_stream);
     auto result = part2(input);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day05_part2, real) {
@@ -39,5 +39,5 @@ TEST(day05_part2, real) {
     auto input = parse_input(input_stream);
     auto result = part2(input);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }

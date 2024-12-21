@@ -9,7 +9,7 @@ TEST(day06_part1, example) {
 
     int result = day6::part1(input);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day06_part1, real) {
@@ -18,7 +18,7 @@ TEST(day06_part1, real) {
 
     int result = day6::part1(input);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day06_part2, example) {
@@ -27,7 +27,7 @@ TEST(day06_part2, example) {
 
     int result = day6::part2(input);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day06_part2, real) {
@@ -40,8 +40,8 @@ TEST(day06_part2, real) {
 
     auto t2 = std::chrono::high_resolution_clock::now();
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
     std::cout << "Execution time: "
               << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1)
-              << "\n";
+              << std::endl;
 }

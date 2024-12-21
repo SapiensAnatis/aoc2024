@@ -14,7 +14,7 @@ TEST(day04_part1, example) {
     // a shared_ptr
     int count = part1(*grid);
 
-    std::cout << count << "\n";
+    std::cout << count << std::endl;
 }
 
 TEST(day04_part1, real) {
@@ -23,7 +23,7 @@ TEST(day04_part1, real) {
     auto grid = parse_input(input_stream);
     int count = part1(*grid);
 
-    std::cout << count << "\n";
+    std::cout << count << std::endl;
 }
 
 TEST(day04_part2, example) {
@@ -32,7 +32,7 @@ TEST(day04_part2, example) {
     auto grid = parse_input(input_stream);
     int count = part2(*grid);
 
-    std::cout << count << "\n";
+    std::cout << count << std::endl;
 }
 
 TEST(day04_part2, real) {
@@ -41,5 +41,5 @@ TEST(day04_part2, real) {
     auto grid = parse_input(input_stream);
     int count = part2(*grid);
 
-    std::cout << count << "\n";
+    std::cout << count << std::endl;
 }

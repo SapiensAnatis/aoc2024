@@ -46,15 +46,15 @@ int part1(const ParsedInput &input) {
                 auto antinode_a = *it_a + (a_to_b_vec * 2);
                 auto antinode_b = *it_b + (b_to_a_vec * 2);
 
-                std::cout << "Pair: " << *it_a << " and " << *it_b << "\n";
+                std::cout << "Pair: " << *it_a << " and " << *it_b << std::endl;
 
                 if (input.grid->get_square(antinode_a)) {
-                    std::cout << "Antinode at: " << antinode_a << "\n";
+                    std::cout << "Antinode at: " << antinode_a << std::endl;
                     antinode_points.insert(antinode_a);
                 }
 
                 if (input.grid->get_square(antinode_b)) {
-                    std::cout << "Antinode at: " << antinode_b << "\n";
+                    std::cout << "Antinode at: " << antinode_b << std::endl;
                     antinode_points.insert(antinode_b);
                 }
             }
@@ -99,16 +99,16 @@ int part2(const ParsedInput &input) {
                 auto antinode_b = *it_b + (b_to_a_vec * 2);
 
                 std::cout << "Pair for " << antennae_name << ": " << *it_a
-                          << " and " << *it_b << "\n";
+                          << " and " << *it_b << std::endl;
 
                 while (input.grid->get_square(antinode_a)) {
-                    std::cout << "Antinode at: " << antinode_a << "\n";
+                    std::cout << "Antinode at: " << antinode_a << std::endl;
                     antinode_points.insert(antinode_a);
                     antinode_a = antinode_a + a_to_b_vec;
                 }
 
                 while (input.grid->get_square(antinode_b)) {
-                    std::cout << "Antinode at: " << antinode_b << "\n";
+                    std::cout << "Antinode at: " << antinode_b << std::endl;
                     antinode_points.insert(antinode_b);
                     antinode_b = antinode_b + b_to_a_vec;
                 }

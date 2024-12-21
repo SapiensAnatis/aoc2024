@@ -30,7 +30,7 @@ StoneBlinkResult Stone::blink() const {
     int digit_count = static_cast<int>(number_str.length());
 
     // std::cout << "digit_count(" << this->number << ") = " << digit_count
-    //           << "\n";
+    //           << std::endl;
 
     if (digit_count % 2 == 0) {
         std::string_view first_half_str(number_str.begin(),
@@ -75,7 +75,7 @@ int part1(const ParsedInput &input, int num_blinks) {
     for (int i = 0; i < num_blinks; i++) {
         std::vector<Stone> next_stone_array;
         next_stone_array.reserve(current_stone_array.size());
-        std::cout << "Blink: " << i << "\n";
+        std::cout << "Blink: " << i << std::endl;
 
         for (const auto &stone : current_stone_array) {
             std::cout << stone << " ";
@@ -87,7 +87,7 @@ int part1(const ParsedInput &input, int num_blinks) {
             }
         }
 
-        std::cout << "\n";
+        std::cout << std::endl;
 
         current_stone_array = next_stone_array;
     }
@@ -108,7 +108,7 @@ long part2(const ParsedInput &input, int num_blinks) {
     }
 
     for (int blink = 0; blink < num_blinks; blink++) {
-        std::cout << "Blink: " << blink << "\n";
+        std::cout << "Blink: " << blink << std::endl;
 
         std::unordered_map<Stone, long> new_stone_occurrence_counts;
         new_stone_occurrence_counts.reserve(stone_occurrence_counts.size());
@@ -128,7 +128,8 @@ long part2(const ParsedInput &input, int num_blinks) {
 
         stone_occurrence_counts = new_stone_occurrence_counts;
 
-        std::cout << "Key count: " << stone_occurrence_counts.size() << "\n";
+        std::cout << "Key count: " << stone_occurrence_counts.size()
+                  << std::endl;
 
         long sum = std::accumulate(
             stone_occurrence_counts.begin(), stone_occurrence_counts.end(), 0L,
@@ -136,7 +137,7 @@ long part2(const ParsedInput &input, int num_blinks) {
                 return acc + pair.second;
             });
 
-        std::cout << "Stone count: " << sum << "\n";
+        std::cout << "Stone count: " << sum << std::endl;
     }
 
     return std::accumulate(

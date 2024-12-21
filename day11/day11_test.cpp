@@ -9,7 +9,7 @@ TEST(day11_part1, example) {
 
     int result = day11::part1(input, 6);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day11_part1, real) {
@@ -19,7 +19,7 @@ TEST(day11_part1, real) {
 
     int result = day11::part1(input, 25);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day11_part2, example) {
@@ -29,7 +29,7 @@ TEST(day11_part2, example) {
 
     long result = day11::part2(input, 6);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day11_part2, example_part1_real) {
@@ -39,7 +39,7 @@ TEST(day11_part2, example_part1_real) {
 
     long result = day11::part2(input, 25);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }
 
 TEST(day11_part2, real) {
@@ -49,5 +49,5 @@ TEST(day11_part2, real) {
 
     long result = day11::part2(input, 75);
 
-    std::cout << result << "\n";
+    std::cout << result << std::endl;
 }

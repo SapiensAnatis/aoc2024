@@ -80,7 +80,7 @@ NodeType concat(NodeType a, NodeType b) {
             //     std::cout << " " << current_lock->get_value() << ",";
             // }
 
-            std::cout << "\n";
+            std::cout << std::endl;
         }
 
         return;

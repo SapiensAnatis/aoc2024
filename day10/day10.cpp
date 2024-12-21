@@ -105,7 +105,7 @@ int part1(const ParsedInput &input) {
     }
 
     for (auto pair : scores) {
-        std::cout << pair.first << ": " << pair.second << "\n";
+        std::cout << pair.first << ": " << pair.second << std::endl;
     }
 
     return std::accumulate(
@@ -131,7 +131,7 @@ int part2(const ParsedInput &input) {
     }
 
     for (auto pair : scores) {
-        std::cout << pair.first << ": " << pair.second << "\n";
+        std::cout << pair.first << ": " << pair.second << std::endl;
     }
 
     return std::accumulate(
