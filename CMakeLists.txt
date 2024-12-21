@@ -12,7 +12,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-find_package(Boost 1.86.0)
+find_package(Boost 1.83.0)
 include_directories(${Boost_INCLUDE_DIR})
 
 # https://gitlab.kitware.com/cmake/cmake/-/issues/26283
