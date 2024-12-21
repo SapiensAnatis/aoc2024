@@ -114,6 +114,10 @@ long part1(const ParsedInput &input) {
 
         // Matrix solution: Ax = B where x is the (n_a, n_b) vector
         // -> x = A^-1 * B;
+        // This can have 0, 1, or an infinite number of solutions. It so happens
+        // that all the cases in the puzzle input have 1 solution, _but_ this
+        // may not be a valid solution due to requiring a non-integer number of
+        // button presses.
 
         matrix<double> a(2, 2);
         matrix<double> b(2, 1);
