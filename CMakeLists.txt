@@ -7,10 +7,9 @@ include(FetchContent)
 
 FetchContent_Declare(
         googletest
-        GIT_REPOSITORY https://github.com/google/googletest.git
-        GIT_TAG f3c355f9dd382bc2c323be2713e351a578b68c61 # main 16/12/2024
-        FIND_PACKAGE_ARGS NAMES GTest
+        URL https://github.com/google/googletest/archive/f3c355f9dd382bc2c323be2713e351a578b68c61.zip
 )
+
 FetchContent_MakeAvailable(googletest)
 
 find_package(Boost 1.83.0)
