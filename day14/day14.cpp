@@ -1,6 +1,7 @@
 #include "day14.h"
 #include "../lib/assert.h"
 #include <fstream>
+#include <iostream>
 #include <numeric>
 #include <regex>
 #include <unordered_map>
@@ -35,18 +36,17 @@ GridQuadrant Robot::calculate_quadrant() const {
     auto half_width = (this->grid_ptr->get_width() - 1) / 2;
     auto half_height = (this->grid_ptr->get_height() - 1) / 2;
 
-    if (this->position.x == half_width + 1 ||
-        this->position.y == half_height + 1) {
+    if (this->position.x == half_width || this->position.y == half_height) {
         // Midpoint
         return GridQuadrant::Ambiguous;
     }
 
-    if (this->position.y <= half_height) {
-        return this->position.x <= half_width ? GridQuadrant::NorthEast
-                                              : GridQuadrant::NorthWest;
+    if (this->position.y < half_height) {
+        return this->position.x < half_width ? GridQuadrant::NorthEast
+                                             : GridQuadrant::NorthWest;
     } else {
-        return this->position.x <= half_width ? GridQuadrant::SouthEast
-                                              : GridQuadrant::SouthWest;
+        return this->position.x < half_width ? GridQuadrant::SouthEast
+                                             : GridQuadrant::SouthWest;
     }
 }
 
@@ -98,7 +98,12 @@ int part1(const ParsedInput &input) {
         {GridQuadrant::SouthEast, 0},
         {GridQuadrant::SouthWest, 0}};
 
+    std::unordered_map<aoc::Point, int> robot_positions;
+
     for (auto &robot : robots_copy) {
+        auto [it, _] = robot_positions.emplace(robot.get_position(), 0);
+        it->second++;
+
         auto quadrant = robot.calculate_quadrant();
         if (quadrant == GridQuadrant::Ambiguous) {
             continue;

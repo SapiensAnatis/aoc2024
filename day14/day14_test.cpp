@@ -12,7 +12,15 @@ TEST(day14_part1, example) {
     std::cout << result << std::endl;
 }
 
-TEST(day14_part1, real) {}
+TEST(day14_part1, real) {
+    auto input_stream = aoc::get_real_ifstream();
+    std::shared_ptr<aoc::Grid> grid = aoc::Grid::create('.', 101, 103);
+    const auto input = day14::parse_input(input_stream, grid);
+
+    auto result = day14::part1(input);
+
+    std::cout << result << std::endl;
+}
 
 TEST(day14_part2, example) {}
 
