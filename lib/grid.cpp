@@ -11,6 +11,15 @@ Vector::Vector(int dx, int dy) : dx(dx), dy(dy) {}
 
 Vector Vector::operator-() const { return {-this->dx, -this->dy}; }
 
+std::unique_ptr<Grid> Grid::create(std::vector<char> squares, int width) {
+    return std::make_unique<Grid>(std::move(squares), width);
+}
+
+std::unique_ptr<Grid> Grid::create(char fill, int width, int height) {
+    std::vector<char> squares(width * height, fill);
+    return Grid::create(squares, width);
+}
+
 Grid::Grid(std::vector<char> squares, int width)
     : width(width), squares(std::move(squares)) {
     this->height = static_cast<int>(this->squares.size()) / this->width;
@@ -74,32 +83,6 @@ std::vector<Point> Grid::get_adjacent_points(Point point) const {
     }
     if (this->get_square(west)) {
         vec.push_back(west);
-    }
-
-    return vec;
-}
-
-std::vector<std::optional<Point>>
-Grid::get_optional_adjacent_points(Point point) const {
-    Point north = {point.x, point.y - 1};
-    Point east = {point.x + 1, point.y};
-    Point south = {point.x, point.y + 1};
-    Point west = {point.x - 1, point.y};
-
-    std::vector<std::optional<Point>> vec = {std::nullopt, std::nullopt,
-                                             std::nullopt, std::nullopt};
-
-    if (this->get_square(north)) {
-        vec[0] = north;
-    }
-    if (this->get_square(east)) {
-        vec[1] = east;
-    }
-    if (this->get_square(south)) {
-        vec[2] = south;
-    }
-    if (this->get_square(west)) {
-        vec[3] = west;
     }
 
     return vec;

@@ -21,9 +21,8 @@ struct Vector {
 
 class Grid {
   public:
-    static std::unique_ptr<Grid> create(std::vector<char> squares, int width) {
-        return std::make_unique<Grid>(std::move(squares), width);
-    }
+    static std::unique_ptr<Grid> create(std::vector<char> squares, int width);
+    static std::unique_ptr<Grid> create(char fill, int width, int height);
 
     Grid(std::vector<char> squares, int width);
 
@@ -35,9 +34,7 @@ class Grid {
     [[nodiscard]] int get_height() const;
     [[nodiscard]] std::unique_ptr<Grid> with_mutation(int x, int y,
                                                       char new_value);
-    std::vector<std::optional<Point>>
-    get_optional_adjacent_points(Point point) const;
-    std::vector<Point> get_adjacent_points(Point point) const;
+    [[nodiscard]] std::vector<Point> get_adjacent_points(Point point) const;
 
     struct Iterator {
         using iterator_category = std::input_iterator_tag;
@@ -100,9 +97,11 @@ std::unique_ptr<Grid> parse_grid(std::ifstream &input);
 } // namespace aoc
 
 namespace std {
+
 template <> struct hash<aoc::Point> {
     size_t operator()(const aoc::Point &p) const;
 };
+
 } // namespace std
 
 #endif // AOC_2024_GRID_H
