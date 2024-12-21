@@ -5,10 +5,15 @@
 
 namespace day13 {
 
+struct LongPoint {
+    long x;
+    long y;
+};
+
 struct ClawMachine {
     aoc::Vector a_button;
     aoc::Vector b_button;
-    aoc::Point prize_location;
+    LongPoint prize_location;
 };
 
 struct ParsedInput {
@@ -17,7 +22,7 @@ struct ParsedInput {
 
 ParsedInput parse_input(std::ifstream &input_stream);
 
-int part1(const ParsedInput &input);
+long part1(const ParsedInput &input);
 
 long part2(const ParsedInput &input);
 
