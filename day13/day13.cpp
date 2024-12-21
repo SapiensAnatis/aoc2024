@@ -132,13 +132,9 @@ long part1(const ParsedInput &input) {
         double n_a = solution(0, 0);
         double n_b = solution(1, 0);
 
-        std::cout << "Found solution: " << solution << std::endl;
-
         if (is_integer(n_a) && is_integer(n_b)) {
             min_cost += static_cast<long>(std::round(n_a) * 3);
             min_cost += static_cast<long>(std::round(n_b));
-        } else {
-            std::cout << "Solution was not a valid integer" << std::endl;
         }
     }
 
