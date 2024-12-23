@@ -162,7 +162,7 @@ Vector operator/(const Vector &a, int b) { return {a.dx / b, a.dy / b}; }
 
 Vector operator*(const Vector &a, int b) { return {a.dx * b, a.dy * b}; }
 
-std::unique_ptr<Grid> parse_grid(std::ifstream &input) {
+std::unique_ptr<Grid> parse_grid(std::istream &input) {
     std::vector<char> grid;
     std::string line;
     int width;
