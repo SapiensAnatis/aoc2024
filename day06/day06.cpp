@@ -1,6 +1,7 @@
 
 #include "day06.h"
 #include <algorithm>
+#include <fstream>
 #include <iostream>
 #include <unordered_set>
 #include <utility>

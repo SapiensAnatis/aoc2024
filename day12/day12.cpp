@@ -2,6 +2,7 @@
 #include "../lib/hash.hpp"
 #include <algorithm>
 #include <cassert>
+#include <fstream>
 #include <iostream>
 #include <queue>
 #include <unordered_map>

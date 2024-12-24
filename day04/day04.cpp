@@ -1,5 +1,6 @@
 #include "day04.h"
 #include <cassert>
+#include <fstream>
 
 namespace day4 {
 

@@ -1,6 +1,7 @@
 #include "day10.h"
 #include <algorithm>
 #include <cassert>
+#include <fstream>
 #include <iostream>
 #include <numeric>
 #include <queue>
