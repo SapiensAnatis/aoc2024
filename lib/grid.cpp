@@ -7,6 +7,27 @@
 
 namespace aoc {
 
+std::ostream &operator<<(std::ostream &stream, Direction direction) {
+    std::string text;
+
+    switch (direction) {
+    case Direction::North:
+        text = "North";
+        break;
+    case Direction::East:
+        text = "East";
+        break;
+    case Direction::South:
+        text = "South";
+        break;
+    case Direction::West:
+        text = "West";
+        break;
+    }
+
+    return stream << text;
+}
+
 Point::Point(int x, int y) : x(x), y(y) {}
 
 Vector::Vector(int dx, int dy) : dx(dx), dy(dy) {}

@@ -12,6 +12,8 @@ struct Point;
 
 enum class Direction { North, East, South, West };
 
+std::ostream &operator<<(std::ostream &stream, Direction direction);
+
 struct Vector {
     int dx;
     int dy;
