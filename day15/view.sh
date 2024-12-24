@@ -8,7 +8,7 @@ while [ $i -le $end ]; do
 
     read -rsn 1 t
     case $t in
-        C) i=$(($i+1)) ;; # right
-        D) i=$(($i-1)) ;; # left
+        C) i=$(($i+1)) ;; # right arrow key
+        D) i=$(($i-1)) ;; # left arrow key
     esac
 done

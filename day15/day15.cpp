@@ -202,8 +202,8 @@ bool try_move_obstacle_part2(const std::unique_ptr<aoc::Grid> &grid,
         return false;
     }
 
-    std::cout << "------------------------" << std::endl;
-
+    // Make a copy of the queue and go through in two passes to avoid operations
+    // overwriting characters set by other operations
     auto ops_copy = ops;
 
     while (!ops.empty()) {
@@ -261,19 +261,19 @@ int part2(const ParsedInput &input) {
     auto robot_pos_it = std::find(grid->begin(), grid->end(), '@');
     aoc_assert(robot_pos_it != grid->end(), "Failed to find robot");
 
-    int counter = 0;
+    // int counter = 0;
 
     auto robot_pos = grid->get_point(robot_pos_it);
     for (const auto move : input.moves) {
-        counter++;
+        // counter++;
 
-        std::string filename = std::to_string(counter) + ".txt";
-        std::ofstream grid_file(filename);
-
-        grid_file << "Next move: " << move << std::endl;
-
-        grid_file << *grid << std::endl;
-        grid_file.close();
+        // std::string filename = std::to_string(counter) + ".txt";
+        // std::ofstream grid_file(filename);
+        //
+        // grid_file << "Next move: " << move << std::endl;
+        //
+        // grid_file << *grid << std::endl;
+        // grid_file.close();
 
         std::cout << "Processing move..." << move << std::endl;
 
