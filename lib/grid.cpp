@@ -129,6 +129,20 @@ std::vector<Point> Grid::get_adjacent_points(Point point) const {
     return vec;
 }
 
+std::ostream &operator<<(std::ostream &stream, const Grid &grid) {
+    std::string result;
+    result.reserve(grid.squares.size() + grid.height);
+
+    for (std::vector<char>::size_type i = 0; i < grid.squares.size(); i++) {
+        result += grid.squares[i];
+        if ((i + 1) % grid.width == 0) {
+            result += "\n";
+        }
+    }
+
+    return stream << result;
+}
+
 std::vector<char>::size_type Grid::calculate_array_index(int x, int y) const {
     int offset = y * this->width;
     int index = offset + x;

@@ -41,6 +41,8 @@ class Grid {
     void set_square(Point point, char new_value);
     [[nodiscard]] std::vector<Point> get_adjacent_points(Point point) const;
 
+    friend std::ostream &operator<<(std::ostream &stream, const Grid &grid);
+
     struct Iterator {
         using iterator_category = std::input_iterator_tag;
         using difference_type = std::vector<char>::iterator::difference_type;

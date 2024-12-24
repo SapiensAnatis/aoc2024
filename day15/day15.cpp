@@ -55,18 +55,14 @@ ParsedInput parse_input(std::ifstream &input_stream) {
 bool try_move_obstacle(ParsedInput &input, aoc::Point obstacle_pos,
                        aoc::Vector offset) {
     auto candidate_pos = obstacle_pos + offset;
-    while (std::optional<char> candidate_square =
-               input.grid->get_square(candidate_pos) != '.') {
-        if (candidate_square != 'O') {
-            // Reached a wall or grid boundary
-            return false;
-        }
-
+    while (input.grid->get_square(candidate_pos) == 'O') {
         candidate_pos = candidate_pos + offset;
     }
 
-    aoc_assert(input.grid->get_square(candidate_pos) == '.',
-               "Exited while loop with non-empty square");
+    if (input.grid->get_square(candidate_pos) != '.') {
+        // Next available square is not empty - is a wall or out of bounds
+        return false;
+    }
 
     input.grid->set_square(candidate_pos, 'O');
     input.grid->set_square(obstacle_pos, '.');
@@ -78,6 +74,8 @@ void move_robot(ParsedInput &input, aoc::Point old_pos, aoc::Point new_pos) {
     input.grid->set_square(new_pos, '@');
 }
 
+int calculate_gps(aoc::Point point) { return point.y * 100 + point.x; }
+
 int part1(ParsedInput &input) {
     auto robot_pos_it = std::find(input.grid->begin(), input.grid->end(), '@');
     aoc_assert(robot_pos_it != input.grid->end(), "Failed to find robot");
@@ -85,6 +83,7 @@ int part1(ParsedInput &input) {
     auto robot_pos = input.grid->get_point(robot_pos_it);
     for (const auto move : input.moves) {
         std::cout << "Processing move..." << std::endl;
+        // std::cout << *input.grid << std::endl;
 
         aoc::Vector offset(move);
         aoc::Point new_robot_pos = robot_pos + offset;
@@ -121,7 +120,15 @@ int part1(ParsedInput &input) {
         }
     }
 
-    return 0;
+    int gps = 0;
+
+    for (auto it = input.grid->begin(); it != input.grid->end(); it++) {
+        if (*it == 'O') {
+            gps += calculate_gps(input.grid->get_point(it));
+        }
+    }
+
+    return gps;
 }
 
 } // namespace day15
