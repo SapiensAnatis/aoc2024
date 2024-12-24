@@ -1,4 +1,5 @@
 i=1
+i=1308
 end=20001
 while [ $i -le $end ]; do
     clear

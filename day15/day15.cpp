@@ -153,6 +153,8 @@ bool try_move_obstacle_recursive(const std::unique_ptr<aoc::Grid> &grid,
                               : obstacle_pos + aoc::Vector(-1, 0);
     auto obstacle_char_2 = grid->get_square_unsafe(obstacle_pos_2);
 
+    aoc_assert(obstacle_char != obstacle_char_2, "Invalid character");
+
     auto candidate_pos = obstacle_pos + offset;
     auto candidate_pos_2 = obstacle_pos_2 + offset;
     auto candidate_square = grid->get_square(candidate_pos);
@@ -200,14 +202,22 @@ bool try_move_obstacle_part2(const std::unique_ptr<aoc::Grid> &grid,
         return false;
     }
 
+    std::cout << "------------------------" << std::endl;
+
+    auto ops_copy = ops;
+
     while (!ops.empty()) {
         auto op = ops.front();
         ops.pop();
 
-        aoc_assert(op.new_pos != op.new_pos_2, "Invalid operation");
-
         grid->set_square(op.old_pos, '.');
         grid->set_square(op.old_pos_2, '.');
+    }
+
+    while (!ops_copy.empty()) {
+        auto op = ops_copy.front();
+        ops_copy.pop();
+
         grid->set_square(op.new_pos, op.obstacle_char);
         grid->set_square(op.new_pos_2, op.obstacle_char_2);
     }
