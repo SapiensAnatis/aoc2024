@@ -1,6 +1,7 @@
 #include "grid.h"
 #include "./assert.h"
 #include <algorithm>
+#include <cassert>
 #include <fstream>
 #include <stdexcept>
 
@@ -72,8 +73,7 @@ std::optional<char> Grid::get_square(Point point) const {
 char Grid::get_square_unsafe(int x, int y) const {
     auto index = this->calculate_array_index(x, y);
 
-    assert((index >= 0 || index < this->squares.size()) &&
-           "Grid bounds check failure");
+    aoc_assert(index < this->squares.size(), "Grid bounds check failure");
 
     return this->squares[index];
 }
@@ -192,7 +192,7 @@ bool operator!=(const Grid::Iterator &a, const Grid::Iterator &b) {
     return a.vec_iterator != b.vec_iterator;
 }
 
-bool Point::operator==(const Point &other) const {
+bool Point::operator==(Point other) const {
     return other.x == this->x && other.y == this->y;
 }
 

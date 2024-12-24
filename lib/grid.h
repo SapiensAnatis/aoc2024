@@ -30,9 +30,9 @@ class Grid {
     Grid(std::vector<char> squares, int width);
 
     [[nodiscard]] std::optional<char> get_square(int x, int y) const;
-    [[nodiscard]] std::optional<char> get_square(const Point &point) const;
+    [[nodiscard]] std::optional<char> get_square(Point point) const;
     [[nodiscard]] char get_square_unsafe(int x, int y) const;
-    [[nodiscard]] char get_square_unsafe(const Point &point) const;
+    [[nodiscard]] char get_square_unsafe(Point point) const;
     [[nodiscard]] int get_width() const;
     [[nodiscard]] int get_height() const;
     [[nodiscard]] std::unique_ptr<Grid> with_mutation(int x, int y,
