@@ -1,13 +1,38 @@
 #include "grid.h"
+#include "../lib/assert.h"
 #include <algorithm>
 #include <cassert>
 #include <fstream>
+#include <stdexcept>
 
 namespace aoc {
 
 Point::Point(int x, int y) : x(x), y(y) {}
 
 Vector::Vector(int dx, int dy) : dx(dx), dy(dy) {}
+
+Vector::Vector(Direction direction) {
+    switch (direction) {
+    case Direction::North:
+        this->dx = 0;
+        this->dy = -1;
+        break;
+    case Direction::East:
+        this->dx = 1;
+        this->dy = 0;
+        break;
+    case Direction::South:
+        this->dx = 0;
+        this->dy = 1;
+        break;
+    case Direction::West:
+        this->dx = -1;
+        this->dy = 0;
+        break;
+    default:
+        throw std::logic_error("Invalid direction!");
+    }
+}
 
 Vector Vector::operator-() const { return {-this->dx, -this->dy}; }
 
@@ -46,9 +71,9 @@ std::optional<char> Grid::get_square(const Point &point) const {
 }
 
 char Grid::get_square_unsafe(int x, int y) const {
-    int index = this->calculate_array_index(x, y);
+    auto index = this->calculate_array_index(x, y);
 
-    assert((index >= 0 || index < static_cast<int>(this->squares.size())) &&
+    assert((index >= 0 || index < this->squares.size()) &&
            "Grid bounds check failure");
 
     return this->squares[index];
@@ -62,6 +87,22 @@ std::unique_ptr<Grid> Grid::with_mutation(int x, int y, char new_value) {
     auto new_vec = this->squares;
     new_vec[calculate_array_index(x, y)] = new_value;
     return std::make_unique<Grid>(new_vec, this->width);
+}
+
+void Grid::set_square(int x, int y, char new_value) {
+    auto index = this->calculate_array_index(x, y);
+    aoc_assert(index > 0 && index < this->squares.size(),
+               "Grid bounds check failure");
+
+    this->squares[index] = new_value;
+}
+
+void Grid::set_square(Point point, char new_value) {
+    auto index = this->calculate_array_index(point.x, point.y);
+    aoc_assert(index > 0 && index < this->squares.size(),
+               "Grid bounds check failure");
+
+    this->squares[index] = new_value;
 }
 
 std::vector<Point> Grid::get_adjacent_points(Point point) const {
@@ -88,7 +129,7 @@ std::vector<Point> Grid::get_adjacent_points(Point point) const {
     return vec;
 }
 
-int Grid::calculate_array_index(int x, int y) const {
+std::vector<char>::size_type Grid::calculate_array_index(int x, int y) const {
     int offset = y * this->width;
     int index = offset + x;
     return index;

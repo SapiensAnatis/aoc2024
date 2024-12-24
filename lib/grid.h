@@ -10,11 +10,14 @@ namespace aoc {
 
 struct Point;
 
+enum class Direction { North, East, South, West };
+
 struct Vector {
     int dx;
     int dy;
 
     Vector(int dx, int dy);
+    explicit Vector(Direction direction);
 
     Vector operator-() const;
 };
@@ -34,6 +37,8 @@ class Grid {
     [[nodiscard]] int get_height() const;
     [[nodiscard]] std::unique_ptr<Grid> with_mutation(int x, int y,
                                                       char new_value);
+    void set_square(int x, int y, char new_value);
+    void set_square(Point point, char new_value);
     [[nodiscard]] std::vector<Point> get_adjacent_points(Point point) const;
 
     struct Iterator {
@@ -66,7 +71,8 @@ class Grid {
     Point get_point(const Iterator &iterator);
 
   private:
-    [[nodiscard]] int calculate_array_index(int x, int y) const;
+    [[nodiscard]] std::vector<char>::size_type
+    calculate_array_index(int x, int y) const;
 
     int width;
     int height;
@@ -81,8 +87,6 @@ struct Point {
 
     bool operator==(const Point &other) const;
 };
-
-enum class Direction { North, East, South, West };
 
 Point operator+(const Point &point, const Vector &vector);
 Point operator-(const Point &point, const Vector &vector);
