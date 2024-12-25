@@ -155,8 +155,8 @@ int parse_register_line(const std::string &register_line) {
     auto match_end = std::sregex_iterator();
 
     aoc_assert(match_start != match_end, "Regex did not match");
-
     aoc_assert(match_start->size() == 2, "Match did not have a capture group");
+
     auto value = match_start->str(1);
 
     return std::stoi(value);
@@ -170,8 +170,8 @@ std::vector<int> parse_program_line(const std::string &program_line) {
     auto match_end = std::sregex_iterator();
 
     aoc_assert(match_start != match_end, "Regex did not match");
-
     aoc_assert(match_start->size() == 2, "Match did not have a capture group");
+    
     auto program_string = match_start->str(1);
 
     auto instructions = aoc::split(program_string, ',');
@@ -230,18 +230,24 @@ ulong part2(ParsedInput &input) {
             auto test_value = valid_shifts.front();
             valid_shifts.pop();
 
-            std::cout << std::endl
-                      << "Looking for digit " << program[target_program_digit]
-                      << " using base value " << test_value << std::endl;
+            /*
+             * I checked on Reddit and found out that modifying the last 3 bits
+             * of register A modifies the first digit of the output.
+             * Then, if you bit-shift those 3 valid bits 3 bits to the left, the
+             * modification acts on the second output digit, and so on and so
+             * forth.
+             *
+             * We need progressively construct the output starting at the end
+             * by testing 3 bit permutations (0 through 7).
+             *
+             * There may also be more than 1 valid set of 3 bits for each output
+             * digit, so we must store all of them and try out each route in a
+             * 'tree' style, or else we may hit a dead end at some point.
+             */
 
-            ulong i = 0;
-            for (; i < 8; i++) {
+            for (int i = 0; i < 8; i++) {
                 ulong new_test_value = (test_value << 3) | i;
-                std::cout << "Trying offset " << i << std::endl;
-                std::cout << "Executing with register_a = "
-                          << std::format("{:b}", new_test_value) << std::endl;
                 input.computer.execute(new_test_value);
-                input.computer.print_output();
 
                 auto &output = input.computer.get_output_buffer();
 
@@ -250,10 +256,7 @@ ulong part2(ParsedInput &input) {
                     continue;
                 }
 
-                // Modifying the last 3 bits of register A modifies the first
-                // digit of the output
                 if (output[0] == program[target_program_digit]) {
-                    std::cout << "Found valid shift" << std::endl;
                     new_valid_shifts.push(new_test_value);
                 }
             }
