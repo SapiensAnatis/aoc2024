@@ -33,31 +33,6 @@ Point::Point(int x, int y) : x(x), y(y) {}
 
 Point::Point() : Point(0, 0) {}
 
-Vector::Vector(int dx, int dy) : dx(dx), dy(dy) {}
-
-Vector::Vector(Direction direction) {
-    switch (direction) {
-    case Direction::North:
-        this->dx = 0;
-        this->dy = -1;
-        break;
-    case Direction::East:
-        this->dx = 1;
-        this->dy = 0;
-        break;
-    case Direction::South:
-        this->dx = 0;
-        this->dy = 1;
-        break;
-    case Direction::West:
-        this->dx = -1;
-        this->dy = 0;
-        break;
-    default:
-        throw std::logic_error("Invalid direction!");
-    }
-}
-
 Vector Vector::operator-() const { return {-this->dx, -this->dy}; }
 
 std::unique_ptr<Grid> Grid::create(std::vector<char> squares, int width) {

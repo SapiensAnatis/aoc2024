@@ -99,13 +99,6 @@ bool operator==(const PointWithDirection &a, const PointWithDirection &b) {
     return a.point == b.point && a.direction == b.direction;
 }
 
-const std::array<aoc::Vector, 4> directions = {
-    aoc::Vector(aoc::Direction::North),
-    aoc::Vector(aoc::Direction::East),
-    aoc::Vector(aoc::Direction::South),
-    aoc::Vector(aoc::Direction::West),
-};
-
 // CHEATED: I was trying to find multiple paths without taking into account
 // the direction you were approaching each point from. So it would only ever
 // find one shortest path and I couldn't do part 2. Needed to see other
@@ -126,7 +119,7 @@ get_shortest_path_subgraph(const ParsedInput &input, aoc::Point start) {
 
         auto point = input.grid->get_point(it);
 
-        for (const auto dir : directions) {
+        for (const auto dir : aoc::direction_vectors) {
             PointWithDirection pwd(point, dir);
 
             distances_from_start.emplace(pwd, std::numeric_limits<int>::max());
@@ -171,7 +164,7 @@ get_shortest_path_subgraph(const ParsedInput &input, aoc::Point start) {
 
             int total_cost = current_cost + cost;
             auto cost_it = distances_from_start.find(proposed_pwd);
-            
+
             if (cost_it->second > total_cost) {
                 cost_it->second = total_cost;
                 previous.erase(proposed_pwd);
@@ -232,7 +225,7 @@ void print_paths(const ParsedInput &input,
                  aoc::Point end) {
     auto new_grid = *input.grid;
 
-    for (auto dir : directions) {
+    for (auto dir : aoc::direction_vectors) {
         auto pwd = PointWithDirection(end, dir);
         print_paths_recurse(new_grid, subgraph, pwd);
     }

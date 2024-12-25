@@ -1,6 +1,7 @@
 #ifndef AOC_2024_GRID_H
 #define AOC_2024_GRID_H
 
+#include <array>
 #include <iterator>
 #include <memory>
 #include <optional>
@@ -12,17 +13,45 @@ struct Point;
 
 enum class Direction { North, East, South, West };
 
+constexpr std::array<Direction, 4> directions = {
+    Direction::North, Direction::East, Direction::South, Direction::West};
+
 std::ostream &operator<<(std::ostream &stream, Direction direction);
 
 struct Vector {
     int dx;
     int dy;
 
-    Vector(int dx, int dy);
-    explicit Vector(Direction direction);
+    constexpr Vector(int dx, int dy) : dx(dx), dy(dy) {}
+    constexpr explicit Vector(Direction direction) {
+        switch (direction) {
+        case Direction::North:
+            this->dx = 0;
+            this->dy = -1;
+            break;
+        case Direction::East:
+            this->dx = 1;
+            this->dy = 0;
+            break;
+        case Direction::South:
+            this->dx = 0;
+            this->dy = 1;
+            break;
+        case Direction::West:
+            this->dx = -1;
+            this->dy = 0;
+            break;
+        default:
+            throw std::logic_error("Invalid direction!");
+        }
+    }
 
     Vector operator-() const;
 };
+
+constexpr std::array<Vector, 4> direction_vectors = {
+    Vector(Direction::North), Vector(Direction::East), Vector(Direction::South),
+    Vector(Direction::West)};
 
 class Grid {
   public:
