@@ -119,6 +119,9 @@ aoc::Point part2(const ParsedInput &input, int grid_size, int num_bytes_fall) {
     auto bfs_result = bfs(grid, start, end);
     aoc_assert(bfs_result, "Failed to find a path");
 
+    // TODO: replace with bisection algorithm
+    // i.e. try some advanced fall stage, if it fails then fall back to an
+    // earlier stage
     for (std::vector<aoc::Point>::size_type i = num_bytes_fall;
          i < input.byte_positions.size(); i++) {
         aoc::Point point = input.byte_positions[i];
