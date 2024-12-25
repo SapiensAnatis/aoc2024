@@ -30,6 +30,8 @@ std::ostream &operator<<(std::ostream &stream, Direction direction) {
 
 Point::Point(int x, int y) : x(x), y(y) {}
 
+Point::Point() : Point(0, 0) {}
+
 Vector::Vector(int dx, int dy) : dx(dx), dy(dy) {}
 
 Vector::Vector(Direction direction) {
@@ -251,6 +253,10 @@ std::unique_ptr<Grid> parse_grid(std::istream &input) {
 
     return Grid::create(std::move(grid), width);
 }
+
+bool operator==(Vector a, Vector b) { return a.dx == b.dx && a.dy == b.dy; }
+
+bool operator!=(Vector a, Vector b) { return !(a == b); }
 
 } // namespace aoc
 

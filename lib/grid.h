@@ -87,6 +87,7 @@ struct Point {
     int x;
     int y;
 
+    Point();
     Point(int x, int y);
 
     bool operator==(Point other) const;
@@ -97,6 +98,8 @@ Point operator-(Point point, Vector vector);
 Vector operator-(Point a, Point b);
 Vector operator/(Vector a, int b);
 Vector operator*(Vector a, int b);
+bool operator==(Vector a, Vector b);
+bool operator!=(Vector a, Vector b);
 std::ostream &operator<<(std::ostream &stream, Point point);
 std::ostream &operator<<(std::ostream &stream, const Grid &grid);
 
