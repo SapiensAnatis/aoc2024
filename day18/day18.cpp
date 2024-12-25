@@ -28,8 +28,8 @@ ParsedInput parse_input(std::ifstream &input_stream) {
     return {.byte_positions = byte_fall_points};
 }
 
-std::unordered_map<aoc::Point, aoc::Point>
-bfs(const std::unique_ptr<aoc::Grid> &grid, aoc::Point start) {
+std::optional<std::unordered_map<aoc::Point, aoc::Point>>
+bfs(const std::unique_ptr<aoc::Grid> &grid, aoc::Point start, aoc::Point end) {
     std::queue<aoc::Point> queue;
     std::unordered_set<aoc::Point> explored;
     std::unordered_map<aoc::Point, aoc::Point> parents;
@@ -40,10 +40,7 @@ bfs(const std::unique_ptr<aoc::Grid> &grid, aoc::Point start) {
         aoc::Point current = queue.front();
         queue.pop();
 
-        bool is_goal = current.x == grid->get_width() - 1 &&
-                       current.y == grid->get_height() - 1;
-
-        if (is_goal) {
+        if (current == end) {
             return parents;
         }
 
@@ -62,7 +59,8 @@ bfs(const std::unique_ptr<aoc::Grid> &grid, aoc::Point start) {
         }
     }
 
-    throw std::runtime_error("No path found");
+    // No path found
+    return std::nullopt;
 }
 
 std::vector<aoc::Point>
@@ -93,21 +91,48 @@ int part1(const ParsedInput &input, int grid_size, int num_bytes_fall) {
         grid->set_square(point, '#');
     }
 
-    std::cout << *grid << std::endl;
+    aoc::Point start = {0, 0};
+    aoc::Point end = {grid->get_width() - 1, grid->get_height() - 1};
+
+    auto bfs_result = bfs(grid, start, end);
+    aoc_assert(bfs_result, "Failed to find a path");
+
+    auto bfs_path = get_bfs_path(*bfs_result, end);
+
+    return static_cast<int>(bfs_path.size());
+}
+
+aoc::Point part2(const ParsedInput &input, int grid_size, int num_bytes_fall) {
+    aoc_assert(num_bytes_fall < static_cast<int>(input.byte_positions.size()),
+               "Cannot simulate beyond end of input byte positions");
+
+    auto grid = aoc::Grid::create('.', grid_size, grid_size);
+
+    for (int i = 0; i < num_bytes_fall; i++) {
+        aoc::Point point = input.byte_positions[i];
+        grid->set_square(point, '#');
+    }
 
     aoc::Point start = {0, 0};
     aoc::Point end = {grid->get_width() - 1, grid->get_height() - 1};
 
-    auto bfs_result = bfs(grid, start);
-    auto bfs_path = get_bfs_path(bfs_result, end);
+    auto bfs_result = bfs(grid, start, end);
+    aoc_assert(bfs_result, "Failed to find a path");
 
-    for (auto point : bfs_path) {
-        grid->set_square(point, 'O');
+    for (std::vector<aoc::Point>::size_type i = num_bytes_fall;
+         i < input.byte_positions.size(); i++) {
+        aoc::Point point = input.byte_positions[i];
+        grid->set_square(point, '#');
+
+        if (bfs_result->contains(point)) {
+            bfs_result = bfs(grid, start, end);
+            if (!bfs_result) {
+                return point;
+            }
+        }
     }
 
-    std::cout << *grid << std::endl;
-
-    return static_cast<int>(bfs_path.size());
+    throw std::logic_error("No bytes will block the exit");
 }
 
 } // namespace day18
