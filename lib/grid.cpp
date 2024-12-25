@@ -97,8 +97,7 @@ void Grid::set_square(int x, int y, char new_value) {
 
 void Grid::set_square(Point point, char new_value) {
     auto index = this->calculate_array_index(point.x, point.y);
-    aoc_assert(index > 0 && index < this->squares.size(),
-               "Grid bounds check failure");
+    aoc_assert(index < this->squares.size(), "Grid bounds check failure");
 
     this->squares[index] = new_value;
 }
