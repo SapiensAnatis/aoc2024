@@ -6,7 +6,9 @@
 #include <format>
 #include <fstream>
 #include <iostream>
+#include <queue>
 #include <regex>
+#include <set>
 
 namespace day17 {
 
@@ -14,15 +16,10 @@ void Computer::execute() {
     this->instruction_ptr = 0;
     this->skip_next_increment = false;
     this->output_buffer.clear();
-    this->trace.clear();
 
     while (this->instruction_ptr + 1 < this->program.size()) {
         auto opcode = static_cast<Opcode>(this->program[instruction_ptr]);
         auto operand = this->program[instruction_ptr + 1];
-
-        this->trace.emplace_back(this->instruction_ptr, opcode, operand,
-                                 this->register_a, this->register_b,
-                                 this->register_c);
 
         switch (opcode) {
         case Opcode::Adv:
@@ -61,7 +58,7 @@ void Computer::execute() {
     }
 }
 
-void Computer::execute(long register_a_override) {
+void Computer::execute(ulong register_a_override) {
     this->register_a = register_a_override;
     this->execute();
 }
@@ -80,7 +77,7 @@ void Computer::print_output() {
     std::cout << std::endl;
 }
 
-long Computer::get_combo_operand_value(int operand) const {
+ulong Computer::get_combo_operand_value(int operand) const {
     switch (operand) {
     case 0:
     case 1:
@@ -98,8 +95,8 @@ long Computer::get_combo_operand_value(int operand) const {
     }
 }
 
-long Computer::execute_common_div(int operand) const {
-    long numerator = this->register_a;
+ulong Computer::execute_common_div(int operand) const {
+    ulong numerator = this->register_a;
     long double denominator =
         std::pow(2, this->get_combo_operand_value(operand));
 
@@ -114,12 +111,12 @@ void Computer::execute_adv(int operand) {
 }
 
 void Computer::execute_bxl(int operand) {
-    long result = this->register_b ^ operand;
+    ulong result = this->register_b ^ operand;
     this->register_b = result;
 }
 
 void Computer::execute_bst(int operand) {
-    long result = this->get_combo_operand_value(operand) % 8;
+    ulong result = this->get_combo_operand_value(operand) % 8;
     this->register_b = result;
 }
 
@@ -131,12 +128,12 @@ void Computer::execute_jnz(int operand) {
 }
 
 void Computer::execute_bxc([[maybe_unused]] int operand) {
-    long result = this->register_b ^ this->register_c;
+    ulong result = this->register_b ^ this->register_c;
     this->register_b = result;
 }
 
 void Computer::execute_out(int operand) {
-    long result = this->get_combo_operand_value(operand) % 8;
+    ulong result = this->get_combo_operand_value(operand) % 8;
     aoc_assert(result < std::numeric_limits<int>::max(),
                "Overflow detected on out instruction");
     this->output_buffer.push_back(static_cast<int>(result));
@@ -217,49 +214,57 @@ void part1(ParsedInput &input) {
     input.computer.print_output();
 }
 
-long part2(ParsedInput &input) {
+ulong part2(ParsedInput &input) {
     auto program = input.computer.get_program();
 
-    long test_value = 0b0000000000000000000000000000000000000000000000;
     int target_program_digit = static_cast<int>(program.size()) - 1;
 
-    int iterations = 0;
+    std::queue<ulong> valid_shifts;
+    std::set<ulong> solutions;
+    valid_shifts.push(0);
 
-    while (iterations < 20) {
-        iterations++;
+    while (target_program_digit >= 0) {
+        std::queue<ulong> new_valid_shifts;
 
-        std::cout << "Looking for digit " << program[target_program_digit]
-                  << std::endl;
+        while (!valid_shifts.empty()) {
+            auto test_value = valid_shifts.front();
+            valid_shifts.pop();
 
-        int i = 0;
-        for (; i < 8; i++) {
-            long new_test_value = test_value | i;
-            std::cout << "Trying offset " << i << std::endl;
-            std::cout << "Executing with register_a = "
-                      << std::format("{:b}", new_test_value) << std::endl;
-            input.computer.execute(new_test_value);
-            input.computer.print_output();
+            std::cout << std::endl
+                      << "Looking for digit " << program[target_program_digit]
+                      << " using base value " << test_value << std::endl;
 
-            auto &output = input.computer.get_output_buffer();
+            ulong i = 0;
+            for (; i < 8; i++) {
+                ulong new_test_value = (test_value << 3) | i;
+                std::cout << "Trying offset " << i << std::endl;
+                std::cout << "Executing with register_a = "
+                          << std::format("{:b}", new_test_value) << std::endl;
+                input.computer.execute(new_test_value);
+                input.computer.print_output();
 
-            // Modifying the last 3 bits of register A modifies the first digit
-            // of the output
-            if (output[0] == program[target_program_digit]) {
-                std::cout << "Found valid shift" << std::endl << std::endl;
-                break;
+                auto &output = input.computer.get_output_buffer();
+
+                if (output == program) {
+                    solutions.insert(new_test_value);
+                    continue;
+                }
+
+                // Modifying the last 3 bits of register A modifies the first
+                // digit of the output
+                if (output[0] == program[target_program_digit]) {
+                    std::cout << "Found valid shift" << std::endl;
+                    new_valid_shifts.push(new_test_value);
+                }
             }
         }
 
-        if (i == 8) {
-            throw std::logic_error("failed to find valid shift");
-        }
-
-        test_value |= i;
-        test_value = test_value << 3;
+        valid_shifts = new_valid_shifts;
         target_program_digit--;
     }
 
-    return 0;
+    aoc_assert(!solutions.empty(), "No solutions found");
+    return *solutions.begin();
 }
 
 } // namespace day17
