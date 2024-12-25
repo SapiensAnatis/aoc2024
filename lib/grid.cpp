@@ -1,5 +1,6 @@
 #include "grid.h"
 #include "./assert.h"
+#include "hash.hpp"
 #include <algorithm>
 #include <cassert>
 #include <fstream>
@@ -261,10 +262,23 @@ bool operator!=(Vector a, Vector b) { return !(a == b); }
 } // namespace aoc
 
 namespace std {
-size_t hash<aoc::Point>::operator()(const aoc::Point &p) const {
-    size_t h1 = hash<int>()(p.x);
-    size_t h2 = hash<int>()(p.y);
 
-    return h1 ^ (h2 << 1);
+size_t hash<aoc::Point>::operator()(aoc::Point p) const {
+    size_t seed = 0;
+
+    aoc::hash_combine(seed, hash<int>()(p.x));
+    aoc::hash_combine(seed, hash<int>()(p.y));
+
+    return seed;
 }
+
+size_t hash<aoc::Vector>::operator()(aoc::Vector v) const {
+    size_t seed = 0;
+
+    aoc::hash_combine(seed, hash<int>()(v.dx));
+    aoc::hash_combine(seed, hash<int>()(v.dy));
+
+    return seed;
+}
+
 } // namespace std

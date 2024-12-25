@@ -110,7 +110,11 @@ std::unique_ptr<Grid> parse_grid(std::istream &input);
 namespace std {
 
 template <> struct hash<aoc::Point> {
-    size_t operator()(const aoc::Point &p) const;
+    size_t operator()(aoc::Point p) const;
+};
+
+template <> struct hash<aoc::Vector> {
+    size_t operator()(aoc::Vector v) const;
 };
 
 } // namespace std
