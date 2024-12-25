@@ -22,7 +22,7 @@ ParsedInput parse_input(std::ifstream &input_stream) {
         auto split = aoc::split(line, ':');
         assert(split.size() == 2 && "Malformed line");
 
-        std::optional<NodeType> result = aoc::stol(split[0]);
+        std::optional<NodeType> result = aoc::try_parse_long(split[0]);
         assert(result && "Failed to parse result to integer");
         assert(result > 0 && "Result was not positive - potential overflow");
 
@@ -34,7 +34,7 @@ ParsedInput parse_input(std::ifstream &input_stream) {
         std::transform(string_operands.begin(), string_operands.end(),
                        std::back_inserter(operands),
                        [](const std::string_view &op) -> int {
-                           std::optional<int> parsed = aoc::stoi(op);
+                           std::optional<int> parsed = aoc::try_parse_int(op);
                            assert(parsed && "Failed to parse operand!");
                            return *parsed;
                        });

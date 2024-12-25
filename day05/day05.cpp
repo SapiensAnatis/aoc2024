@@ -80,8 +80,8 @@ ParsedInput parse_input(std::istream &input) {
     while (std::getline(input, line) && !line.empty()) {
         // A page rule is XX|YY - i.e. always two digits on either side.
         auto line_view = std::string_view(line);
-        auto first_page = aoc::stoi(line_view.substr(0, 2));
-        auto second_page = aoc::stoi(line_view.substr(3, 2));
+        auto first_page = aoc::try_parse_int(line_view.substr(0, 2));
+        auto second_page = aoc::try_parse_int(line_view.substr(3, 2));
 
         if (!first_page || !second_page) {
             std::cerr << "Failed to parse!\n";
@@ -97,7 +97,7 @@ ParsedInput parse_input(std::istream &input) {
         std::vector<int> pages;
 
         for (auto segment : aoc::split(line, ',')) {
-            if (auto parsed_segment = aoc::stoi(segment)) {
+            if (auto parsed_segment = aoc::try_parse_int(segment)) {
                 pages.push_back(*parsed_segment);
             } else {
                 std::cerr << "Parse failure\n";

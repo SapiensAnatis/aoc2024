@@ -20,8 +20,8 @@ aoc::Vector parse_button(const std::string &button_line) {
     aoc_assert(button_begin != std::sregex_iterator(),
                "Button regex did not match");
 
-    auto button_x = aoc::stoi(button_begin->str(1));
-    auto button_y = aoc::stoi(button_begin->str(2));
+    auto button_x = aoc::try_parse_int(button_begin->str(1));
+    auto button_y = aoc::try_parse_int(button_begin->str(2));
 
     aoc_assert(button_x && button_y, "Button integer parse failure");
 
@@ -35,8 +35,8 @@ LongPoint parse_prize(const std::string &prize_line) {
     aoc_assert(prize_begin != std::sregex_iterator(),
                "Prize regex did not match");
 
-    auto prize_x = aoc::stoi(prize_begin->str(1));
-    auto prize_y = aoc::stoi(prize_begin->str(2));
+    auto prize_x = aoc::try_parse_int(prize_begin->str(1));
+    auto prize_y = aoc::try_parse_int(prize_begin->str(2));
 
     aoc_assert(prize_x && prize_y, "Prize integer parse failure");
 

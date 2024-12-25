@@ -40,6 +40,19 @@ std::ifstream get_example_ifstream(int example_num) {
 
 std::ifstream get_real_ifstream() { return get_ifstream("input.txt"); }
 
+template <typename TNumber> TNumber parse(const std::string_view &input) {
+    TNumber out;
+    const std::from_chars_result result =
+        std::from_chars(input.data(), input.data() + input.size(), out);
+
+    if (result.ec == std::errc::invalid_argument ||
+        result.ec == std::errc::result_out_of_range) {
+        throw std::runtime_error("Failed to parse number");
+    }
+
+    return out;
+}
+
 template <typename TNumber>
 std::optional<TNumber> try_parse(const std::string_view &input) {
     TNumber out;
@@ -54,15 +67,17 @@ std::optional<TNumber> try_parse(const std::string_view &input) {
     return out;
 }
 
-std::optional<int> stoi(const std::string_view &input) {
+int parse_int(const std::string_view &input) { return parse<int>(input); }
+
+std::optional<int> try_parse_int(const std::string_view &input) {
     return try_parse<int>(input);
 }
 
-std::optional<long> stol(const std::string_view &input) {
+std::optional<long> try_parse_long(const std::string_view &input) {
     return try_parse<long>(input);
 }
 
-std::optional<long long> stoll(const std::string_view &input) {
+std::optional<long long> try_parse_long_long(const std::string_view &input) {
     return try_parse<long long>(input);
 }
 

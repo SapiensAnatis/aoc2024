@@ -38,8 +38,8 @@ StoneBlinkResult Stone::blink() const {
         std::string_view second_half_str(number_str.begin() + (digit_count / 2),
                                          number_str.end());
 
-        auto first_half = aoc::stoi(first_half_str);
-        auto second_half = aoc::stoi(second_half_str);
+        auto first_half = aoc::try_parse_int(first_half_str);
+        auto second_half = aoc::try_parse_int(second_half_str);
 
         assert(first_half && "blink: parse failure");
         assert(second_half && "blink: parse failure");
