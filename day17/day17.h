@@ -37,7 +37,7 @@ class Computer {
           register_c(register_c), program(std::move(program)) {}
 
     void execute();
-    bool execute_one();
+    void execute(long register_a_override);
     void print_output();
 
     [[nodiscard]] long get_register_a() const { return this->register_a; }
@@ -46,7 +46,7 @@ class Computer {
     [[nodiscard]] std::vector<ComputerState> get_trace() const {
         return this->trace;
     }
-    [[nodiscard]] const std::vector<long> &get_output_buffer() const {
+    [[nodiscard]] const std::vector<int> &get_output_buffer() const {
         return this->output_buffer;
     }
     [[nodiscard]] const std::vector<int> &get_program() const {
@@ -65,7 +65,7 @@ class Computer {
     long register_b;
     long register_c;
 
-    std::vector<long> output_buffer;
+    std::vector<int> output_buffer;
 
     std::vector<int>::size_type instruction_ptr = 0;
     std::vector<int> program;
@@ -75,7 +75,7 @@ class Computer {
     std::vector<ComputerState> trace{};
 
     [[nodiscard]] long get_combo_operand_value(int operand) const;
-    [[nodiscard]] int execute_common_div(int operand) const;
+    [[nodiscard]] long execute_common_div(int operand) const;
     void execute_adv(int operand);
     void execute_bxl(int operand);
     void execute_bst(int operand);

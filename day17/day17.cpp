@@ -3,6 +3,7 @@
 #include "../lib/assert.h"
 
 #include <cmath>
+#include <format>
 #include <fstream>
 #include <iostream>
 #include <regex>
@@ -10,60 +11,59 @@
 namespace day17 {
 
 void Computer::execute() {
-    bool instruction_executed = this->execute_one();
-    while (instruction_executed) {
-        instruction_executed = this->execute_one();
+    this->instruction_ptr = 0;
+    this->skip_next_increment = false;
+    this->output_buffer.clear();
+    this->trace.clear();
+
+    while (this->instruction_ptr + 1 < this->program.size()) {
+        auto opcode = static_cast<Opcode>(this->program[instruction_ptr]);
+        auto operand = this->program[instruction_ptr + 1];
+
+        this->trace.emplace_back(this->instruction_ptr, opcode, operand,
+                                 this->register_a, this->register_b,
+                                 this->register_c);
+
+        switch (opcode) {
+        case Opcode::Adv:
+            this->execute_adv(operand);
+            break;
+        case Opcode::Bxl:
+            this->execute_bxl(operand);
+            break;
+        case Opcode::Bst:
+            this->execute_bst(operand);
+            break;
+        case Opcode::Jnz:
+            this->execute_jnz(operand);
+            break;
+        case Opcode::Bxc:
+            this->execute_bxc(operand);
+            break;
+        case Opcode::Out:
+            this->execute_out(operand);
+            break;
+        case Opcode::Bdv:
+            this->execute_bdv(operand);
+            break;
+        case Opcode::Cdv:
+            this->execute_cdv(operand);
+            break;
+        default:
+            throw std::out_of_range("Invalid opcode");
+        }
+
+        if (!this->skip_next_increment) {
+            this->instruction_ptr += 2;
+        }
+
+        this->skip_next_increment = false;
     }
 }
 
-bool Computer::execute_one() {
-    if (this->instruction_ptr + 1 >= this->program.size()) {
-        return false;
-    }
-
-    auto opcode = static_cast<Opcode>(this->program[instruction_ptr]);
-    auto operand = this->program[instruction_ptr + 1];
-
-    this->trace.emplace_back(this->instruction_ptr, opcode, operand,
-                             this->register_a, this->register_b,
-                             this->register_c);
-
-    switch (opcode) {
-    case Opcode::Adv:
-        this->execute_adv(operand);
-        break;
-    case Opcode::Bxl:
-        this->execute_bxl(operand);
-        break;
-    case Opcode::Bst:
-        this->execute_bst(operand);
-        break;
-    case Opcode::Jnz:
-        this->execute_jnz(operand);
-        break;
-    case Opcode::Bxc:
-        this->execute_bxc(operand);
-        break;
-    case Opcode::Out:
-        this->execute_out(operand);
-        break;
-    case Opcode::Bdv:
-        this->execute_bdv(operand);
-        break;
-    case Opcode::Cdv:
-        this->execute_cdv(operand);
-        break;
-    default:
-        throw std::out_of_range("Invalid opcode");
-    }
-
-    if (!this->skip_next_increment) {
-        this->instruction_ptr += 2;
-    }
-
-    this->skip_next_increment = false;
-
-    return true;
+void Computer::execute(long register_a_override) {
+    this->register_a = register_a_override;
+    this->execute();
 }
 
 void Computer::print_output() {
@@ -98,7 +98,7 @@ long Computer::get_combo_operand_value(int operand) const {
     }
 }
 
-int Computer::execute_common_div(int operand) const {
+long Computer::execute_common_div(int operand) const {
     long numerator = this->register_a;
     long double denominator =
         std::pow(2, this->get_combo_operand_value(operand));
@@ -106,7 +106,7 @@ int Computer::execute_common_div(int operand) const {
     long double result = numerator / denominator;
     long double result_trunc = std::trunc(result);
 
-    return static_cast<int>(result_trunc);
+    return static_cast<long>(result_trunc);
 }
 
 void Computer::execute_adv(int operand) {
@@ -137,7 +137,9 @@ void Computer::execute_bxc([[maybe_unused]] int operand) {
 
 void Computer::execute_out(int operand) {
     long result = this->get_combo_operand_value(operand) % 8;
-    this->output_buffer.push_back(result);
+    aoc_assert(result < std::numeric_limits<int>::max(),
+               "Overflow detected on out instruction");
+    this->output_buffer.push_back(static_cast<int>(result));
 }
 
 void Computer::execute_bdv(int operand) {
@@ -215,60 +217,49 @@ void part1(ParsedInput &input) {
     input.computer.print_output();
 }
 
-bool check_subset(const std::vector<int> &program,
-                  const std::vector<long> &output_buffer) {
-    for (std::vector<int>::size_type i = 0; i < output_buffer.size(); i++) {
-        if (program[i] != output_buffer[i]) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool test_register_a_value(long register_a_value, const Computer &computer) {
-    Computer computer_copy(register_a_value, computer.get_register_b(),
-                           computer.get_register_c(), computer.get_program());
-
-    auto &program = computer_copy.get_program();
-
-    bool instruction_executed = computer_copy.execute_one();
-    while (instruction_executed) {
-        bool should_check_output =
-            computer_copy.get_next_opcode() == Opcode::Out;
-
-        instruction_executed = computer_copy.execute_one();
-
-        if (should_check_output &&
-            !check_subset(program, computer_copy.get_output_buffer())) {
-            return false;
-        }
-    }
-
-    auto output = computer_copy.get_output_buffer();
-    return output.size() == program.size() &&
-           std::equal(program.begin(), program.end(), output.begin());
-}
-
 long part2(ParsedInput &input) {
     auto program = input.computer.get_program();
 
-    for (long register_a_value = 0;
-         register_a_value < std::numeric_limits<long>::max();
-         register_a_value++) {
+    long test_value = 0b0000000000000000000000000000000000000000000000;
+    int target_program_digit = static_cast<int>(program.size()) - 1;
 
-        bool result = test_register_a_value(register_a_value, input.computer);
+    int iterations = 0;
 
-        if (register_a_value % 1'000'000 == 0) {
-            std::cout << "Progress: testing " << register_a_value << std::endl;
+    while (iterations < 20) {
+        iterations++;
+
+        std::cout << "Looking for digit " << program[target_program_digit]
+                  << std::endl;
+
+        int i = 0;
+        for (; i < 8; i++) {
+            long new_test_value = test_value | i;
+            std::cout << "Trying offset " << i << std::endl;
+            std::cout << "Executing with register_a = "
+                      << std::format("{:b}", new_test_value) << std::endl;
+            input.computer.execute(new_test_value);
+            input.computer.print_output();
+
+            auto &output = input.computer.get_output_buffer();
+
+            // Modifying the last 3 bits of register A modifies the first digit
+            // of the output
+            if (output[0] == program[target_program_digit]) {
+                std::cout << "Found valid shift" << std::endl << std::endl;
+                break;
+            }
         }
 
-        if (result) {
-            return register_a_value;
+        if (i == 8) {
+            throw std::logic_error("failed to find valid shift");
         }
+
+        test_value |= i;
+        test_value = test_value << 3;
+        target_program_digit--;
     }
 
-    throw std::logic_error("Failed to find answer");
+    return 0;
 }
 
 } // namespace day17
