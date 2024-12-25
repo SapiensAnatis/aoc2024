@@ -10,59 +10,69 @@
 namespace day17 {
 
 void Computer::execute() {
-    while (this->instruction_ptr + 1 < static_cast<int>(this->program.size())) {
-        auto opcode = static_cast<Opcode>(this->program[instruction_ptr]);
-        auto operand = this->program[instruction_ptr + 1];
-
-        this->trace.emplace_back(this->instruction_ptr, opcode, operand,
-                                 this->register_a, this->register_b,
-                                 this->register_c);
-
-        switch (opcode) {
-        case Opcode::Adv:
-            this->execute_adv(operand);
-            break;
-        case Opcode::Bxl:
-            this->execute_bxl(operand);
-            break;
-        case Opcode::Bst:
-            this->execute_bst(operand);
-            break;
-        case Opcode::Jnz:
-            this->execute_jnz(operand);
-            break;
-        case Opcode::Bxc:
-            this->execute_bxc(operand);
-            break;
-        case Opcode::Out:
-            this->execute_out(operand);
-            break;
-        case Opcode::Bdv:
-            this->execute_bdv(operand);
-            break;
-        case Opcode::Cdv:
-            this->execute_cdv(operand);
-            break;
-        default:
-            throw std::out_of_range("Invalid opcode");
-        }
-
-        if (!this->skip_next_increment) {
-            this->instruction_ptr += 2;
-        }
-
-        this->skip_next_increment = false;
+    bool instruction_executed = this->execute_one();
+    while (instruction_executed) {
+        instruction_executed = this->execute_one();
     }
 }
 
+bool Computer::execute_one() {
+    if (this->instruction_ptr + 1 >= this->program.size()) {
+        return false;
+    }
+
+    auto opcode = static_cast<Opcode>(this->program[instruction_ptr]);
+    auto operand = this->program[instruction_ptr + 1];
+
+    this->trace.emplace_back(this->instruction_ptr, opcode, operand,
+                             this->register_a, this->register_b,
+                             this->register_c);
+
+    switch (opcode) {
+    case Opcode::Adv:
+        this->execute_adv(operand);
+        break;
+    case Opcode::Bxl:
+        this->execute_bxl(operand);
+        break;
+    case Opcode::Bst:
+        this->execute_bst(operand);
+        break;
+    case Opcode::Jnz:
+        this->execute_jnz(operand);
+        break;
+    case Opcode::Bxc:
+        this->execute_bxc(operand);
+        break;
+    case Opcode::Out:
+        this->execute_out(operand);
+        break;
+    case Opcode::Bdv:
+        this->execute_bdv(operand);
+        break;
+    case Opcode::Cdv:
+        this->execute_cdv(operand);
+        break;
+    default:
+        throw std::out_of_range("Invalid opcode");
+    }
+
+    if (!this->skip_next_increment) {
+        this->instruction_ptr += 2;
+    }
+
+    this->skip_next_increment = false;
+
+    return true;
+}
+
 void Computer::print_output() {
-    while (!this->output_buffer.empty()) {
-        int value = this->output_buffer.front();
-        this->output_buffer.pop();
+    for (std::vector<int>::size_type i = 0; i < this->output_buffer.size();
+         i++) {
+        auto num = this->output_buffer[i];
+        std::cout << num;
 
-        std::cout << value;
-
-        if (!this->output_buffer.empty()) {
+        if (i != this->output_buffer.size() - 1) {
             std::cout << ",";
         }
     }
@@ -70,7 +80,7 @@ void Computer::print_output() {
     std::cout << std::endl;
 }
 
-int Computer::get_combo_operand_value(int operand) const {
+long Computer::get_combo_operand_value(int operand) const {
     switch (operand) {
     case 0:
     case 1:
@@ -89,11 +99,12 @@ int Computer::get_combo_operand_value(int operand) const {
 }
 
 int Computer::execute_common_div(int operand) const {
-    int numerator = this->register_a;
-    double denominator = std::pow(2, this->get_combo_operand_value(operand));
+    long numerator = this->register_a;
+    long double denominator =
+        std::pow(2, this->get_combo_operand_value(operand));
 
-    double result = numerator / denominator;
-    double result_trunc = std::trunc(result);
+    long double result = numerator / denominator;
+    long double result_trunc = std::trunc(result);
 
     return static_cast<int>(result_trunc);
 }
@@ -103,12 +114,12 @@ void Computer::execute_adv(int operand) {
 }
 
 void Computer::execute_bxl(int operand) {
-    int result = this->register_b ^ operand;
+    long result = this->register_b ^ operand;
     this->register_b = result;
 }
 
 void Computer::execute_bst(int operand) {
-    int result = this->get_combo_operand_value(operand) % 8;
+    long result = this->get_combo_operand_value(operand) % 8;
     this->register_b = result;
 }
 
@@ -120,13 +131,13 @@ void Computer::execute_jnz(int operand) {
 }
 
 void Computer::execute_bxc([[maybe_unused]] int operand) {
-    int result = this->register_b ^ this->register_c;
+    long result = this->register_b ^ this->register_c;
     this->register_b = result;
 }
 
 void Computer::execute_out(int operand) {
-    int result = this->get_combo_operand_value(operand) % 8;
-    this->output_buffer.push(result);
+    long result = this->get_combo_operand_value(operand) % 8;
+    this->output_buffer.push_back(result);
 }
 
 void Computer::execute_bdv(int operand) {
@@ -202,6 +213,62 @@ ParsedInput parse_input(std::ifstream &input_stream) {
 void part1(ParsedInput &input) {
     input.computer.execute();
     input.computer.print_output();
+}
+
+bool check_subset(const std::vector<int> &program,
+                  const std::vector<long> &output_buffer) {
+    for (std::vector<int>::size_type i = 0; i < output_buffer.size(); i++) {
+        if (program[i] != output_buffer[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool test_register_a_value(long register_a_value, const Computer &computer) {
+    Computer computer_copy(register_a_value, computer.get_register_b(),
+                           computer.get_register_c(), computer.get_program());
+
+    auto &program = computer_copy.get_program();
+
+    bool instruction_executed = computer_copy.execute_one();
+    while (instruction_executed) {
+        bool should_check_output =
+            computer_copy.get_next_opcode() == Opcode::Out;
+
+        instruction_executed = computer_copy.execute_one();
+
+        if (should_check_output &&
+            !check_subset(program, computer_copy.get_output_buffer())) {
+            return false;
+        }
+    }
+
+    auto output = computer_copy.get_output_buffer();
+    return output.size() == program.size() &&
+           std::equal(program.begin(), program.end(), output.begin());
+}
+
+long part2(ParsedInput &input) {
+    auto program = input.computer.get_program();
+
+    for (long register_a_value = 0;
+         register_a_value < std::numeric_limits<long>::max();
+         register_a_value++) {
+
+        bool result = test_register_a_value(register_a_value, input.computer);
+
+        if (register_a_value % 1'000'000 == 0) {
+            std::cout << "Progress: testing " << register_a_value << std::endl;
+        }
+
+        if (result) {
+            return register_a_value;
+        }
+    }
+
+    throw std::logic_error("Failed to find answer");
 }
 
 } // namespace day17
