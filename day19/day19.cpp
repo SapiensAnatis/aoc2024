@@ -64,50 +64,6 @@ bool can_compose(const std::string &pattern,
     return subpattern_possible[pattern.size()];
 }
 
-std::unordered_set<Node>
-analyze_subpatterns_bfs(const std::string &pattern,
-                        const std::multimap<int, std::string> &graph) {
-    std::queue<Node> queue;
-    std::unordered_set<Node> explored;
-    std::unordered_set<Node> complete_paths;
-    queue.push(Node{0, {}});
-
-    while (!queue.empty()) {
-        auto current = queue.front();
-        queue.pop();
-
-        int path_length =
-            std::accumulate(current.path.begin(), current.path.end(), 0,
-                            [](int acc, const std::string &segment) {
-                                return acc + static_cast<int>(segment.size());
-                            });
-
-        if (path_length == static_cast<int>(pattern.size())) {
-            complete_paths.insert(current);
-            continue;
-        }
-
-        auto next_index =
-            current.index + static_cast<int>(current.path.empty()
-                                                 ? 0
-                                                 : current.path.back().size());
-        auto [begin, end] = graph.equal_range(next_index);
-        for (auto it = begin; it != end; it++) {
-            std::vector<std::string> next_path = current.path;
-            next_path.push_back(it->second);
-
-            Node next_node(it->first, next_path);
-
-            auto [_, inserted] = explored.insert(next_node);
-            if (inserted) {
-                queue.push(next_node);
-            }
-        }
-    }
-
-    return complete_paths;
-}
-
 int part1(const ParsedInput &input) {
     int possible_count = 0;
 
