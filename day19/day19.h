@@ -14,14 +14,14 @@ struct ParsedInput {
 
 struct Node {
     int index;
-    std::string substring;
+    std::vector<std::string> path;
 
-    Node(int index, std::string substring)
-        : index(index), substring(std::move(substring)) {}
+    Node(int index, std::vector<std::string> path)
+        : index(index), path(std::move(path)) {}
 };
 
 inline bool operator==(const Node &a, const Node &b) {
-    return a.substring == b.substring && a.index == b.index;
+    return a.path == b.path && a.index == b.index;
 }
 
 ParsedInput parse_input(std::ifstream &input_stream);
@@ -33,14 +33,20 @@ int part2(const ParsedInput &input);
 } // namespace day19
 
 namespace std {
+
 template <> struct hash<day19::Node> {
     std::size_t operator()(const day19::Node &node) const noexcept {
         size_t seed = 0;
         aoc::hash_combine(seed, node.index);
-        aoc::hash_combine(seed, node.substring);
+
+        for (auto &path_part : node.path) {
+            aoc::hash_combine(seed, path_part);
+        }
+
         return seed;
     }
 };
+
 } // namespace std
 
 #endif // AOC2024_DAY19_H

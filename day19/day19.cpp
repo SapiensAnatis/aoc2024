@@ -8,6 +8,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <queue>
 #include <ranges>
 #include <stack>
@@ -63,57 +64,52 @@ bool can_compose(const std::string &pattern,
     return subpattern_possible[pattern.size()];
 }
 
-void find_paths_bfs(const std::multimap<int, std::string> &graph,
-                    std::unordered_multimap<Node, Node> &parents,
-                    const Node &start) {
-
+std::unordered_set<Node>
+analyze_subpatterns_bfs(const std::string &pattern,
+                        const std::multimap<int, std::string> &graph) {
     std::queue<Node> queue;
     std::unordered_set<Node> explored;
-    queue.push(start);
+    std::unordered_set<Node> complete_paths;
+    queue.push(Node{0, {}});
 
     while (!queue.empty()) {
         auto current = queue.front();
         queue.pop();
 
-        auto [begin, end] = graph.equal_range(current.index);
+        int path_length =
+            std::accumulate(current.path.begin(), current.path.end(), 0,
+                            [](int acc, const std::string &segment) {
+                                return acc + static_cast<int>(segment.size());
+                            });
+
+        if (path_length == static_cast<int>(pattern.size())) {
+            complete_paths.insert(current);
+            continue;
+        }
+
+        auto next_index =
+            current.index + static_cast<int>(current.path.empty()
+                                                 ? 0
+                                                 : current.path.back().size());
+        auto [begin, end] = graph.equal_range(next_index);
         for (auto it = begin; it != end; it++) {
-            auto string = it->second;
-            int new_index = current.index - static_cast<int>(string.size());
-            Node new_node(new_index, string);
+            std::vector<std::string> next_path = current.path;
+            next_path.push_back(it->second);
 
-            if (explored.contains(new_node)) {
-                continue;
+            Node next_node(it->first, next_path);
+
+            auto [_, inserted] = explored.insert(next_node);
+            if (inserted) {
+                queue.push(next_node);
             }
-
-            parents.emplace(new_node, current);
-            queue.push(new_node);
-            explored.insert(new_node);
         }
     }
+
+    return complete_paths;
 }
 
-// NOLINTNEXTLINE(misc-no-recursion)
-void analyze_bfs_tree(const std::string &pattern,
-                      const std::multimap<int, std::string> &graph,
-                      std::unordered_set<std::string> &paths, int current_index,
-                      const std::string &path) {
-
-    if (current_index == static_cast<int>(pattern.size())) {
-        paths.insert(path);
-        return;
-    }
-
-    const auto [begin, end] = graph.equal_range(current_index);
-    for (auto it = begin; it != end; it++) {
-        std::string new_path = path + "," += it->second;
-        auto new_index = current_index + static_cast<int>(it->second.size());
-        analyze_bfs_tree(pattern, graph, paths, new_index, new_path);
-    }
-}
-
-std::unordered_set<std::string>
-get_compositions(const std::string &pattern,
-                 const std::unordered_set<std::string> &towels) {
+int get_compositions(const std::string &pattern,
+                     const std::unordered_set<std::string> &towels) {
     std::multimap<int, std::string> subpatterns;
 
     int pattern_size = static_cast<int>(pattern.size());
@@ -128,17 +124,9 @@ get_compositions(const std::string &pattern,
         }
     }
 
-    std::unordered_set<std::string> paths;
+    auto paths = analyze_subpatterns_bfs(pattern, subpatterns);
 
-    for (const auto &[index, substring] : subpatterns) {
-        if (index == 0) {
-            // Valid starting pattern
-            analyze_bfs_tree(pattern, subpatterns, paths,
-                             static_cast<int>(substring.size()), substring);
-        }
-    }
-
-    return paths;
+    return static_cast<int>(paths.size());
 }
 
 int part1(const ParsedInput &input) {
@@ -163,8 +151,7 @@ int part2(const ParsedInput &input) {
                   << std::endl;
 
         auto pattern = input.patterns[i];
-        auto comps = get_compositions(pattern, input.towels);
-        permutation_count += static_cast<int>(comps.size());
+        permutation_count += get_compositions(pattern, input.towels);
     }
 
     return permutation_count;
