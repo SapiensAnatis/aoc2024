@@ -92,6 +92,60 @@ std::map<DpadInput, aoc::Point> dpad_positions = {
 };
 // clang-format on
 
+std::vector<DpadInput> get_dpad_input(aoc::Point target_pos,
+                                      aoc::Point &cursor_position,
+                                      aoc::Point avoid_pos) {
+
+    std::vector<DpadInput> inputs;
+
+    auto vector = target_pos - cursor_position;
+
+    auto dx_abs = std::abs(vector.dx);
+    auto dy_abs = std::abs(vector.dy);
+    auto x_move = vector.dx > 0 ? DpadInput::Right : DpadInput::Left;
+    auto y_move = vector.dy > 0 ? DpadInput::Down : DpadInput::Up;
+    auto dx_unit = vector.dx > 0 ? 1 : -1;
+    auto dy_unit = vector.dy > 0 ? 1 : -1;
+
+    bool x_first_is_safe =
+        cursor_position.y != avoid_pos.y || target_pos.x != avoid_pos.x;
+    bool y_first_is_safe =
+        cursor_position.x != avoid_pos.x || target_pos.y != avoid_pos.y;
+
+    // I don't really get why this is to be honest
+    bool prefer_x_first = x_move == DpadInput::Left;
+
+    aoc_assert(x_first_is_safe || y_first_is_safe, "no safe direction");
+
+    if ((x_first_is_safe && prefer_x_first) || !y_first_is_safe) {
+        for (int x = 0; x < dx_abs; x++) {
+            inputs.push_back(x_move);
+            cursor_position.x += dx_unit;
+            aoc_assert(cursor_position != avoid_pos, "illegal cursor move");
+        }
+        for (int y = 0; y < dy_abs; y++) {
+            inputs.push_back(y_move);
+            cursor_position.y += dy_unit;
+            aoc_assert(cursor_position != avoid_pos, "illegal cursor move");
+        }
+    } else {
+        for (int y = 0; y < dy_abs; y++) {
+            inputs.push_back(y_move);
+            cursor_position.y += dy_unit;
+            aoc_assert(cursor_position != avoid_pos, "illegal cursor move");
+        }
+        for (int x = 0; x < dx_abs; x++) {
+            inputs.push_back(x_move);
+            cursor_position.x += dx_unit;
+            aoc_assert(cursor_position != avoid_pos, "illegal cursor move");
+        }
+    }
+
+    inputs.push_back(DpadInput::Activate);
+
+    return inputs;
+}
+
 std::vector<DpadInput> get_dpad_input_for_code(const std::string &code) {
     // All the codes end in A, and the last digit of each dpad sequence will be
     // A to trigger a button press. So we do not need to keep track of the robot
@@ -102,105 +156,23 @@ std::vector<DpadInput> get_dpad_input_for_code(const std::string &code) {
 
     for (const auto digit : code) {
         auto digit_pos = digit_positions.at(digit);
-        auto vector = digit_pos - cursor_position;
-
-        auto dx_abs = std::abs(vector.dx);
-        auto dy_abs = std::abs(vector.dy);
-        auto x_move = vector.dx > 0 ? DpadInput::Right : DpadInput::Left;
-        auto y_move = vector.dy > 0 ? DpadInput::Down : DpadInput::Up;
-        auto dx_unit = vector.dx > 0 ? 1 : -1;
-        auto dy_unit = vector.dy > 0 ? 1 : -1;
-
-        bool x_first_is_safe =
-            cursor_position.y != avoid_pos.y || digit_pos.x != avoid_pos.x;
-        bool y_first_is_safe =
-            cursor_position.x != avoid_pos.x || digit_pos.y != avoid_pos.y;
-
-        bool prefer_x_first = x_move == DpadInput::Left;
-
-        aoc_assert(x_first_is_safe || y_first_is_safe, "no safe direction");
-
-        if ((x_first_is_safe && prefer_x_first) || !y_first_is_safe) {
-            for (int x = 0; x < dx_abs; x++) {
-                directions.push_back(x_move);
-                cursor_position.x += dx_unit;
-                aoc_assert(cursor_position != avoid_pos, "illegal cursor move");
-            }
-            for (int y = 0; y < dy_abs; y++) {
-                directions.push_back(y_move);
-                cursor_position.y += dy_unit;
-                aoc_assert(cursor_position != avoid_pos, "illegal cursor move");
-            }
-        } else {
-            for (int y = 0; y < dy_abs; y++) {
-                directions.push_back(y_move);
-                cursor_position.y += dy_unit;
-                aoc_assert(cursor_position != avoid_pos, "illegal cursor move");
-            }
-            for (int x = 0; x < dx_abs; x++) {
-                directions.push_back(x_move);
-                cursor_position.x += dx_unit;
-                aoc_assert(cursor_position != avoid_pos, "illegal cursor move");
-            }
-        }
-
-        directions.push_back(DpadInput::Activate);
+        auto inputs = get_dpad_input(digit_pos, cursor_position, avoid_pos);
+        std::copy(inputs.begin(), inputs.end(), std::back_inserter(directions));
     }
 
     return directions;
 }
 
 std::vector<DpadInput>
-get_dpad_input_for_dpad_inputs(const std::vector<DpadInput> &inputs) {
+get_dpad_input_for_dpad_inputs(const std::vector<DpadInput> &last_step_inputs) {
     aoc::Point cursor_position = dpad_positions.at(DpadInput::Activate);
     std::vector<DpadInput> directions;
     aoc::Point avoid_pos(0, 0);
 
-    for (const auto dpad_input : inputs) {
+    for (const auto dpad_input : last_step_inputs) {
         auto dpad_pos = dpad_positions.at(dpad_input);
-        auto vector = dpad_pos - cursor_position;
-
-        auto dx_abs = std::abs(vector.dx);
-        auto dy_abs = std::abs(vector.dy);
-        auto x_move = vector.dx > 0 ? DpadInput::Right : DpadInput::Left;
-        auto y_move = vector.dy > 0 ? DpadInput::Down : DpadInput::Up;
-        auto dx_unit = vector.dx > 0 ? 1 : -1;
-        auto dy_unit = vector.dy > 0 ? 1 : -1;
-
-        bool x_first_is_safe =
-            cursor_position.y != avoid_pos.y || dpad_pos.x != avoid_pos.x;
-        bool y_first_is_safe =
-            cursor_position.x != avoid_pos.x || dpad_pos.y != avoid_pos.y;
-
-        bool prefer_x_first = x_move == DpadInput::Left;
-
-        aoc_assert(x_first_is_safe || y_first_is_safe, "no safe direction");
-
-        if ((x_first_is_safe && prefer_x_first) || !y_first_is_safe) {
-            for (int x = 0; x < dx_abs; x++) {
-                directions.push_back(x_move);
-                cursor_position.x += dx_unit;
-                aoc_assert(cursor_position != avoid_pos, "illegal cursor move");
-            }
-            for (int y = 0; y < dy_abs; y++) {
-                directions.push_back(y_move);
-                cursor_position.y += dy_unit;
-                aoc_assert(cursor_position != avoid_pos, "illegal cursor move");
-            }
-        } else {
-            for (int y = 0; y < dy_abs; y++) {
-                directions.push_back(y_move);
-                cursor_position.y += dy_unit;
-                aoc_assert(cursor_position != avoid_pos, "illegal cursor move");
-            }
-            for (int x = 0; x < dx_abs; x++) {
-                directions.push_back(x_move);
-                cursor_position.x += dx_unit;
-                aoc_assert(cursor_position != avoid_pos, "illegal cursor move");
-            }
-        }
-
-        directions.push_back(DpadInput::Activate);
+        auto inputs = get_dpad_input(dpad_pos, cursor_position, avoid_pos);
+        std::copy(inputs.begin(), inputs.end(), std::back_inserter(directions));
     }
 
     return directions;
@@ -239,46 +211,6 @@ long part1(const ParsedInput &input) {
     }
 
     return complexity;
-}
-
-std::string decompile_dpad_input(const std::string &dpad_input) {
-    std::string result;
-
-    aoc::Point cursor_position = dpad_positions.at(DpadInput::Activate);
-    for (auto c : dpad_input) {
-        switch (c) {
-        case 'v': {
-            cursor_position.y += 1;
-            break;
-        }
-        case '<': {
-            cursor_position.x -= 1;
-            break;
-        }
-        case '>': {
-            cursor_position.x += 1;
-            break;
-        }
-        case '^': {
-            cursor_position.y -= 1;
-            break;
-        }
-        case 'A': {
-            auto it =
-                std::find_if(dpad_positions.cbegin(), dpad_positions.cend(),
-                             [&cursor_position](auto pair) {
-                                 return pair.second == cursor_position;
-                             });
-            result += get_code_char(it->first);
-            break;
-        }
-        default: {
-            throw std::runtime_error("Invalid DPAD input");
-        }
-        }
-    }
-
-    return result;
 }
 
 } // namespace day21
