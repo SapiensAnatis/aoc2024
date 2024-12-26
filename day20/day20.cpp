@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <ranges>
 #include <unordered_set>
 
@@ -17,16 +18,16 @@ ParsedInput parse_input(std::ifstream &input_stream) {
 }
 
 std::vector<aoc::Point>
-get_adjacent_squares_radius_3(const std::unique_ptr<aoc::Grid> &grid,
+get_adjacent_squares_radius_2(const std::unique_ptr<aoc::Grid> &grid,
                               aoc::Point origin) {
     std::vector<aoc::Point> result;
 
-    for (int dy = -3; dy <= 3; dy++) {
-        for (int dx = -3; dx <= 3; dx++) {
+    for (int dy = -2; dy <= 2; dy++) {
+        for (int dx = -2; dx <= 2; dx++) {
             aoc::Point point(origin.x + dx, origin.y + dy);
             int distance = std::abs(dx) + std::abs(dy);
 
-            if (distance > 3) {
+            if (distance > 2) {
                 continue;
             }
 
@@ -57,7 +58,7 @@ int part1(const ParsedInput &input) {
         throw std::runtime_error("Could not find path");
     }
 
-    std::vector<aoc::Point> path;
+    std::vector path{end};
     aoc::Point current_node = parents->at(end);
 
     while (current_node != start) {
@@ -80,7 +81,7 @@ int part1(const ParsedInput &input) {
 
     for (auto [path_point, time] : path_positions) {
         auto candidate_squares =
-            get_adjacent_squares_radius_3(input.grid, path_point);
+            get_adjacent_squares_radius_2(input.grid, path_point);
 
         for (auto candidate_cheat_dest : candidate_squares) {
             auto new_path_point_it = path_positions.find(candidate_cheat_dest);
@@ -89,34 +90,47 @@ int part1(const ParsedInput &input) {
             }
 
             auto new_time = new_path_point_it->second;
-            if (new_time <= time) {
+
+            // A cheat's value is the progress it gains, minus two for the time
+            // taken to conduct the cheat
+            auto cheat_value = new_time - time - 2;
+
+            if (cheat_value <= 0) {
                 // We would be going backwards or not moving - not a very good
                 // cheat
                 continue;
             }
 
-            auto cheat_value = new_time - time;
-
-            if (cheat_value >= 40) {
-                std::cout << "Found cheat with value " << cheat_value
-                          << std::endl;
-
-                auto grid_copy = *input.grid;
-
-                std::cout << grid_copy << std::endl;
-
-                grid_copy.set_square(candidate_cheat_dest, 'Y');
-                grid_copy.set_square(path_point, 'X');
-
-                std::cout << grid_copy << std::endl;
-            }
+            // if (cheat_value >= 40) {
+            //     std::cout << "Found cheat with value " << cheat_value
+            //               << std::endl;
+            //
+            //     auto grid_copy = *input.grid;
+            //
+            //     std::cout << grid_copy << std::endl;
+            //
+            //     grid_copy.set_square(candidate_cheat_dest, 'Y');
+            //     grid_copy.set_square(path_point, 'X');
+            //
+            //     std::cout << grid_copy << std::endl;
+            // }
 
             auto [it, _] = possible_cheat_values.emplace(cheat_value, 0);
             it->second++;
         }
     }
 
-    return 0;
+    int num_cheats_over_100 = 0;
+    for (const auto [cheat_value, num_cheats] : possible_cheat_values) {
+        std::cout << "Found " << num_cheats << " cheat(s) that would save "
+                  << cheat_value << " picoseconds" << std::endl;
+
+        if (cheat_value >= 100) {
+            num_cheats_over_100 += num_cheats;
+        }
+    }
+
+    return num_cheats_over_100;
 }
 
 } // namespace day20

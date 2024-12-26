@@ -11,7 +11,14 @@ TEST(day20_part1, example) {
     std::cout << result << std::endl;
 }
 
-TEST(day20_part1, real) {}
+TEST(day20_part1, real) {
+    auto input_stream = aoc::get_real_ifstream();
+    auto input = day20::parse_input(input_stream);
+
+    auto result = day20::part1(input);
+
+    std::cout << result << std::endl;
+}
 
 TEST(day20_part2, example) {}
 
