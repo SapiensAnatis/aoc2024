@@ -1,6 +1,8 @@
 #include "day19.h"
 
 #include "../lib/aoc.h"
+#include "../lib/assert.h"
+#include "../lib/hash.hpp"
 
 #include <algorithm>
 #include <fstream>
@@ -9,6 +11,7 @@
 #include <queue>
 #include <ranges>
 #include <stack>
+#include <unordered_map>
 #include <unordered_set>
 
 namespace day19 {
@@ -60,28 +63,51 @@ bool can_compose(const std::string &pattern,
     return subpattern_possible[pattern.size()];
 }
 
-// NOLINTNEXTLINE(misc-no-recursion)
-void find_paths_dfs(const std::multimap<int, std::string> &graph,
-                    std::vector<std::vector<std::string>> &paths,
-                    std::vector<std::string> &&current_path,
-                    int current_index) {
+void find_paths_bfs(const std::multimap<int, std::string> &graph,
+                    std::unordered_multimap<Node, Node> &parents,
+                    const Node &start) {
 
-    if (current_index == 0) {
-        paths.push_back(current_path);
+    std::queue<Node> queue;
+    std::unordered_set<Node> explored;
+    queue.push(start);
+
+    while (!queue.empty()) {
+        auto current = queue.front();
+        queue.pop();
+
+        auto [begin, end] = graph.equal_range(current.index);
+        for (auto it = begin; it != end; it++) {
+            auto string = it->second;
+            int new_index = current.index - static_cast<int>(string.size());
+            Node new_node(new_index, string);
+
+            if (explored.contains(new_node)) {
+                continue;
+            }
+
+            parents.emplace(new_node, current);
+            queue.push(new_node);
+            explored.insert(new_node);
+        }
+    }
+}
+
+// NOLINTNEXTLINE(misc-no-recursion)
+void analyze_bfs_tree(const std::string &pattern,
+                      const std::multimap<int, std::string> &graph,
+                      std::unordered_set<std::string> &paths, int current_index,
+                      const std::string &path) {
+
+    if (current_index == static_cast<int>(pattern.size())) {
+        paths.insert(path);
         return;
     }
 
-    auto [begin, end] = graph.equal_range(current_index);
-    for (auto it = begin; it != end; ++it) {
-        int new_index = current_index - static_cast<int>(it->second.size());
-        if (new_index < 0) {
-            continue;
-        }
-
-        std::vector<std::string> new_path = current_path;
-        new_path.push_back(it->second);
-
-        find_paths_dfs(graph, paths, std::move(new_path), new_index);
+    const auto [begin, end] = graph.equal_range(current_index);
+    for (auto it = begin; it != end; it++) {
+        std::string new_path = path + "," += it->second;
+        auto new_index = current_index + static_cast<int>(it->second.size());
+        analyze_bfs_tree(pattern, graph, paths, new_index, new_path);
     }
 }
 
@@ -95,35 +121,24 @@ get_compositions(const std::string &pattern,
     for (int i = 1; i < pattern_size + 1; i++) {
         for (int j = 0; j < i; j++) {
             auto substring = std::string{pattern}.substr(j, i - j);
+            int substring_size = static_cast<int>(substring.size());
             if (towels.contains(substring)) {
-                subpatterns.emplace(i, substring);
+                subpatterns.emplace(i - substring_size, substring);
             }
         }
     }
 
-    std::vector<std::vector<std::string>> paths;
+    std::unordered_set<std::string> paths;
 
-    for (const auto &[index, _] : subpatterns) {
-        if (index == pattern_size) {
-            // Valid ending pattern - and thus starting point for DFS
-            find_paths_dfs(subpatterns, paths, std::vector<std::string>{},
-                           index);
+    for (const auto &[index, substring] : subpatterns) {
+        if (index == 0) {
+            // Valid starting pattern
+            analyze_bfs_tree(pattern, subpatterns, paths,
+                             static_cast<int>(substring.size()), substring);
         }
     }
 
-    std::unordered_set<std::string> unique_paths;
-    for (const auto &path : paths) {
-        std::string path_str;
-
-        for (const auto &path_element : path | std::views::reverse) {
-            path_str += path_element;
-            path_str += ",";
-        }
-
-        unique_paths.insert(path_str);
-    }
-
-    return unique_paths;
+    return paths;
 }
 
 int part1(const ParsedInput &input) {
