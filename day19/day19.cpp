@@ -108,27 +108,6 @@ analyze_subpatterns_bfs(const std::string &pattern,
     return complete_paths;
 }
 
-int get_compositions(const std::string &pattern,
-                     const std::unordered_set<std::string> &towels) {
-    std::multimap<int, std::string> subpatterns;
-
-    int pattern_size = static_cast<int>(pattern.size());
-
-    for (int i = 1; i < pattern_size + 1; i++) {
-        for (int j = 0; j < i; j++) {
-            auto substring = std::string{pattern}.substr(j, i - j);
-            int substring_size = static_cast<int>(substring.size());
-            if (towels.contains(substring)) {
-                subpatterns.emplace(i - substring_size, substring);
-            }
-        }
-    }
-
-    auto paths = analyze_subpatterns_bfs(pattern, subpatterns);
-
-    return static_cast<int>(paths.size());
-}
-
 int part1(const ParsedInput &input) {
     int possible_count = 0;
 
@@ -141,17 +120,58 @@ int part1(const ParsedInput &input) {
     return possible_count;
 }
 
-int part2(const ParsedInput &input) {
-    int permutation_count = 0;
+// NOLINTNEXTLINE(misc-no-recursion)
+long long get_compositions(
+    const ParsedInput &input, std::string_view pattern_view,
+    std::unordered_map<std::string_view::size_type, long long> &memo) {
+
+    if (pattern_view.empty()) {
+        return 1;
+    }
+
+    auto memo_it = memo.find(pattern_view.size());
+    if (memo_it != memo.end()) {
+        return memo_it->second;
+    }
+
+    long long compositions = 0;
+    for (auto &towel : input.towels) {
+        if (towel.size() > pattern_view.size()) {
+            continue;
+        }
+
+        if (pattern_view.starts_with(towel)) {
+            compositions += get_compositions(
+                input,
+                pattern_view.substr(towel.size(),
+                                    pattern_view.size() - towel.size()),
+                memo);
+        }
+    }
+
+    memo[pattern_view.size()] = compositions;
+
+    return compositions;
+}
+
+long long part2(const ParsedInput &input) {
+    long long permutation_count = 0;
 
     for (std::vector<std::string>::size_type i = 0; i < input.patterns.size();
          i++) {
 
-        std::cout << "Checking pattern: " << i << "/" << input.patterns.size()
-                  << std::endl;
+        std::cout << "Checking pattern: " << i + 1 << "/"
+                  << input.patterns.size() << std::endl;
 
         auto pattern = input.patterns[i];
-        permutation_count += get_compositions(pattern, input.towels);
+        auto memo =
+            std::unordered_map<std::string_view::size_type, long long>{};
+        auto this_count = get_compositions(input, pattern, memo);
+
+        std::cout << "Pattern " << pattern << " can be made in " << this_count
+                  << " ways" << std::endl;
+
+        permutation_count += this_count;
     }
 
     return permutation_count;

@@ -21,8 +21,6 @@ TEST(day19_part1, real) {
 }
 
 TEST(day19_part2, example) {
-    // this is too slow with recursion, need a better algo
-    // idea: bfs but tracking the path on each node
     auto input_stream = aoc::get_example_ifstream();
     auto input = day19::parse_input(input_stream);
 
