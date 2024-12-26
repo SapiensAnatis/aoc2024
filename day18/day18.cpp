@@ -2,12 +2,11 @@
 
 #include "../lib/aoc.h"
 #include "../lib/assert.h"
+#include "../lib/search.h"
 
 #include <fstream>
 #include <iostream>
-#include <queue>
 #include <unordered_map>
-#include <unordered_set>
 
 namespace day18 {
 
@@ -26,41 +25,6 @@ ParsedInput parse_input(std::ifstream &input_stream) {
     }
 
     return {.byte_positions = byte_fall_points};
-}
-
-std::optional<std::unordered_map<aoc::Point, aoc::Point>>
-bfs(const std::unique_ptr<aoc::Grid> &grid, aoc::Point start, aoc::Point end) {
-    std::queue<aoc::Point> queue;
-    std::unordered_set<aoc::Point> explored;
-    std::unordered_map<aoc::Point, aoc::Point> parents;
-    explored.insert(start);
-    queue.push(start);
-
-    while (!queue.empty()) {
-        aoc::Point current = queue.front();
-        queue.pop();
-
-        if (current == end) {
-            return parents;
-        }
-
-        for (auto edge : grid->get_adjacent_points(current)) {
-            if (grid->get_square_unsafe(edge) != '.') {
-                continue;
-            }
-
-            if (explored.contains(edge)) {
-                continue;
-            }
-
-            explored.insert(edge);
-            parents[edge] = current;
-            queue.push(edge);
-        }
-    }
-
-    // No path found
-    return std::nullopt;
 }
 
 std::vector<aoc::Point>
@@ -94,7 +58,7 @@ int part1(const ParsedInput &input, int grid_size, int num_bytes_fall) {
     aoc::Point start = {0, 0};
     aoc::Point end = {grid->get_width() - 1, grid->get_height() - 1};
 
-    auto bfs_result = bfs(grid, start, end);
+    auto bfs_result = aoc::bfs(grid, start, end);
     aoc_assert(bfs_result, "Failed to find a path");
 
     auto bfs_path = get_bfs_path(*bfs_result, end);

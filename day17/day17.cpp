@@ -171,7 +171,7 @@ std::vector<int> parse_program_line(const std::string &program_line) {
 
     aoc_assert(match_start != match_end, "Regex did not match");
     aoc_assert(match_start->size() == 2, "Match did not have a capture group");
-    
+
     auto program_string = match_start->str(1);
 
     auto instructions = aoc::split(program_string, ',');
@@ -179,7 +179,7 @@ std::vector<int> parse_program_line(const std::string &program_line) {
 
     std::transform(instructions.begin(), instructions.end(),
                    parsed_instructions.begin(),
-                   [](auto ins) { return *aoc::stoi(ins); });
+                   [](auto ins) { return aoc::parse_int(ins); });
 
     return parsed_instructions;
 }

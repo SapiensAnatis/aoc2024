@@ -1,2 +1,7 @@
 add_library(lib
-        aoc.cpp aoc.h tree.hpp grid.h grid.cpp hash.hpp assert.h assert.cpp)
+        aoc.h aoc.cpp
+        tree.hpp
+        grid.h grid.cpp
+        hash.hpp
+        assert.h assert.cpp
+        search.h search.cpp)
