@@ -13,6 +13,8 @@ ParsedInput parse_input(std::ifstream &input_stream);
 
 unsigned long part1(const ParsedInput &input);
 
+unsigned long part2(const ParsedInput &input);
+
 } // namespace day21
 
 #endif // AOC2024_DAY21_H

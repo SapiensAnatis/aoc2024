@@ -14,6 +14,31 @@ namespace day21 {
 
 enum class DpadInput { Up, Activate, Left, Down, Right };
 
+struct Move {
+    DpadInput from;
+    DpadInput to;
+    int robot_num;
+};
+
+bool operator==(const Move &lhs, const Move &rhs) {
+    return lhs.from == rhs.from && lhs.to == rhs.to &&
+           lhs.robot_num == rhs.robot_num;
+}
+
+} // namespace day21
+
+template <> struct std::hash<day21::Move> {
+    size_t operator()(const day21::Move &a) const noexcept {
+        size_t seed = 0;
+        aoc::hash_combine(seed, a.from);
+        aoc::hash_combine(seed, a.to);
+        aoc::hash_combine(seed, a.robot_num);
+        return seed;
+    }
+};
+
+namespace day21 {
+
 ParsedInput parse_input(std::ifstream &input_stream) {
     std::string line;
     std::vector<std::string> codes;
@@ -97,13 +122,12 @@ std::map<DpadInput, aoc::Point> dpad_positions = {
 };
 // clang-format on
 
-std::vector<DpadInput> get_dpad_input(aoc::Point target_pos,
-                                      aoc::Point &cursor_position,
+std::vector<DpadInput> get_dpad_input(aoc::Point from, aoc::Point to,
                                       aoc::Point avoid_pos) {
 
     std::vector<DpadInput> inputs;
 
-    auto vector = target_pos - cursor_position;
+    auto vector = to - from;
 
     auto dx_abs = std::abs(vector.dx);
     auto dy_abs = std::abs(vector.dy);
@@ -112,10 +136,8 @@ std::vector<DpadInput> get_dpad_input(aoc::Point target_pos,
     auto dx_unit = vector.dx > 0 ? 1 : -1;
     auto dy_unit = vector.dy > 0 ? 1 : -1;
 
-    bool x_first_is_safe =
-        cursor_position.y != avoid_pos.y || target_pos.x != avoid_pos.x;
-    bool y_first_is_safe =
-        cursor_position.x != avoid_pos.x || target_pos.y != avoid_pos.y;
+    bool x_first_is_safe = from.y != avoid_pos.y || to.x != avoid_pos.x;
+    bool y_first_is_safe = from.x != avoid_pos.x || to.y != avoid_pos.y;
 
     // I don't really get why this is to be honest
     bool prefer_x_first = x_move == DpadInput::Left;
@@ -125,24 +147,24 @@ std::vector<DpadInput> get_dpad_input(aoc::Point target_pos,
     if ((x_first_is_safe && prefer_x_first) || !y_first_is_safe) {
         for (int x = 0; x < dx_abs; x++) {
             inputs.push_back(x_move);
-            cursor_position.x += dx_unit;
-            aoc_assert(cursor_position != avoid_pos, "illegal cursor move");
+            from.x += dx_unit;
+            aoc_assert(from != avoid_pos, "illegal cursor move");
         }
         for (int y = 0; y < dy_abs; y++) {
             inputs.push_back(y_move);
-            cursor_position.y += dy_unit;
-            aoc_assert(cursor_position != avoid_pos, "illegal cursor move");
+            from.y += dy_unit;
+            aoc_assert(from != avoid_pos, "illegal cursor move");
         }
     } else {
         for (int y = 0; y < dy_abs; y++) {
             inputs.push_back(y_move);
-            cursor_position.y += dy_unit;
-            aoc_assert(cursor_position != avoid_pos, "illegal cursor move");
+            from.y += dy_unit;
+            aoc_assert(from != avoid_pos, "illegal cursor move");
         }
         for (int x = 0; x < dx_abs; x++) {
             inputs.push_back(x_move);
-            cursor_position.x += dx_unit;
-            aoc_assert(cursor_position != avoid_pos, "illegal cursor move");
+            from.x += dx_unit;
+            aoc_assert(from != avoid_pos, "illegal cursor move");
         }
     }
 
@@ -151,84 +173,92 @@ std::vector<DpadInput> get_dpad_input(aoc::Point target_pos,
     return inputs;
 }
 
+unsigned long
+// NOLINTNEXTLINE(misc-no-recursion)
+get_pair_complexity(DpadInput from, DpadInput to, int robot_num,
+                    std::unordered_map<Move, unsigned long> &cache) {
+    Move move(from, to, robot_num);
+    auto cache_it = cache.find(move);
+    if (cache_it != cache.end()) {
+        return cache_it->second;
+    }
+
+    auto from_pos = dpad_positions.at(from);
+    auto to_pos = dpad_positions.at(to);
+    aoc::Point avoid(0, 0);
+
+    auto moves = get_dpad_input(from_pos, to_pos, avoid);
+    unsigned long complexity = 0;
+
+    for (std::vector<DpadInput>::size_type i = 0; i < moves.size(); i++) {
+        auto current = moves[i];
+        auto previous = i == 0 ? DpadInput::Activate : moves[i - 1];
+
+        if (robot_num == 1) {
+            // This is the final robot a.k.a. us
+            complexity += 1;
+        } else {
+            complexity +=
+                get_pair_complexity(previous, current, robot_num - 1, cache);
+        }
+    }
+
+    cache[move] = complexity;
+    return complexity;
+}
+
 std::vector<DpadInput> get_dpad_input_for_code(const std::string &code) {
-    // All the codes end in A, and the last digit of each dpad sequence will be
-    // A to trigger a button press. So we do not need to keep track of the robot
-    // cursor positions between iterations.
     aoc::Point cursor_position = digit_positions.at('A');
     std::vector<DpadInput> directions;
     aoc::Point avoid_pos(0, 3);
 
     for (const auto digit : code) {
         auto digit_pos = digit_positions.at(digit);
-        auto inputs = get_dpad_input(digit_pos, cursor_position, avoid_pos);
+        auto inputs = get_dpad_input(cursor_position, digit_pos, avoid_pos);
         std::copy(inputs.begin(), inputs.end(), std::back_inserter(directions));
+
+        cursor_position = digit_pos;
     }
 
     return directions;
 }
 
-std::vector<DpadInput> get_dpad_input_for_dpad_input(
-    const std::vector<DpadInput> &previous_layer_inputs) {
-    aoc::Point cursor_position = dpad_positions.at(DpadInput::Activate);
-    std::vector<DpadInput> directions;
-    aoc::Point avoid_pos(0, 0);
-
-    for (const auto dpad_input : previous_layer_inputs) {
-        auto dpad_pos = dpad_positions.at(dpad_input);
-        auto inputs = get_dpad_input(dpad_pos, cursor_position, avoid_pos);
-        std::copy(inputs.begin(), inputs.end(), std::back_inserter(directions));
-    }
-
-    return directions;
-}
-
-unsigned long get_code_complexity(const std::string &code,
-                                  int num_dpad_robots) {
+unsigned long
+get_code_complexity(const std::string &code,
+                    std::unordered_map<Move, unsigned long> &complexity_memo,
+                    int num_dpad_robots) {
     auto first_directions = get_dpad_input_for_code(code);
     std::cout << "Combination for code " << code << ":" << std::endl
               << first_directions << std::endl;
 
-    std::unordered_map<std::string, unsigned long> complexity_memo;
-
-    std::vector<DpadInput> layer_directions =
-        get_dpad_input_for_dpad_input(first_directions);
-
-    std::cout << layer_directions << std::endl;
-
     std::vector<DpadInput> current_inputs;
-    std::vector<DpadInput> final_inputs;
+    unsigned long total_complexity = 0;
 
-    for (auto input : layer_directions) {
-        current_inputs.push_back(input);
-        if (input == DpadInput::Activate) {
-            std::vector<DpadInput> inputs_to_copy = current_inputs;
-            for (int i = 0; i < num_dpad_robots - 1; i++) {
-                inputs_to_copy = get_dpad_input_for_dpad_input(inputs_to_copy);
-            }
+    for (std::vector<DpadInput>::size_type i = 0; i < first_directions.size();
+         i++) {
+        auto current = first_directions[i];
+        auto previous = i == 0 ? DpadInput::Activate : first_directions[i - 1];
 
-            std::copy(inputs_to_copy.begin(), inputs_to_copy.end(),
-                      std::back_inserter(final_inputs));
-
-            current_inputs.clear();
-        }
+        total_complexity += get_pair_complexity(
+            previous, current, num_dpad_robots, complexity_memo);
     }
 
-    return final_inputs.size();
+    return total_complexity;
 }
 
 int get_code_number(const std::string &code) {
-    // TODO: can replace with just a substring ignoring the last char
-    static std::regex num_regex(R"(\d+)");
-    auto begin = std::sregex_iterator(code.begin(), code.end(), num_regex);
-    aoc_assert(begin != std::sregex_iterator(), "code did not match regex");
-    return aoc::parse_int(begin->str(0));
+    // The code is always numeric until the last digit
+    std::string_view numeric_part(code.begin(), code.end() - 1);
+    return aoc::parse_int(numeric_part);
 }
 
 unsigned long puzzle(const ParsedInput &input, int num_dpad_robots) {
     unsigned long total_complexity = 0;
+    std::unordered_map<Move, unsigned long> complexity_memo;
+
     for (const auto &code : input.codes) {
-        auto complexity = get_code_complexity(code, num_dpad_robots);
+        auto complexity =
+            get_code_complexity(code, complexity_memo, num_dpad_robots);
         auto number = get_code_number(code);
 
         std::cout << "Complexity: " << complexity << " * " << number
@@ -241,5 +271,7 @@ unsigned long puzzle(const ParsedInput &input, int num_dpad_robots) {
 }
 
 unsigned long part1(const ParsedInput &input) { return puzzle(input, 2); }
+
+unsigned long part2(const ParsedInput &input) { return puzzle(input, 25); }
 
 } // namespace day21
