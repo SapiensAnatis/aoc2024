@@ -11,7 +11,7 @@ struct ParsedInput {
 
 ParsedInput parse_input(std::ifstream &input_stream);
 
-long part1(const ParsedInput &input);
+unsigned long part1(const ParsedInput &input);
 
 } // namespace day21
 

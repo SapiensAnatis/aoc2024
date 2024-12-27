@@ -3,6 +3,7 @@
 #include "../lib/aoc.h"
 #include "../lib/assert.h"
 #include "../lib/grid.h"
+#include "../lib/hash.hpp"
 
 #include <iostream>
 #include <map>
@@ -10,6 +11,8 @@
 #include <regex>
 
 namespace day21 {
+
+enum class DpadInput { Up, Activate, Left, Down, Right };
 
 ParsedInput parse_input(std::ifstream &input_stream) {
     std::string line;
@@ -22,8 +25,6 @@ ParsedInput parse_input(std::ifstream &input_stream) {
 
     return {.codes = codes};
 }
-
-enum class DpadInput { Up, Activate, Left, Down, Right };
 
 std::map<DpadInput, int> dpad_costs_from_a = {
     {DpadInput::Up, 1},
@@ -53,15 +54,19 @@ std::ostream &operator<<(std::ostream &stream, DpadInput input) {
     return stream << get_code_char(input);
 }
 
-std::ostream &operator<<(std::ostream &stream,
-                         const std::vector<DpadInput> &inputs) {
+std::string get_code_string(const std::vector<DpadInput> &inputs) {
     std::string code_str;
     code_str.reserve(inputs.size());
     for (const auto &input : inputs) {
         code_str += get_code_char(input);
     }
 
-    return stream << code_str;
+    return code_str;
+}
+
+std::ostream &operator<<(std::ostream &stream,
+                         const std::vector<DpadInput> &inputs) {
+    return stream << get_code_string(inputs);
 }
 
 // clang-format off
@@ -163,13 +168,13 @@ std::vector<DpadInput> get_dpad_input_for_code(const std::string &code) {
     return directions;
 }
 
-std::vector<DpadInput>
-get_dpad_input_for_dpad_inputs(const std::vector<DpadInput> &last_step_inputs) {
+std::vector<DpadInput> get_dpad_input_for_dpad_input(
+    const std::vector<DpadInput> &previous_layer_inputs) {
     aoc::Point cursor_position = dpad_positions.at(DpadInput::Activate);
     std::vector<DpadInput> directions;
     aoc::Point avoid_pos(0, 0);
 
-    for (const auto dpad_input : last_step_inputs) {
+    for (const auto dpad_input : previous_layer_inputs) {
         auto dpad_pos = dpad_positions.at(dpad_input);
         auto inputs = get_dpad_input(dpad_pos, cursor_position, avoid_pos);
         std::copy(inputs.begin(), inputs.end(), std::back_inserter(directions));
@@ -178,21 +183,38 @@ get_dpad_input_for_dpad_inputs(const std::vector<DpadInput> &last_step_inputs) {
     return directions;
 }
 
-std::vector<DpadInput> get_final_directions(const std::string &code,
-                                            int num_dpad_robots) {
-    auto directions = get_dpad_input_for_code(code);
+unsigned long get_code_complexity(const std::string &code,
+                                  int num_dpad_robots) {
+    auto first_directions = get_dpad_input_for_code(code);
     std::cout << "Combination for code " << code << ":" << std::endl
-              << directions << std::endl;
+              << first_directions << std::endl;
 
-    std::vector<DpadInput> layer_directions = directions;
-    for (int i = 0; i < num_dpad_robots; i++) {
-        auto new_layer_directions =
-            get_dpad_input_for_dpad_inputs(layer_directions);
-        std::cout << new_layer_directions << std::endl;
-        layer_directions = new_layer_directions;
+    std::unordered_map<std::string, unsigned long> complexity_memo;
+
+    std::vector<DpadInput> layer_directions =
+        get_dpad_input_for_dpad_input(first_directions);
+
+    std::cout << layer_directions << std::endl;
+
+    std::vector<DpadInput> current_inputs;
+    std::vector<DpadInput> final_inputs;
+
+    for (auto input : layer_directions) {
+        current_inputs.push_back(input);
+        if (input == DpadInput::Activate) {
+            std::vector<DpadInput> inputs_to_copy = current_inputs;
+            for (int i = 0; i < num_dpad_robots - 1; i++) {
+                inputs_to_copy = get_dpad_input_for_dpad_input(inputs_to_copy);
+            }
+
+            std::copy(inputs_to_copy.begin(), inputs_to_copy.end(),
+                      std::back_inserter(final_inputs));
+
+            current_inputs.clear();
+        }
     }
 
-    return layer_directions;
+    return final_inputs.size();
 }
 
 int get_code_number(const std::string &code) {
@@ -203,21 +225,21 @@ int get_code_number(const std::string &code) {
     return aoc::parse_int(begin->str(0));
 }
 
-int puzzle(const ParsedInput &input, int num_dpad_robots) {
-    int complexity = 0;
+unsigned long puzzle(const ParsedInput &input, int num_dpad_robots) {
+    unsigned long total_complexity = 0;
     for (const auto &code : input.codes) {
-        auto directions = get_final_directions(code, num_dpad_robots);
+        auto complexity = get_code_complexity(code, num_dpad_robots);
         auto number = get_code_number(code);
 
-        std::cout << "Complexity: " << directions.size() << " * " << number
+        std::cout << "Complexity: " << complexity << " * " << number
                   << std::endl
                   << std::endl;
-        complexity += static_cast<int>(directions.size()) * number;
+        total_complexity += complexity * number;
     }
 
-    return complexity;
+    return total_complexity;
 }
 
-long part1(const ParsedInput &input) { return puzzle(input, 2); }
+unsigned long part1(const ParsedInput &input) { return puzzle(input, 2); }
 
 } // namespace day21
