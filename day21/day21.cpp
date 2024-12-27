@@ -51,13 +51,6 @@ ParsedInput parse_input(std::ifstream &input_stream) {
     return {.codes = codes};
 }
 
-std::map<DpadInput, int> dpad_costs_from_a = {
-    {DpadInput::Up, 1},
-    {DpadInput::Down, 2},
-    {DpadInput::Right, 1},
-    {DpadInput::Left, 3},
-};
-
 char get_code_char(DpadInput input) {
     switch (input) {
     case DpadInput::Up:
