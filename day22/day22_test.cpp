@@ -14,7 +14,7 @@ TEST(day22_part1, example) {
     for (int i = 0; i < 10; i++) {
         result = day22::advance_number_once(result);
         std::cout << result << std::endl;
-        aoc_assert(result == expected[i], "invalid result");
+        EXPECT_EQ(result, expected[i]) << "Wrong secret number evolution";
     }
 }
 
@@ -25,6 +25,8 @@ TEST(day22_part1, example2) {
     auto result = day22::part1(input);
 
     std::cout << result << std::endl;
+
+    EXPECT_EQ(result, 37327623) << "Does not match example";
 }
 
 TEST(day22_part1, real) {
@@ -36,6 +38,30 @@ TEST(day22_part1, real) {
     std::cout << result << std::endl;
 }
 
-TEST(day22_part2, example) {}
+TEST(day22_part2, example) {
+    auto result = day22::advance_number_and_track_changes(123, 10);
 
-TEST(day22_part2, real) {}
+    day22::ChangeSequence should_win_6(-1, -1, 0, 2);
+
+    EXPECT_EQ(result.at(should_win_6), 6) << "Did not win 6 bananas";
+}
+
+TEST(day22_part2, example2) {
+    auto input_stream = aoc::get_example_ifstream(2);
+    auto input = day22::parse_input(input_stream);
+
+    auto result = day22::part2(input);
+
+    std::cout << result << std::endl;
+
+    EXPECT_EQ(result, 23) << "Does not match example";
+}
+
+TEST(day22_part2, real) {
+    auto input_stream = aoc::get_real_ifstream();
+    auto input = day22::parse_input(input_stream);
+
+    auto result = day22::part2(input);
+
+    std::cout << result << std::endl;
+}
