@@ -178,39 +178,46 @@ get_dpad_input_for_dpad_inputs(const std::vector<DpadInput> &last_step_inputs) {
     return directions;
 }
 
-std::vector<DpadInput> get_final_directions(const std::string &code) {
+std::vector<DpadInput> get_final_directions(const std::string &code,
+                                            int num_dpad_robots) {
     auto directions = get_dpad_input_for_code(code);
     std::cout << "Combination for code " << code << ":" << std::endl
               << directions << std::endl;
-    auto layer_2_directions = get_dpad_input_for_dpad_inputs(directions);
-    std::cout << layer_2_directions << std::endl;
-    auto layer_3_directions =
-        get_dpad_input_for_dpad_inputs(layer_2_directions);
-    std::cout << layer_3_directions << std::endl;
 
-    return layer_3_directions;
+    std::vector<DpadInput> layer_directions = directions;
+    for (int i = 0; i < num_dpad_robots; i++) {
+        auto new_layer_directions =
+            get_dpad_input_for_dpad_inputs(layer_directions);
+        std::cout << new_layer_directions << std::endl;
+        layer_directions = new_layer_directions;
+    }
+
+    return layer_directions;
 }
 
 int get_code_number(const std::string &code) {
+    // TODO: can replace with just a substring ignoring the last char
     static std::regex num_regex(R"(\d+)");
     auto begin = std::sregex_iterator(code.begin(), code.end(), num_regex);
     aoc_assert(begin != std::sregex_iterator(), "code did not match regex");
     return aoc::parse_int(begin->str(0));
 }
 
-long part1(const ParsedInput &input) {
-    long complexity = 0;
+int puzzle(const ParsedInput &input, int num_dpad_robots) {
+    int complexity = 0;
     for (const auto &code : input.codes) {
-        auto directions = get_final_directions(code);
+        auto directions = get_final_directions(code, num_dpad_robots);
         auto number = get_code_number(code);
 
         std::cout << "Complexity: " << directions.size() << " * " << number
                   << std::endl
                   << std::endl;
-        complexity += static_cast<long>(directions.size()) * number;
+        complexity += static_cast<int>(directions.size()) * number;
     }
 
     return complexity;
 }
+
+long part1(const ParsedInput &input) { return puzzle(input, 2); }
 
 } // namespace day21
