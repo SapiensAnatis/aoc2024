@@ -1,0 +1,41 @@
+#include "../lib/aoc.h"
+#include "../lib/assert.h"
+#include "day22.h"
+
+#include "gtest/gtest.h"
+
+TEST(day22_part1, example) {
+    std::array<day22::secret_number, 10> expected = {
+        15887950, 16495136, 527345,   704524,  1553684,
+        12683156, 11100544, 12249484, 7753432, 5908254};
+
+    day22::secret_number result = 123;
+
+    for (int i = 0; i < 10; i++) {
+        result = day22::advance_number_once(result);
+        std::cout << result << std::endl;
+        aoc_assert(result == expected[i], "invalid result");
+    }
+}
+
+TEST(day22_part1, example2) {
+    auto input_stream = aoc::get_example_ifstream();
+    auto input = day22::parse_input(input_stream);
+
+    auto result = day22::part1(input);
+
+    std::cout << result << std::endl;
+}
+
+TEST(day22_part1, real) {
+    auto input_stream = aoc::get_real_ifstream();
+    auto input = day22::parse_input(input_stream);
+
+    auto result = day22::part1(input);
+
+    std::cout << result << std::endl;
+}
+
+TEST(day22_part2, example) {}
+
+TEST(day22_part2, real) {}
