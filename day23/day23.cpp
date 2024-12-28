@@ -1,6 +1,7 @@
 #include "day23.h"
 
 #include "../lib/assert.h"
+#include "../lib/hash.hpp"
 
 #include <algorithm>
 #include <fstream>
@@ -10,7 +11,37 @@
 #include <stack>
 #include <unordered_map>
 #include <unordered_set>
+#include <utility>
 #include <vector>
+
+namespace day23 {
+struct ComputerTriplet {
+    std::array<std::string, 3> computers;
+
+    ComputerTriplet(std::string a, std::string b, std::string c)
+        : computers({std::move(a), std::move(b), std::move(c)}) {}
+};
+
+bool operator==(ComputerTriplet lhs, ComputerTriplet rhs) {
+    std::sort(lhs.computers.begin(), lhs.computers.end());
+    std::sort(rhs.computers.begin(), rhs.computers.end());
+
+    return lhs.computers == rhs.computers;
+}
+
+} // namespace day23
+
+template <> struct std::hash<day23::ComputerTriplet> {
+    size_t operator()(day23::ComputerTriplet a) const noexcept {
+        std::sort(a.computers.begin(), a.computers.end());
+
+        size_t seed = 0;
+        aoc::hash_combine(seed, a.computers[0]);
+        aoc::hash_combine(seed, a.computers[1]);
+        aoc::hash_combine(seed, a.computers[2]);
+        return seed;
+    }
+};
 
 namespace day23 {
 
@@ -61,97 +92,55 @@ populate_connections(const ParsedInput &input) {
     return computers;
 }
 
-struct KosarajuContext {
-    std::deque<std::weak_ptr<Computer>> vertex_list;
-    std::unordered_set<std::string> visited_computers;
-    std::unordered_set<std::string> assigned_computers;
-    std::unordered_map<std::string, std::vector<std::string>> components;
-};
-
-// NOLINTNEXTLINE(misc-no-recursion)
-void visit(const std::shared_ptr<Computer> &computer,
-           KosarajuContext &context) {
-    if (context.visited_computers.contains(computer->name)) {
-        return;
-    }
-
-    context.visited_computers.insert(computer->name);
-
-    for (const auto &connection : computer->connections) {
-        auto connection_lock = connection.lock();
-        aoc_assert(connection_lock, "unable to acquire connection ptr");
-        visit(connection_lock, context);
-
-        context.vertex_list.push_front(connection);
-    }
-}
-
-// NOLINTNEXTLINE(misc-no-recursion)
-void assign(const std::shared_ptr<Computer> &computer,
-            const std::shared_ptr<Computer> &root, KosarajuContext &context) {
-    if (context.assigned_computers.contains(computer->name)) {
-        return;
-    }
-
-    context.assigned_computers.insert(computer->name);
-    auto component_it = context.components.find(computer->name);
-    if (component_it == context.components.end()) {
-        auto insert_result =
-            context.components.emplace(root->name, std::vector<std::string>());
-        component_it = insert_result.first;
-    }
-
-    component_it->second.push_back(computer->name);
-
-    for (const auto &connection : computer->connections) {
-        auto connection_lock = connection.lock();
-        aoc_assert(connection_lock, "unable to acquire connection ptr");
-        assign(connection_lock, root, context);
-    }
-}
-
-std::unordered_map<std::string, std::vector<std::string>>
-get_connected_components(
+std::unordered_set<ComputerTriplet> get_connected_components(
     const std::unordered_map<std::string, std::shared_ptr<Computer>>
         &computers) {
-
-    /* https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm */
-
-    KosarajuContext context;
+    std::unordered_set<ComputerTriplet> components;
+    std::unordered_set<std::string> checked_computers;
 
     for (const auto &computer : std::ranges::views::values(computers)) {
-        visit(computer, context);
+        for (const auto &second_computer_ref : computer->connections) {
+            auto second_computer = second_computer_ref.lock();
+            aoc_assert(second_computer, "unable to acquire computer ptr");
+
+            for (const auto &third_computer_ref :
+                 second_computer->connections) {
+                auto third_computer = third_computer_ref.lock();
+                aoc_assert(third_computer, "unable to acquire computer ptr");
+
+                for (const auto &fourth_computer_ref :
+                     third_computer->connections) {
+                    auto fourth_computer = fourth_computer_ref.lock();
+                    aoc_assert(fourth_computer,
+                               "unable to acquire computer ptr");
+
+                    if (fourth_computer->name == computer->name) {
+                        components.emplace(computer->name,
+                                           second_computer->name,
+                                           third_computer->name);
+                    }
+                }
+            }
+        }
     }
 
-    for (const auto &vertex : context.vertex_list) {
-        auto vertex_lock = vertex.lock();
-        aoc_assert(vertex_lock, "unable to acquire vertex ptr");
-
-        assign(vertex_lock, vertex_lock, context);
-    }
-
-    return context.components;
+    return components;
 }
 
 int part1(const ParsedInput &input) {
     auto map = populate_connections(input);
     auto components = get_connected_components(map);
 
-    return std::accumulate(
-        components.begin(), components.end(), 0, [](int acc, auto pair) {
-            auto has_3_computers = pair.second.size() == 3;
-            auto has_t_computer =
-                std::any_of(pair.second.begin(), pair.second.end(),
-                            [](const std::string &computer) {
-                                return computer.starts_with("t");
-                            });
+    int acc = 0;
+    for (const auto &component : components) {
+        if (std::any_of(
+                component.computers.begin(), component.computers.end(),
+                [](const std::string &c) { return c.starts_with('t'); })) {
+            acc += 1;
+        }
+    }
 
-            if (has_3_computers && has_t_computer) {
-                return acc + 1;
-            }
-
-            return acc;
-        });
+    return acc;
 }
 
 } // namespace day23
