@@ -85,40 +85,35 @@ populate_connections(const ParsedInput &input) {
         auto first_computer = first_computer_it->second;
         auto second_computer = second_computer_it->second;
 
-        first_computer->connections.emplace_back(second_computer_it->second);
-        second_computer->connections.emplace_back(first_computer_it->second);
+        first_computer->add_connection(second_computer_it->second);
+        second_computer->add_connection(first_computer_it->second);
     }
 
     return computers;
 }
 
-std::unordered_set<ComputerTriplet> get_connected_components(
+std::unordered_set<ComputerTriplet> get_connected_triplets(
     const std::unordered_map<std::string, std::shared_ptr<Computer>>
         &computers) {
     std::unordered_set<ComputerTriplet> components;
     std::unordered_set<std::string> checked_computers;
 
-    for (const auto &computer : std::ranges::views::values(computers)) {
-        for (const auto &second_computer_ref : computer->connections) {
+    for (const auto &first_computer : std::ranges::views::values(computers)) {
+        for (const auto &second_computer_ref :
+             first_computer->get_connections()) {
             auto second_computer = second_computer_ref.lock();
             aoc_assert(second_computer, "unable to acquire computer ptr");
 
             for (const auto &third_computer_ref :
-                 second_computer->connections) {
+                 second_computer->get_connections()) {
                 auto third_computer = third_computer_ref.lock();
                 aoc_assert(third_computer, "unable to acquire computer ptr");
 
-                for (const auto &fourth_computer_ref :
-                     third_computer->connections) {
-                    auto fourth_computer = fourth_computer_ref.lock();
-                    aoc_assert(fourth_computer,
-                               "unable to acquire computer ptr");
-
-                    if (fourth_computer->name == computer->name) {
-                        components.emplace(computer->name,
-                                           second_computer->name,
-                                           third_computer->name);
-                    }
+                if (first_computer->is_connected_to(
+                        third_computer->get_name())) {
+                    components.emplace(first_computer->get_name(),
+                                       second_computer->get_name(),
+                                       third_computer->get_name());
                 }
             }
         }
@@ -129,7 +124,7 @@ std::unordered_set<ComputerTriplet> get_connected_components(
 
 int part1(const ParsedInput &input) {
     auto map = populate_connections(input);
-    auto components = get_connected_components(map);
+    auto components = get_connected_triplets(map);
 
     int acc = 0;
     for (const auto &component : components) {
