@@ -7,6 +7,7 @@
 
 #include <fstream>
 #include <optional>
+#include <sstream>
 #include <string_view>
 #include <vector>
 
@@ -32,6 +33,20 @@ std::vector<std::string_view> split(const std::string_view &str,
                                     char separator);
 
 std::vector<std::string_view> split(const std::string &str, char separator);
+
+template <std::input_or_output_iterator Iterator>
+std::string join(char separator, const Iterator &begin, const Iterator &end) {
+    std::stringstream ss;
+    for (auto it = begin; it != end; ++it) {
+        if (it != begin) {
+            ss << separator;
+        }
+
+        ss << *it;
+    }
+
+    return ss.str();
+}
 
 } // namespace aoc
 

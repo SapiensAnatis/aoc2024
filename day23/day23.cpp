@@ -1,5 +1,6 @@
 #include "day23.h"
 
+#include "../lib/aoc.h"
 #include "../lib/assert.h"
 #include "../lib/hash.hpp"
 
@@ -136,6 +137,85 @@ int part1(const ParsedInput &input) {
     }
 
     return acc;
+}
+
+struct BronKerboschContext {
+    std::unordered_set<std::string> maximum_clique;
+    std::unordered_map<std::string, std::shared_ptr<Computer>> computer_lookup;
+
+    explicit BronKerboschContext(
+        std::unordered_map<std::string, std::shared_ptr<Computer>>
+            computer_lookup)
+        : computer_lookup(std::move(computer_lookup)) {}
+};
+
+template <typename T>
+std::unordered_set<T> set_intersection(const std::unordered_set<T> &a,
+                                       const std::unordered_set<T> &b) {
+    auto view =
+        a | std::views::filter([&b](const T &x) { return b.contains(x); });
+
+    return {view.begin(), view.end()};
+}
+
+// NOLINTNEXTLINE(misc-no-recursion)
+void bron_kerbosch(const std::unordered_set<std::string> &r,
+                   std::unordered_set<std::string> &p,
+                   std::unordered_set<std::string> &x,
+                   BronKerboschContext &context) {
+
+    /*
+     * Copied from:
+     * https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm#Without_pivoting
+     */
+
+    if (p.empty() && x.empty() && r.size() > context.maximum_clique.size()) {
+        context.maximum_clique = r;
+    }
+
+    auto p_copy = p;
+
+    // TODO: try the pivoting algorithm because this is slow as hell
+    for (const auto &v : p_copy) {
+        auto &v_ptr = context.computer_lookup.at(v);
+
+        auto r_union_v = r;
+        r_union_v.insert(v);
+
+        auto p_intersect_n_v =
+            set_intersection(p, v_ptr->get_connection_names());
+        auto x_intersect_n_v =
+            set_intersection(x, v_ptr->get_connection_names());
+
+        bron_kerbosch(r_union_v, p_intersect_n_v, x_intersect_n_v, context);
+
+        x.insert(v);
+        p.erase(v);
+    }
+}
+
+std::string part2(const ParsedInput &input) {
+    auto map = populate_connections(input);
+
+    BronKerboschContext context(map);
+
+    std::unordered_set<std::string> r = {};
+    std::unordered_set<std::string> p = {};
+    std::unordered_set<std::string> x = {};
+
+    for (const auto &[first, second] : input.connections) {
+        p.insert(first);
+        p.insert(second);
+    }
+
+    bron_kerbosch(r, p, x, context);
+
+    std::vector maximum_clique_vec(context.maximum_clique.begin(),
+                                   context.maximum_clique.end());
+
+    std::sort(maximum_clique_vec.begin(), maximum_clique_vec.end());
+
+    return aoc::join(',', maximum_clique_vec.begin(), maximum_clique_vec.end());
 }
 
 } // namespace day23
