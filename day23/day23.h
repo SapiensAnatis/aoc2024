@@ -19,12 +19,12 @@ struct Computer {
 
 struct ParsedInput {
     std::vector<std::pair<std::string, std::string>> connections;
-    std::unordered_map<std::string, std::shared_ptr<Computer>> computers;
 };
 
 ParsedInput parse_input(std::ifstream &input);
 
-void populate_connections(ParsedInput &input);
+std::unordered_map<std::string, std::shared_ptr<Computer>>
+populate_connections(ParsedInput &input);
 
 int part1(const ParsedInput &input);
 
