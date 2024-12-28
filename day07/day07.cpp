@@ -52,10 +52,10 @@ NodeType concat(NodeType a, NodeType b) {
     return result;
 }
 
-// clang-format off
- void write_node_children(Operation &op, int level, /* NOLINT misc-no-recursion */
-                        std::shared_ptr<aoc::TreeNode<NodeType>> &&node, bool enable_concat) {
-    // clang-format on
+// NOLINTNEXTLINE(misc-no-recursion)
+void write_node_children(Operation &op, int level,
+                         std::shared_ptr<aoc::TreeNode<NodeType>> &&node,
+                         bool enable_concat) {
 
     if (level + 1 >= static_cast<int>(op.operands.size())) {
         // Edge of the tree
