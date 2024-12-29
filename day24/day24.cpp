@@ -115,16 +115,12 @@ unsigned long part1(const ParsedInput &input) {
         });
     }
 
-    auto wire_view = input.wires | std::ranges::views::values |
-                     std::ranges::views::filter([](const std::shared_ptr<Wire> &wire) {
-                         return wire->name.starts_with('z');
-                     });
+    auto wire_view =
+        input.wires | std::ranges::views::values |
+        std::ranges::views::filter([](const auto &x) { return x->name.starts_with('z'); });
 
     std::vector wires(wire_view.begin(), wire_view.end());
-    std::sort(wires.begin(), wires.end(),
-              [](const std::shared_ptr<Wire> &wire_1, const std::shared_ptr<Wire> &wire_2) {
-                  return wire_1->name < wire_2->name;
-              });
+    std::ranges::sort(wires, [](const auto &a, const auto &b) { return a->name < b->name; });
 
     unsigned long result = 0;
     for (std::vector<std::shared_ptr<Wire>>::size_type i = 0; i < wires.size(); i++) {
