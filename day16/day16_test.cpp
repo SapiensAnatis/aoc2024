@@ -3,7 +3,7 @@
 #include "gtest/gtest.h"
 
 TEST(day16_part1, example) {
-    auto input_stream = aoc::get_example_ifstream();
+    auto input_stream = aoc::get_example_ifstream(aoc::Day16);
     auto input = day16::parse_input(input_stream);
 
     auto result = day16::part1(input);
@@ -12,7 +12,7 @@ TEST(day16_part1, example) {
 }
 
 TEST(day16_part1, example2) {
-    auto input_stream = aoc::get_example_ifstream(2);
+    auto input_stream = aoc::get_example_ifstream(aoc::Day16, 2);
     auto input = day16::parse_input(input_stream);
 
     auto result = day16::part1(input);
@@ -21,7 +21,7 @@ TEST(day16_part1, example2) {
 }
 
 TEST(day16_part1, real) {
-    auto input_stream = aoc::get_real_ifstream();
+    auto input_stream = aoc::get_real_ifstream(aoc::Day16);
     auto input = day16::parse_input(input_stream);
 
     auto result = day16::part1(input);
@@ -30,7 +30,7 @@ TEST(day16_part1, real) {
 }
 
 TEST(day16_part2, example) {
-    auto input_stream = aoc::get_example_ifstream();
+    auto input_stream = aoc::get_example_ifstream(aoc::Day16);
     auto input = day16::parse_input(input_stream);
 
     auto result = day16::part2(input);
@@ -39,7 +39,7 @@ TEST(day16_part2, example) {
 }
 
 TEST(day16_part2, example2) {
-    auto input_stream = aoc::get_example_ifstream(2);
+    auto input_stream = aoc::get_example_ifstream(aoc::Day16, 2);
     auto input = day16::parse_input(input_stream);
 
     auto result = day16::part2(input);
@@ -48,7 +48,7 @@ TEST(day16_part2, example2) {
 }
 
 TEST(day16_part2, real) {
-    auto input_stream = aoc::get_real_ifstream();
+    auto input_stream = aoc::get_real_ifstream(aoc::Day16);
     auto input = day16::parse_input(input_stream);
 
     auto result = day16::part2(input);

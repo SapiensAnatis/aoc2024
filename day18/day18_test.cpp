@@ -3,7 +3,7 @@
 #include "gtest/gtest.h"
 
 TEST(day18_part1, example) {
-    auto input_stream = aoc::get_example_ifstream();
+    auto input_stream = aoc::get_example_ifstream(aoc::Day18);
     auto input = day18::parse_input(input_stream);
 
     int grid_size = 7;
@@ -15,7 +15,7 @@ TEST(day18_part1, example) {
 }
 
 TEST(day18_part1, real) {
-    auto input_stream = aoc::get_real_ifstream();
+    auto input_stream = aoc::get_real_ifstream(aoc::Day18);
     auto input = day18::parse_input(input_stream);
 
     int grid_size = 71;
@@ -27,7 +27,7 @@ TEST(day18_part1, real) {
 }
 
 TEST(day18_part2, example) {
-    auto input_stream = aoc::get_example_ifstream();
+    auto input_stream = aoc::get_example_ifstream(aoc::Day18);
     auto input = day18::parse_input(input_stream);
 
     int grid_size = 7;
@@ -39,7 +39,7 @@ TEST(day18_part2, example) {
 }
 
 TEST(day18_part2, real) {
-    auto input_stream = aoc::get_real_ifstream();
+    auto input_stream = aoc::get_real_ifstream(aoc::Day18);
     auto input = day18::parse_input(input_stream);
 
     int grid_size = 71;

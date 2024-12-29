@@ -5,7 +5,7 @@
 #include <format>
 
 TEST(day24_part1, example) {
-    auto input_stream = aoc::get_example_ifstream();
+    auto input_stream = aoc::get_example_ifstream(aoc::Day24);
     auto input = day24::parse_input(input_stream);
 
     auto result = day24::part1(input);
@@ -14,7 +14,7 @@ TEST(day24_part1, example) {
 }
 
 TEST(day24_part1, example2) {
-    auto input_stream = aoc::get_example_ifstream(2);
+    auto input_stream = aoc::get_example_ifstream(aoc::Day24, 2);
     auto input = day24::parse_input(input_stream);
 
     auto result = day24::part1(input);
@@ -23,7 +23,7 @@ TEST(day24_part1, example2) {
 }
 
 TEST(day24_part1, real) {
-    auto input_stream = aoc::get_real_ifstream();
+    auto input_stream = aoc::get_real_ifstream(aoc::Day24);
     auto input = day24::parse_input(input_stream);
 
     auto result = day24::part1(input);
@@ -34,7 +34,7 @@ TEST(day24_part1, real) {
 TEST(day24_part2, example) {}
 
 TEST(day24_part2, real) {
-    auto input_stream = aoc::get_real_ifstream();
+    auto input_stream = aoc::get_real_ifstream(aoc::Day24);
     auto input = day24::parse_input(input_stream);
 
     day24::part2(input);

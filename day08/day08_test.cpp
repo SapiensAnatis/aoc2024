@@ -3,7 +3,7 @@
 #include "gtest/gtest.h"
 
 TEST(day08_part1, example) {
-    auto input_stream = aoc::get_example_ifstream();
+    auto input_stream = aoc::get_example_ifstream(aoc::Day08);
     auto input = day8::parse_input(input_stream);
 
     int result = day8::part1(input);
@@ -12,7 +12,7 @@ TEST(day08_part1, example) {
 }
 
 TEST(day08_part1, real) {
-    auto input_stream = aoc::get_real_ifstream();
+    auto input_stream = aoc::get_real_ifstream(aoc::Day08);
     auto input = day8::parse_input(input_stream);
 
     int result = day8::part1(input);
@@ -21,7 +21,7 @@ TEST(day08_part1, real) {
 }
 
 TEST(day08_part2, example) {
-    auto input_stream = aoc::get_example_ifstream();
+    auto input_stream = aoc::get_example_ifstream(aoc::Day08);
     auto input = day8::parse_input(input_stream);
 
     int result = day8::part2(input);
@@ -30,7 +30,7 @@ TEST(day08_part2, example) {
 }
 
 TEST(day08_part2, real) {
-    auto input_stream = aoc::get_real_ifstream();
+    auto input_stream = aoc::get_real_ifstream(aoc::Day08);
     auto input = day8::parse_input(input_stream);
 
     int result = day8::part2(input);

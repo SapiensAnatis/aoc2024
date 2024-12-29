@@ -6,7 +6,7 @@
 #include <ranges>
 
 TEST(day23_part1, example) {
-    auto input_stream = aoc::get_example_ifstream();
+    auto input_stream = aoc::get_example_ifstream(aoc::Day23);
     auto input = day23::parse_input(input_stream);
 
     auto result = day23::part1(input);
@@ -15,7 +15,7 @@ TEST(day23_part1, example) {
 }
 
 TEST(day23_part1, real) {
-    auto input_stream = aoc::get_real_ifstream();
+    auto input_stream = aoc::get_real_ifstream(aoc::Day23);
     auto input = day23::parse_input(input_stream);
 
     auto result = day23::part1(input);
@@ -24,7 +24,7 @@ TEST(day23_part1, real) {
 }
 
 TEST(day23_part2, example) {
-    auto input_stream = aoc::get_example_ifstream();
+    auto input_stream = aoc::get_example_ifstream(aoc::Day23);
     auto input = day23::parse_input(input_stream);
 
     auto result = day23::part2(input);
@@ -33,7 +33,7 @@ TEST(day23_part2, example) {
 }
 
 TEST(day23_part2, real) {
-    auto input_stream = aoc::get_real_ifstream();
+    auto input_stream = aoc::get_real_ifstream(aoc::Day23);
     auto input = day23::parse_input(input_stream);
 
     auto result = day23::part2(input);

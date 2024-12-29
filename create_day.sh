@@ -9,36 +9,41 @@ if [ -z "$day" ]; then
     exit 1
 fi
 
-day_name=$(printf "day%02d" $day)
-mkdir -p $day_name
+day_name=$(printf "day%02d" "$day")
+mkdir -p "$day_name"
 
-touch ./${day_name}/input.txt
-touch ./${day_name}/example.txt
+touch "./${day_name}/input.txt"
+touch "./${day_name}/example.txt"
 
-tee ./${day_name}/CMakeLists.txt <<EOF > /dev/null
-configure_file("\${CMAKE_CURRENT_SOURCE_DIR}/example.txt" "\${CMAKE_CURRENT_BINARY_DIR}/example.txt" COPYONLY)
+# We don't care as much about overwriting this file if it already exists as it's auto-generated boilerplate
+tee "./${day_name}/CMakeLists.txt" <<EOF > /dev/null
+configure_file("\${CMAKE_CURRENT_SOURCE_DIR}/example.txt" "\${CMAKE_CURRENT_BINARY_DIR}/${day_name}/example.txt" COPYONLY)
 
 if (EXISTS "\${CMAKE_CURRENT_SOURCE_DIR}/input.txt")
-    configure_file("\${CMAKE_CURRENT_SOURCE_DIR}/input.txt" "\${CMAKE_CURRENT_BINARY_DIR}/input.txt" COPYONLY)
+    configure_file("\${CMAKE_CURRENT_SOURCE_DIR}/input.txt" "\${CMAKE_CURRENT_BINARY_DIR}/${day_name}/input.txt" COPYONLY)
 endif ()
 
-add_executable(${day_name}_test ${day_name}.cpp
-        ${day_name}_test.cpp
-        ${day_name}.h)
-
-target_link_libraries(${day_name}_test gtest_main)
+target_sources(aoc PRIVATE
+    ${day_name}.cpp
+    ${day_name}.h
+    ${day_name}_test.cpp
+)
 EOF
 
-tee ./${day_name}/${day_name}.cpp <<EOF > /dev/null
+cpp_file_name="./${day_name}/${day_name}.cpp"
+if [ ! -f "$cpp_file_name" ]; then
+  tee "$cpp_file_name" <<EOF > /dev/null
 #include "${day_name}.h"
 
 namespace ${day_name} {
 } // namespace ${day_name}
 EOF
+fi
 
-include_guard="AOC2024_${day_name^^}_H"
-
-tee ./${day_name}/${day_name}.h <<EOF > /dev/null
+h_file_name="./${day_name}/${day_name}.h"
+if [ ! -f "$h_file_name" ]; then
+  include_guard="AOC2024_${day_name^^}_H"
+  tee "$h_file_name" <<EOF > /dev/null
 #ifndef ${include_guard}
 #define ${include_guard}
 
@@ -47,8 +52,11 @@ namespace ${day_name} {
 
 #endif // ${include_guard}
 EOF
+fi
 
-tee ./${day_name}/${day_name}_test.cpp <<EOF > /dev/null
+test_file_name="./${day_name}/${day_name}_test.cpp"
+if [ ! -f "$test_file_name" ]; then
+  tee "$test_file_name" <<EOF > /dev/null
 #include "../lib/aoc.h"
 #include "${day_name}.h"
 #include "gtest/gtest.h"
@@ -65,7 +73,8 @@ TEST(${day_name}_part2, example) {
 TEST(${day_name}_part2, real) {
 }
 EOF
+fi
 
-if [ -z $(grep ${day_name} CMakeLists.txt) ]; then
+if ! grep -q "${day_name}" "CMakeLists.txt" ; then
     echo "add_subdirectory(\"${day_name}\")" >> CMakeLists.txt
 fi

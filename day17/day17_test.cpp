@@ -3,21 +3,21 @@
 #include "gtest/gtest.h"
 
 TEST(day17_part1, example) {
-    auto input_stream = aoc::get_example_ifstream();
+    auto input_stream = aoc::get_example_ifstream(aoc::Day17);
     auto input = day17::parse_input(input_stream);
 
     day17::part1(input);
 }
 
 TEST(day17_part1, real) {
-    auto input_stream = aoc::get_real_ifstream();
+    auto input_stream = aoc::get_real_ifstream(aoc::Day17);
     auto input = day17::parse_input(input_stream);
 
     day17::part1(input);
 }
 
 TEST(day17_part2, example) {
-    auto input_stream = aoc::get_example_ifstream(2);
+    auto input_stream = aoc::get_example_ifstream(aoc::Day17, 2);
     auto input = day17::parse_input(input_stream);
 
     auto result = day17::part2(input);
@@ -26,7 +26,7 @@ TEST(day17_part2, example) {
 }
 
 TEST(day17_part2, real) {
-    auto input_stream = aoc::get_real_ifstream();
+    auto input_stream = aoc::get_real_ifstream(aoc::Day17);
     auto input = day17::parse_input(input_stream);
 
     auto result = day17::part2(input);

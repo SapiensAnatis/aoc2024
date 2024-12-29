@@ -20,11 +20,10 @@ set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 set(CMAKE_CXX_CLANG_TIDY "clang-tidy;-config-file=${CMAKE_CURRENT_SOURCE_DIR}/.clang-tidy;-warnings-as-errors=*")
 add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 
+add_executable(aoc)
+target_link_libraries(aoc ${Boost_LIBRARIES} gtest_main)
+
 add_subdirectory("lib")
-link_libraries(lib)
-
-link_libraries(${Boost_LIBRARIES})
-
 add_subdirectory("day01")
 add_subdirectory("day02")
 add_subdirectory("day03")

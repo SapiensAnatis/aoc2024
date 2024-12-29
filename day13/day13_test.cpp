@@ -4,7 +4,7 @@
 #include <chrono>
 
 TEST(day13_part1, example) {
-    auto input_stream = aoc::get_example_ifstream();
+    auto input_stream = aoc::get_example_ifstream(aoc::Day13);
     const auto input = day13::parse_input(input_stream);
 
     auto result = day13::part1(input);
@@ -13,7 +13,7 @@ TEST(day13_part1, example) {
 }
 
 TEST(day13_part1, real) {
-    auto input_stream = aoc::get_real_ifstream();
+    auto input_stream = aoc::get_real_ifstream(aoc::Day13);
     const auto input = day13::parse_input(input_stream);
 
     auto result = day13::part1(input);
@@ -24,7 +24,7 @@ TEST(day13_part1, real) {
 TEST(day13_part1, perf) {
     auto t1 = std::chrono::high_resolution_clock::now();
 
-    auto input_stream = aoc::get_real_ifstream();
+    auto input_stream = aoc::get_real_ifstream(aoc::Day13);
     auto input = day13::parse_input(input_stream);
 
     auto result = day13::part1(input);
@@ -37,7 +37,7 @@ TEST(day13_part1, perf) {
 }
 
 TEST(day13_part2, example) {
-    auto input_stream = aoc::get_example_ifstream();
+    auto input_stream = aoc::get_example_ifstream(aoc::Day13);
     const auto input = day13::parse_input(input_stream);
 
     auto result = day13::part2(input);
@@ -46,7 +46,7 @@ TEST(day13_part2, example) {
 }
 
 TEST(day13_part2, real) {
-    auto input_stream = aoc::get_real_ifstream();
+    auto input_stream = aoc::get_real_ifstream(aoc::Day13);
     const auto input = day13::parse_input(input_stream);
 
     auto result = day13::part2(input);

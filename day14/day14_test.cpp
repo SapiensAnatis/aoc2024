@@ -3,7 +3,7 @@
 #include "gtest/gtest.h"
 
 TEST(day14_part1, example) {
-    auto input_stream = aoc::get_example_ifstream();
+    auto input_stream = aoc::get_example_ifstream(aoc::Day14);
     std::shared_ptr<aoc::Grid> grid = aoc::Grid::create('.', 11, 7);
     const auto input = day14::parse_input(input_stream, grid);
 
@@ -13,7 +13,7 @@ TEST(day14_part1, example) {
 }
 
 TEST(day14_part1, real) {
-    auto input_stream = aoc::get_real_ifstream();
+    auto input_stream = aoc::get_real_ifstream(aoc::Day14);
     std::shared_ptr<aoc::Grid> grid = aoc::Grid::create('.', 101, 103);
     const auto input = day14::parse_input(input_stream, grid);
 
@@ -27,7 +27,7 @@ TEST(day14_part2, example) {
 }
 
 TEST(day14_part2, real) {
-    auto input_stream = aoc::get_real_ifstream();
+    auto input_stream = aoc::get_real_ifstream(aoc::Day14);
     std::shared_ptr<aoc::Grid> grid = aoc::Grid::create('.', 101, 103);
     const auto input = day14::parse_input(input_stream, grid);
 

@@ -13,30 +13,34 @@
 
 namespace aoc {
 
-std::ifstream get_ifstream(const std::string &filename) {
-    std::ifstream stream(filename); // copied by CMake
+std::ifstream get_ifstream(Day day, const std::string &filename) {
+    std::filesystem::path folder_name("day" + std::to_string(day));
+    std::string path = folder_name / filename;
+    std::ifstream stream(path); // copied by CMake
 
     if (stream.fail()) {
-        std::filesystem::path error_path = std::filesystem::current_path() / filename;
+        std::filesystem::path error_path = std::filesystem::current_path() / path;
         std::cerr << "Failed to open file: " << error_path.string() << std::endl;
+        exit(1);
+    }
+
+    if (stream.peek() == std::ifstream::traits_type::eof()) {
+        std::filesystem::path error_path = std::filesystem::current_path() / path;
+        std::cerr << "File was empty at: " << error_path.string() << std::endl;
         exit(1);
     }
 
     return stream;
 }
 
-std::ifstream get_example_ifstream() { return get_ifstream("example.txt"); }
+std::ifstream get_example_ifstream(Day day) { return get_ifstream(day, "example.txt"); }
 
-std::ifstream get_example_ifstream(int example_num) {
-    std::stringstream ss;
-    ss << "example";
-    ss << std::to_string(example_num);
-    ss << ".txt";
-
-    return get_ifstream(ss.str());
+std::ifstream get_example_ifstream(Day day, int example_num) {
+    std::string filename = "example" + std::to_string(example_num) + ".txt";
+    return get_ifstream(day, filename);
 }
 
-std::ifstream get_real_ifstream() { return get_ifstream("input.txt"); }
+std::ifstream get_real_ifstream(Day day) { return get_ifstream(day, "input.txt"); }
 
 template <typename TNumber> TNumber parse(const std::string_view &input) {
     TNumber out;

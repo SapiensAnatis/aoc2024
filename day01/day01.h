@@ -14,7 +14,7 @@ struct ParsedInput {
     std::vector<int> right;
 };
 
-ParsedInput parse_input(const std::string &path);
+ParsedInput parse_input(std::ifstream &inputStream);
 
 int part1(ParsedInput &input);
 

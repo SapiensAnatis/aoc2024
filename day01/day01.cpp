@@ -6,8 +6,7 @@
 #include <vector>
 
 namespace day1 {
-ParsedInput parse_input(const std::string &path) {
-    std::ifstream inputStream(path);
+ParsedInput parse_input(std::ifstream &inputStream) {
     std::string line;
     std::string delimiter = "   ";
 
