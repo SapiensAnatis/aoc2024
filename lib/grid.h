@@ -13,8 +13,8 @@ struct Point;
 
 enum class Direction { North, East, South, West };
 
-constexpr std::array<Direction, 4> directions = {
-    Direction::North, Direction::East, Direction::South, Direction::West};
+constexpr std::array<Direction, 4> directions = {Direction::North, Direction::East,
+                                                 Direction::South, Direction::West};
 
 std::ostream &operator<<(std::ostream &stream, Direction direction);
 
@@ -66,8 +66,7 @@ class Grid {
     [[nodiscard]] char get_square_unsafe(Point point) const;
     [[nodiscard]] int get_width() const;
     [[nodiscard]] int get_height() const;
-    [[nodiscard]] std::unique_ptr<Grid> with_mutation(int x, int y,
-                                                      char new_value);
+    [[nodiscard]] std::unique_ptr<Grid> with_mutation(int x, int y, char new_value);
     void set_square(int x, int y, char new_value);
     void set_square(Point point, char new_value);
     [[nodiscard]] std::vector<Point> get_adjacent_points(Point point) const;
@@ -104,8 +103,7 @@ class Grid {
     Point get_point(const Iterator &iterator);
 
   private:
-    [[nodiscard]] std::vector<char>::size_type
-    calculate_array_index(int x, int y) const;
+    [[nodiscard]] std::vector<char>::size_type calculate_array_index(int x, int y) const;
 
     int width;
     int height;

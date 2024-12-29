@@ -38,8 +38,7 @@ struct GuardState {
         : position(position), direction(direction) {}
 };
 
-ParsedInput::ParsedInput(std::shared_ptr<aoc::Grid> grid,
-                         aoc::Point guard_start_point)
+ParsedInput::ParsedInput(std::shared_ptr<aoc::Grid> grid, aoc::Point guard_start_point)
     : grid(std::move(grid)), guard_start_point(guard_start_point) {}
 
 ParsedInput parse_input(std::ifstream &input) {
@@ -56,17 +55,15 @@ ParsedInput parse_input(std::ifstream &input) {
     return {std::move(grid), guard_start_point};
 }
 
-std::unordered_set<aoc::Point>
-simulate_finite_guard_walk(const std::shared_ptr<aoc::Grid> &grid,
-                           const aoc::Point &guard_start_point) {
+std::unordered_set<aoc::Point> simulate_finite_guard_walk(const std::shared_ptr<aoc::Grid> &grid,
+                                                          const aoc::Point &guard_start_point) {
     GuardState state(guard_start_point, Velocity(0, -1));
     std::unordered_set<aoc::Point> visited_squares{guard_start_point};
 
     while (true) {
         int proposed_next_x = state.position.x + state.direction.x;
         int proposed_next_y = state.position.y + state.direction.y;
-        std::optional<char> next_square =
-            grid->get_square(proposed_next_x, proposed_next_y);
+        std::optional<char> next_square = grid->get_square(proposed_next_x, proposed_next_y);
 
         if (next_square == '#') {
             // Obstacle hit, turn right
@@ -83,13 +80,11 @@ simulate_finite_guard_walk(const std::shared_ptr<aoc::Grid> &grid,
     return visited_squares;
 }
 
-bool check_for_cycle(const std::shared_ptr<aoc::Grid> &grid,
-                     const aoc::Point &guard_start_point) {
+bool check_for_cycle(const std::shared_ptr<aoc::Grid> &grid, const aoc::Point &guard_start_point) {
     auto advance_state = [&grid](GuardState &state) {
         int proposed_next_x = state.position.x + state.direction.x;
         int proposed_next_y = state.position.y + state.direction.y;
-        std::optional<char> next_square =
-            grid->get_square(proposed_next_x, proposed_next_y);
+        std::optional<char> next_square = grid->get_square(proposed_next_x, proposed_next_y);
 
         if (next_square == '#') {
             // Obstacle hit, turn right

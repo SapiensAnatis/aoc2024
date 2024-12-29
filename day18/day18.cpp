@@ -27,9 +27,8 @@ ParsedInput parse_input(std::ifstream &input_stream) {
     return {.byte_positions = byte_fall_points};
 }
 
-std::vector<aoc::Point>
-get_bfs_path(const std::unordered_map<aoc::Point, aoc::Point> &bfs_result,
-             const aoc::Point &end) {
+std::vector<aoc::Point> get_bfs_path(const std::unordered_map<aoc::Point, aoc::Point> &bfs_result,
+                                     const aoc::Point &end) {
     auto parent = bfs_result.at(end);
     std::vector<aoc::Point> path;
 
@@ -86,8 +85,8 @@ aoc::Point part2(const ParsedInput &input, int grid_size, int num_bytes_fall) {
     // TODO: replace with bisection algorithm
     // i.e. try some advanced fall stage, if it fails then fall back to an
     // earlier stage
-    for (std::vector<aoc::Point>::size_type i = num_bytes_fall;
-         i < input.byte_positions.size(); i++) {
+    for (std::vector<aoc::Point>::size_type i = num_bytes_fall; i < input.byte_positions.size();
+         i++) {
         aoc::Point point = input.byte_positions[i];
         grid->set_square(point, '#');
 

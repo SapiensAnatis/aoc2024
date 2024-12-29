@@ -71,15 +71,14 @@ populate_connections(const ParsedInput &input) {
         auto second_computer_it = computers.find(connection.second);
 
         if (first_computer_it == computers.end()) {
-            auto [it, _] = computers.emplace(
-                connection.first, std::make_shared<Computer>(connection.first));
+            auto [it, _] =
+                computers.emplace(connection.first, std::make_shared<Computer>(connection.first));
             first_computer_it = it;
         }
 
         if (second_computer_it == computers.end()) {
-            auto [it, _] = computers.emplace(
-                connection.second,
-                std::make_shared<Computer>(connection.second));
+            auto [it, _] =
+                computers.emplace(connection.second, std::make_shared<Computer>(connection.second));
             second_computer_it = it;
         }
 
@@ -94,26 +93,21 @@ populate_connections(const ParsedInput &input) {
 }
 
 std::unordered_set<ComputerTriplet> get_connected_triplets(
-    const std::unordered_map<std::string, std::shared_ptr<Computer>>
-        &computers) {
+    const std::unordered_map<std::string, std::shared_ptr<Computer>> &computers) {
     std::unordered_set<ComputerTriplet> components;
     std::unordered_set<std::string> checked_computers;
 
     for (const auto &first_computer : std::ranges::views::values(computers)) {
-        for (const auto &second_computer_ref :
-             first_computer->get_connections()) {
+        for (const auto &second_computer_ref : first_computer->get_connections()) {
             auto second_computer = second_computer_ref.lock();
             aoc_assert(second_computer, "unable to acquire computer ptr");
 
-            for (const auto &third_computer_ref :
-                 second_computer->get_connections()) {
+            for (const auto &third_computer_ref : second_computer->get_connections()) {
                 auto third_computer = third_computer_ref.lock();
                 aoc_assert(third_computer, "unable to acquire computer ptr");
 
-                if (first_computer->is_connected_to(
-                        third_computer->get_name())) {
-                    components.emplace(first_computer->get_name(),
-                                       second_computer->get_name(),
+                if (first_computer->is_connected_to(third_computer->get_name())) {
+                    components.emplace(first_computer->get_name(), second_computer->get_name(),
                                        third_computer->get_name());
                 }
             }
@@ -129,9 +123,8 @@ int part1(const ParsedInput &input) {
 
     int acc = 0;
     for (const auto &component : components) {
-        if (std::any_of(
-                component.computers.begin(), component.computers.end(),
-                [](const std::string &c) { return c.starts_with('t'); })) {
+        if (std::any_of(component.computers.begin(), component.computers.end(),
+                        [](const std::string &c) { return c.starts_with('t'); })) {
             acc += 1;
         }
     }
@@ -144,25 +137,21 @@ struct BronKerboschContext {
     std::unordered_map<std::string, std::shared_ptr<Computer>> computer_lookup;
 
     explicit BronKerboschContext(
-        std::unordered_map<std::string, std::shared_ptr<Computer>>
-            computer_lookup)
+        std::unordered_map<std::string, std::shared_ptr<Computer>> computer_lookup)
         : computer_lookup(std::move(computer_lookup)) {}
 };
 
 template <typename T>
 std::unordered_set<T> set_intersection(const std::unordered_set<T> &a,
                                        const std::unordered_set<T> &b) {
-    auto view =
-        a | std::views::filter([&b](const T &x) { return b.contains(x); });
+    auto view = a | std::views::filter([&b](const T &x) { return b.contains(x); });
 
     return {view.begin(), view.end()};
 }
 
 // NOLINTNEXTLINE(misc-no-recursion)
-void bron_kerbosch(const std::unordered_set<std::string> &r,
-                   std::unordered_set<std::string> &p,
-                   std::unordered_set<std::string> &x,
-                   BronKerboschContext &context) {
+void bron_kerbosch(const std::unordered_set<std::string> &r, std::unordered_set<std::string> &p,
+                   std::unordered_set<std::string> &x, BronKerboschContext &context) {
 
     /*
      * Copied from:
@@ -182,10 +171,8 @@ void bron_kerbosch(const std::unordered_set<std::string> &r,
         auto r_union_v = r;
         r_union_v.insert(v);
 
-        auto p_intersect_n_v =
-            set_intersection(p, v_ptr->get_connection_names());
-        auto x_intersect_n_v =
-            set_intersection(x, v_ptr->get_connection_names());
+        auto p_intersect_n_v = set_intersection(p, v_ptr->get_connection_names());
+        auto x_intersect_n_v = set_intersection(x, v_ptr->get_connection_names());
 
         bron_kerbosch(r_union_v, p_intersect_n_v, x_intersect_n_v, context);
 
@@ -210,8 +197,7 @@ std::string part2(const ParsedInput &input) {
 
     bron_kerbosch(r, p, x, context);
 
-    std::vector maximum_clique_vec(context.maximum_clique.begin(),
-                                   context.maximum_clique.end());
+    std::vector maximum_clique_vec(context.maximum_clique.begin(), context.maximum_clique.end());
 
     std::sort(maximum_clique_vec.begin(), maximum_clique_vec.end());
 

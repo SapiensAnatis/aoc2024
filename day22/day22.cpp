@@ -80,8 +80,7 @@ advance_number_and_track_changes(secret_number init_number, int iterations) {
                 changes_deque.pop_front();
             }
 
-            ChangeSequence change_sequence =
-                ChangeSequence::create(changes_deque);
+            ChangeSequence change_sequence = ChangeSequence::create(changes_deque);
 
             // It doesn't matter if the insert fails - if we've seen this change
             // before, then we don't care about recording further results for
@@ -108,12 +107,10 @@ secret_number part2(const ParsedInput &input) {
     }
 
     // find best key in all_change_values
-    auto best_change_it =
-        std::max_element(all_change_values.begin(), all_change_values.end(),
-                         [](auto a, auto b) { return a.second < b.second; });
+    auto best_change_it = std::max_element(all_change_values.begin(), all_change_values.end(),
+                                           [](auto a, auto b) { return a.second < b.second; });
 
-    aoc_assert(best_change_it != all_change_values.end(),
-               "failed to find max element");
+    aoc_assert(best_change_it != all_change_values.end(), "failed to find max element");
 
     return best_change_it->second;
 }

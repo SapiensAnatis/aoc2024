@@ -7,13 +7,10 @@
 
 namespace aoc {
 
-template <typename TNode>
-class TreeNode : public std::enable_shared_from_this<TreeNode<TNode>> {
+template <typename TNode> class TreeNode : public std::enable_shared_from_this<TreeNode<TNode>> {
   public:
     TreeNode(TNode value, const std::shared_ptr<TreeNode<TNode>> &parent)
-        : value(value),
-          children(std::vector<std::shared_ptr<TreeNode<TNode>>>()),
-          parent{parent} {}
+        : value(value), children(std::vector<std::shared_ptr<TreeNode<TNode>>>()), parent{parent} {}
 
     explicit TreeNode(TNode value) : TreeNode(value, nullptr) {}
 
@@ -29,8 +26,7 @@ class TreeNode : public std::enable_shared_from_this<TreeNode<TNode>> {
     TNode get_value() const { return this->value; }
 
     void add_child(TNode item) {
-        this->children.push_back(
-            std::make_shared<TreeNode<TNode>>(item, this->shared_from_this()));
+        this->children.push_back(std::make_shared<TreeNode<TNode>>(item, this->shared_from_this()));
     }
 
   private:

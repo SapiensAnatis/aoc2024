@@ -11,16 +11,15 @@
 #if NDEBUG
 #define aoc_assert(condition, message)
 #else
-#define aoc_assert(condition, message)                                         \
-    ((static_cast<bool>(condition)) ? static_cast<void>(0)                     \
-                                    : aoc::fail_assert(message))
+#define aoc_assert(condition, message)                                                             \
+    ((static_cast<bool>(condition)) ? static_cast<void>(0) : aoc::fail_assert(message))
 #endif
 
 namespace aoc {
 
-[[noreturn]] void fail_assert(
-    const std::string &message,
-    const std::source_location &location = std::source_location::current());
+[[noreturn]] void
+fail_assert(const std::string &message,
+            const std::source_location &location = std::source_location::current());
 
 } // namespace aoc
 

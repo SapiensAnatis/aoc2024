@@ -14,11 +14,9 @@ std::regex button_regex(R"(X\+(\d+), Y\+(\d+))");
 std::regex prize_regex(R"(X=(\d+), Y=(\d+))");
 
 aoc::Vector parse_button(const std::string &button_line) {
-    auto button_begin = std::sregex_iterator(button_line.begin(),
-                                             button_line.end(), button_regex);
+    auto button_begin = std::sregex_iterator(button_line.begin(), button_line.end(), button_regex);
 
-    aoc_assert(button_begin != std::sregex_iterator(),
-               "Button regex did not match");
+    aoc_assert(button_begin != std::sregex_iterator(), "Button regex did not match");
 
     auto button_x = aoc::try_parse_int(button_begin->str(1));
     auto button_y = aoc::try_parse_int(button_begin->str(2));
@@ -29,11 +27,9 @@ aoc::Vector parse_button(const std::string &button_line) {
 }
 
 LongPoint parse_prize(const std::string &prize_line) {
-    auto prize_begin =
-        std::sregex_iterator(prize_line.begin(), prize_line.end(), prize_regex);
+    auto prize_begin = std::sregex_iterator(prize_line.begin(), prize_line.end(), prize_regex);
 
-    aoc_assert(prize_begin != std::sregex_iterator(),
-               "Prize regex did not match");
+    aoc_assert(prize_begin != std::sregex_iterator(), "Prize regex did not match");
 
     auto prize_x = aoc::try_parse_int(prize_begin->str(1));
     auto prize_y = aoc::try_parse_int(prize_begin->str(2));
@@ -139,8 +135,7 @@ long part1(const ParsedInput &input) {
         double n_b = solution(1, 0);
 
         if (is_integer(n_a) && is_integer(n_b)) {
-            aoc_assert(n_a > 0 && n_b > 0,
-                       "Negative button presses are not valid");
+            aoc_assert(n_a > 0 && n_b > 0, "Negative button presses are not valid");
 
             min_cost += static_cast<long>(std::round(n_a) * 3);
             min_cost += static_cast<long>(std::round(n_b));
@@ -155,10 +150,9 @@ long part2(const ParsedInput &input) {
     new_machines.reserve(input.claw_machines.size());
 
     for (const auto machine : input.claw_machines) {
-        new_machines.emplace_back(
-            machine.a_button, machine.b_button,
-            LongPoint(machine.prize_location.x + 10000000000000,
-                      machine.prize_location.y + 10000000000000));
+        new_machines.emplace_back(machine.a_button, machine.b_button,
+                                  LongPoint(machine.prize_location.x + 10000000000000,
+                                            machine.prize_location.y + 10000000000000));
     }
 
     return part1(ParsedInput(new_machines));

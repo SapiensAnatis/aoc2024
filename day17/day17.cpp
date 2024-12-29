@@ -64,8 +64,7 @@ void Computer::execute(ulong register_a_override) {
 }
 
 void Computer::print_output() {
-    for (std::vector<int>::size_type i = 0; i < this->output_buffer.size();
-         i++) {
+    for (std::vector<int>::size_type i = 0; i < this->output_buffer.size(); i++) {
         auto num = this->output_buffer[i];
         std::cout << num;
 
@@ -97,8 +96,7 @@ ulong Computer::get_combo_operand_value(int operand) const {
 
 ulong Computer::execute_common_div(int operand) const {
     ulong numerator = this->register_a;
-    long double denominator =
-        std::pow(2, this->get_combo_operand_value(operand));
+    long double denominator = std::pow(2, this->get_combo_operand_value(operand));
 
     long double result = numerator / denominator;
     long double result_trunc = std::trunc(result);
@@ -106,9 +104,7 @@ ulong Computer::execute_common_div(int operand) const {
     return static_cast<long>(result_trunc);
 }
 
-void Computer::execute_adv(int operand) {
-    this->register_a = execute_common_div(operand);
-}
+void Computer::execute_adv(int operand) { this->register_a = execute_common_div(operand); }
 
 void Computer::execute_bxl(int operand) {
     ulong result = this->register_b ^ operand;
@@ -134,24 +130,19 @@ void Computer::execute_bxc([[maybe_unused]] int operand) {
 
 void Computer::execute_out(int operand) {
     ulong result = this->get_combo_operand_value(operand) % 8;
-    aoc_assert(result < std::numeric_limits<int>::max(),
-               "Overflow detected on out instruction");
+    aoc_assert(result < std::numeric_limits<int>::max(), "Overflow detected on out instruction");
     this->output_buffer.push_back(static_cast<int>(result));
 }
 
-void Computer::execute_bdv(int operand) {
-    this->register_b = execute_common_div(operand);
-}
+void Computer::execute_bdv(int operand) { this->register_b = execute_common_div(operand); }
 
-void Computer::execute_cdv(int operand) {
-    this->register_c = execute_common_div(operand);
-}
+void Computer::execute_cdv(int operand) { this->register_c = execute_common_div(operand); }
 
 int parse_register_line(const std::string &register_line) {
     static std::regex register_regex(R"(Register \w: (\d+))");
 
-    auto match_start = std::sregex_iterator(
-        register_line.begin(), register_line.end(), register_regex);
+    auto match_start =
+        std::sregex_iterator(register_line.begin(), register_line.end(), register_regex);
     auto match_end = std::sregex_iterator();
 
     aoc_assert(match_start != match_end, "Regex did not match");
@@ -165,8 +156,8 @@ int parse_register_line(const std::string &register_line) {
 std::vector<int> parse_program_line(const std::string &program_line) {
     static std::regex program_regex(R"(Program: (\d+,.*))");
 
-    auto match_start = std::sregex_iterator(program_line.begin(),
-                                            program_line.end(), program_regex);
+    auto match_start =
+        std::sregex_iterator(program_line.begin(), program_line.end(), program_regex);
     auto match_end = std::sregex_iterator();
 
     aoc_assert(match_start != match_end, "Regex did not match");
@@ -177,8 +168,7 @@ std::vector<int> parse_program_line(const std::string &program_line) {
     auto instructions = aoc::split(program_string, ',');
     auto parsed_instructions = std::vector<int>(instructions.size(), 0);
 
-    std::transform(instructions.begin(), instructions.end(),
-                   parsed_instructions.begin(),
+    std::transform(instructions.begin(), instructions.end(), parsed_instructions.begin(),
                    [](auto ins) { return aoc::parse_int(ins); });
 
     return parsed_instructions;

@@ -33,8 +33,7 @@ TEST(day13_part1, perf) {
 
     std::cout << result << std::endl;
     std::cout << "Execution time: "
-              << std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1)
-              << std::endl;
+              << std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1) << std::endl;
 }
 
 TEST(day13_part2, example) {

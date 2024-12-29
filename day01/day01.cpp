@@ -50,8 +50,8 @@ int part2(const ParsedInput &input) {
     std::map<int, int> numberOccurrenceCounts;
 
     for (auto num : input.right) {
-        auto [iter, inserted] = numberOccurrenceCounts.insert(
-            std::map<int, int>::value_type(num, 0));
+        auto [iter, inserted] =
+            numberOccurrenceCounts.insert(std::map<int, int>::value_type(num, 0));
         iter->second += 1;
     }
 
@@ -60,9 +60,7 @@ int part2(const ParsedInput &input) {
     for (auto num : input.left) {
         auto occurrenceCountIter = numberOccurrenceCounts.find(num);
         auto occurrenceCount =
-            (occurrenceCountIter != numberOccurrenceCounts.end())
-                ? occurrenceCountIter->second
-                : 0;
+            (occurrenceCountIter != numberOccurrenceCounts.end()) ? occurrenceCountIter->second : 0;
         similarityScore += num * occurrenceCount;
     }
 

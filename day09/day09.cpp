@@ -32,9 +32,7 @@ FileBlock::FileBlock(int id) : id(id) {}
 
 BlockType FileBlock::get_type() const { return BlockType::File; }
 
-std::string FileBlock::get_display_string() const {
-    return std::to_string(this->id);
-}
+std::string FileBlock::get_display_string() const { return std::to_string(this->id); }
 
 int FileBlock::get_id() const { return this->id; }
 
@@ -90,10 +88,9 @@ long part1(const ParsedInput &input) {
     std::vector<std::shared_ptr<Block>> blocks_copy = input.blocks;
 
     for (auto it = blocks_copy.begin(); it != blocks_copy.end(); it++) {
-        if (std::all_of(it, blocks_copy.end(),
-                        [](const std::shared_ptr<Block> &block) {
-                            return block->get_type() == BlockType::FreeSpace;
-                        })) {
+        if (std::all_of(it, blocks_copy.end(), [](const std::shared_ptr<Block> &block) {
+                return block->get_type() == BlockType::FreeSpace;
+            })) {
             break;
         }
 
@@ -101,11 +98,10 @@ long part1(const ParsedInput &input) {
             continue;
         }
 
-        auto file_it =
-            std::find_if(blocks_copy.rbegin(), blocks_copy.rend(),
-                         [](const std::shared_ptr<Block> &block) {
-                             return block->get_type() == BlockType::File;
-                         });
+        auto file_it = std::find_if(blocks_copy.rbegin(), blocks_copy.rend(),
+                                    [](const std::shared_ptr<Block> &block) {
+                                        return block->get_type() == BlockType::File;
+                                    });
 
         if (file_it != blocks_copy.rend()) {
             std::iter_swap(it, file_it);
@@ -145,8 +141,7 @@ long part2(const ParsedInput &input) {
         }
 
         auto region_end = std::find_if(
-            it, input.blocks.end(),
-            [&it](const std::shared_ptr<Block> &x) { return *x != **it; });
+            it, input.blocks.end(), [&it](const std::shared_ptr<Block> &x) { return *x != **it; });
 
         long contig_size = region_end - it;
         long position = it - input.blocks.begin();
@@ -157,14 +152,13 @@ long part2(const ParsedInput &input) {
 
         contiguous_blocks.emplace_back(ptr, position, contig_size);
 
-        std::cout << "Contiguous block: " << **it << " of size " << contig_size
-                  << " at position " << position << std::endl;
+        std::cout << "Contiguous block: " << **it << " of size " << contig_size << " at position "
+                  << position << std::endl;
 
         it += contig_size;
     }
 
-    for (const auto &contiguous_block :
-         std::ranges::reverse_view(contiguous_blocks)) {
+    for (const auto &contiguous_block : std::ranges::reverse_view(contiguous_blocks)) {
         //        std::cout << "Attempting to move block " <<
         //        *contiguous_block.block
         //                  << " of size " << contiguous_block.size <<
@@ -176,10 +170,8 @@ long part2(const ParsedInput &input) {
 
         auto space_search_iter = blocks_copy.begin();
         while (space_search_iter != blocks_copy.end() &&
-               space_search_iter - blocks_copy.begin() <
-                   contiguous_block.position) {
-            auto space_iter = std::find_if(space_search_iter, blocks_copy.end(),
-                                           is_free_space);
+               space_search_iter - blocks_copy.begin() < contiguous_block.position) {
+            auto space_iter = std::find_if(space_search_iter, blocks_copy.end(), is_free_space);
 
             long space_position = space_iter - blocks_copy.begin();
             if (space_position >= contiguous_block.position) {
@@ -188,8 +180,7 @@ long part2(const ParsedInput &input) {
 
             auto space_end_iter = space_iter;
 
-            while (space_end_iter != blocks_copy.end() &&
-                   is_free_space(*space_end_iter)) {
+            while (space_end_iter != blocks_copy.end() && is_free_space(*space_end_iter)) {
                 space_end_iter++;
             }
 
@@ -203,8 +194,7 @@ long part2(const ParsedInput &input) {
                 //                std::cout << "Performing swap\n";
 
                 std::swap_ranges(space_iter, space_iter + file_size,
-                                 blocks_copy.begin() +
-                                     contiguous_block.position);
+                                 blocks_copy.begin() + contiguous_block.position);
                 //                print_filesystem(blocks_copy, 0);
                 break;
 

@@ -55,9 +55,8 @@ bool is_safe_2(const std::vector<int> &report) {
         if (!is_pair_safe(current, previous, increasing)) {
             for (std::vector<int>::size_type j = 0; j < report.size(); j++) {
                 std::vector<int> without_j(report.begin(), report.end());
-                without_j.erase(
-                    without_j.begin() +
-                    static_cast<std::vector<int>::difference_type>(j));
+                without_j.erase(without_j.begin() +
+                                static_cast<std::vector<int>::difference_type>(j));
 
                 if (is_safe(without_j)) {
                     return true;

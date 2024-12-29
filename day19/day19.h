@@ -16,8 +16,7 @@ struct Node {
     int index;
     std::vector<std::string> path;
 
-    Node(int index, std::vector<std::string> path)
-        : index(index), path(std::move(path)) {}
+    Node(int index, std::vector<std::string> path) : index(index), path(std::move(path)) {}
 };
 
 inline bool operator==(const Node &a, const Node &b) {

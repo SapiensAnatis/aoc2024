@@ -11,8 +11,7 @@ namespace day7 {
 Operation::Operation(NodeType result, std::vector<int> operands)
     : result(result), operands(std::move(operands)), possible(false) {}
 
-ParsedInput::ParsedInput(std::vector<Operation> operations)
-    : operations(std::move(operations)) {}
+ParsedInput::ParsedInput(std::vector<Operation> operations) : operations(std::move(operations)) {}
 
 ParsedInput parse_input(std::ifstream &input_stream) {
     std::vector<Operation> operations;
@@ -26,13 +25,11 @@ ParsedInput parse_input(std::ifstream &input_stream) {
         assert(result && "Failed to parse result to integer");
         assert(result > 0 && "Result was not positive - potential overflow");
 
-        std::vector<std::string_view> string_operands =
-            aoc::split(split[1], ' ');
+        std::vector<std::string_view> string_operands = aoc::split(split[1], ' ');
         std::vector<int> operands;
         operands.reserve(string_operands.size());
 
-        std::transform(string_operands.begin(), string_operands.end(),
-                       std::back_inserter(operands),
+        std::transform(string_operands.begin(), string_operands.end(), std::back_inserter(operands),
                        [](const std::string_view &op) -> int {
                            std::optional<int> parsed = aoc::try_parse_int(op);
                            assert(parsed && "Failed to parse operand!");
@@ -53,8 +50,7 @@ NodeType concat(NodeType a, NodeType b) {
 }
 
 // NOLINTNEXTLINE(misc-no-recursion)
-void write_node_children(Operation &op, int level,
-                         std::shared_ptr<aoc::TreeNode<NodeType>> &&node,
+void write_node_children(Operation &op, int level, std::shared_ptr<aoc::TreeNode<NodeType>> &&node,
                          bool enable_concat) {
 
     if (level + 1 >= static_cast<int>(op.operands.size())) {

@@ -15,8 +15,7 @@ enum class GridQuadrant {
 
 class Robot {
   public:
-    Robot(aoc::Point position, aoc::Vector velocity,
-          std::shared_ptr<aoc::Grid> grid_ptr);
+    Robot(aoc::Point position, aoc::Vector velocity, std::shared_ptr<aoc::Grid> grid_ptr);
     [[nodiscard]] aoc::Point get_position() const;
     [[nodiscard]] GridQuadrant calculate_quadrant() const;
 
@@ -32,8 +31,7 @@ struct ParsedInput {
     std::vector<Robot> robots;
 };
 
-ParsedInput parse_input(std::ifstream &input_stream,
-                        const std::shared_ptr<aoc::Grid> &grid);
+ParsedInput parse_input(std::ifstream &input_stream, const std::shared_ptr<aoc::Grid> &grid);
 
 int part1(const ParsedInput &input);
 int part2(const ParsedInput &input, const std::shared_ptr<aoc::Grid> &grid);

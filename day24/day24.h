@@ -36,8 +36,8 @@ struct WireOperation {
 
     WireOperation(std::shared_ptr<Wire> wire_1, std::shared_ptr<Wire> wire_2,
                   std::shared_ptr<Wire> wire_3, LogicGate gate)
-        : wire_1(std::move(wire_1)), wire_2(std::move(wire_2)),
-          wire_3(std::move(wire_3)), gate(gate) {}
+        : wire_1(std::move(wire_1)), wire_2(std::move(wire_2)), wire_3(std::move(wire_3)),
+          gate(gate) {}
 };
 
 struct ParsedInput {

@@ -10,9 +10,7 @@
 
 namespace day12 {
 
-ParsedInput parse_input(std::ifstream &input_stream) {
-    return {aoc::parse_grid(input_stream)};
-}
+ParsedInput parse_input(std::ifstream &input_stream) { return {aoc::parse_grid(input_stream)}; }
 
 struct Region {
     int perimeter;
@@ -71,8 +69,7 @@ int part1(const ParsedInput &input) {
         char region_name = *it;
         auto region = find_region_bfs(point, input);
 
-        std::cout << "Found region " << region_name
-                  << " with perimeter: " << region.perimeter
+        std::cout << "Found region " << region_name << " with perimeter: " << region.perimeter
                   << " and area: " << region.area << std::endl;
 
         int price = region.perimeter * region.area;
@@ -94,12 +91,11 @@ bool operator==(const Edge &a, const Edge &b) {
     return a.direction == b.direction && a.point == b.point;
 }
 
-std::optional<Edge> find_edge(std::unordered_multimap<aoc::Point, Edge> &map,
-                              aoc::Point key, aoc::Direction direction) {
+std::optional<Edge> find_edge(std::unordered_multimap<aoc::Point, Edge> &map, aoc::Point key,
+                              aoc::Direction direction) {
     const auto [start, end] = map.equal_range(key);
-    auto matching = std::find_if(start, end, [direction](const auto &pair) {
-        return pair.second.direction == direction;
-    });
+    auto matching = std::find_if(
+        start, end, [direction](const auto &pair) { return pair.second.direction == direction; });
 
     if (matching == end) {
         return std::nullopt;
@@ -126,31 +122,28 @@ int get_num_sides_from_edge_points(const std::vector<Edge> &edges) {
         edge_count++;
         accounted_for_edges.insert(edge);
 
-        bool horizontal = edge.direction == aoc::Direction::North ||
-                          edge.direction == aoc::Direction::South;
+        bool horizontal =
+            edge.direction == aoc::Direction::North || edge.direction == aoc::Direction::South;
 
-        aoc::Vector positive_vec =
-            horizontal ? aoc::Vector(1, 0) : aoc::Vector(0, 1);
+        aoc::Vector positive_vec = horizontal ? aoc::Vector(1, 0) : aoc::Vector(0, 1);
         aoc::Vector negative_vec = -positive_vec;
 
-        auto negative_sibling = find_edge(
-            edges_by_point, edge.point + negative_vec, edge.direction);
-        auto positive_sibling = find_edge(
-            edges_by_point, edge.point + positive_vec, edge.direction);
+        auto negative_sibling =
+            find_edge(edges_by_point, edge.point + negative_vec, edge.direction);
+        auto positive_sibling =
+            find_edge(edges_by_point, edge.point + positive_vec, edge.direction);
 
         while (positive_sibling || negative_sibling) {
             if (positive_sibling) {
                 accounted_for_edges.insert(*positive_sibling);
-                positive_sibling = find_edge(
-                    edges_by_point, positive_sibling->point + positive_vec,
-                    edge.direction);
+                positive_sibling = find_edge(edges_by_point, positive_sibling->point + positive_vec,
+                                             edge.direction);
             }
 
             if (negative_sibling) {
                 accounted_for_edges.insert(*negative_sibling);
-                negative_sibling = find_edge(
-                    edges_by_point, negative_sibling->point + negative_vec,
-                    edge.direction);
+                negative_sibling = find_edge(edges_by_point, negative_sibling->point + negative_vec,
+                                             edge.direction);
             }
         }
     }
@@ -228,8 +221,7 @@ int part2(const ParsedInput &input) {
         char region_name = *it;
         auto region = find_region_bfs_part2(point, input);
 
-        std::cout << "Found region " << region_name
-                  << " with sides: " << region.num_sides
+        std::cout << "Found region " << region_name << " with sides: " << region.num_sides
                   << " and area: " << region.area << std::endl;
 
         int price = region.num_sides * region.area;

@@ -19,15 +19,12 @@ ParsedInput parse_input(std::istream &input) {
     // parsing manually
     std::regex multiply_regex(R"((mul|don't|do)\((?:(\d+),(\d+))?\))");
 
-    auto content_begin =
-        std::sregex_iterator(content.begin(), content.end(), multiply_regex);
+    auto content_begin = std::sregex_iterator(content.begin(), content.end(), multiply_regex);
     auto content_end = std::sregex_iterator();
 
-    for (std::sregex_iterator match = content_begin; match != content_end;
-         match++) {
+    for (std::sregex_iterator match = content_begin; match != content_end; match++) {
         const auto &instruction = *match;
-        assert(instruction.size() >= 2 &&
-               "Instruction did not have at least one capture group");
+        assert(instruction.size() >= 2 && "Instruction did not have at least one capture group");
 
         auto instruction_name = instruction.str(1);
 
@@ -38,8 +35,7 @@ ParsedInput parse_input(std::istream &input) {
             int multiplier = std::stoi(instruction.str(2));
             int multiplicand = std::stoi(instruction.str(3));
 
-            instructions.emplace_back(
-                MultiplyInstruction(multiplier, multiplicand));
+            instructions.emplace_back(MultiplyInstruction(multiplier, multiplicand));
         } else if (instruction_name == "don't") {
             instructions.emplace_back(EnableDisableInstruction(false));
         } else if (instruction_name == "do") {
@@ -75,10 +71,8 @@ int part1(const ParsedInput &input) {
 
     for (auto instruction : input.instructions) {
         if (std::holds_alternative<MultiplyInstruction>(instruction)) {
-            MultiplyInstruction multiply_instruction =
-                std::get<MultiplyInstruction>(instruction);
-            result += multiply_instruction.multiplicand *
-                      multiply_instruction.multiplier;
+            MultiplyInstruction multiply_instruction = std::get<MultiplyInstruction>(instruction);
+            result += multiply_instruction.multiplicand * multiply_instruction.multiplier;
         }
     }
 

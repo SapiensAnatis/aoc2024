@@ -22,16 +22,14 @@ ParsedInput parse_input(std::ifstream &input_stream) {
     std::getline(input_stream, line);
 
     // Parse available towels
-    auto towels_view = std::ranges::views::split(line, ',') |
-                       std::ranges::views::transform([](auto &&range) {
-                           auto string =
-                               std::string(range.begin(), range.end());
-                           std::erase(string, ' ');
-                           return string;
-                       });
+    auto towels_view =
+        std::ranges::views::split(line, ',') | std::ranges::views::transform([](auto &&range) {
+            auto string = std::string(range.begin(), range.end());
+            std::erase(string, ' ');
+            return string;
+        });
 
-    std::unordered_set<std::string> towels{towels_view.begin(),
-                                           towels_view.end()};
+    std::unordered_set<std::string> towels{towels_view.begin(), towels_view.end()};
 
     // Skip empty line
     std::getline(input_stream, line);
@@ -45,8 +43,7 @@ ParsedInput parse_input(std::ifstream &input_stream) {
     return {.towels = towels, .patterns = patterns};
 }
 
-bool can_compose(const std::string &pattern,
-                 const std::unordered_set<std::string> &towels) {
+bool can_compose(const std::string &pattern, const std::unordered_set<std::string> &towels) {
     auto subpattern_possible = std::vector(pattern.size() + 1, false);
     subpattern_possible[0] = true;
 
@@ -77,9 +74,8 @@ int part1(const ParsedInput &input) {
 }
 
 // NOLINTNEXTLINE(misc-no-recursion)
-long long get_compositions(
-    const ParsedInput &input, std::string_view pattern_view,
-    std::unordered_map<std::string_view::size_type, long long> &memo) {
+long long get_compositions(const ParsedInput &input, std::string_view pattern_view,
+                           std::unordered_map<std::string_view::size_type, long long> &memo) {
 
     if (pattern_view.empty()) {
         return 1;
@@ -98,10 +94,7 @@ long long get_compositions(
 
         if (pattern_view.starts_with(towel)) {
             compositions += get_compositions(
-                input,
-                pattern_view.substr(towel.size(),
-                                    pattern_view.size() - towel.size()),
-                memo);
+                input, pattern_view.substr(towel.size(), pattern_view.size() - towel.size()), memo);
         }
     }
 
@@ -113,19 +106,16 @@ long long get_compositions(
 long long part2(const ParsedInput &input) {
     long long permutation_count = 0;
 
-    for (std::vector<std::string>::size_type i = 0; i < input.patterns.size();
-         i++) {
+    for (std::vector<std::string>::size_type i = 0; i < input.patterns.size(); i++) {
 
-        std::cout << "Checking pattern: " << i + 1 << "/"
-                  << input.patterns.size() << std::endl;
+        std::cout << "Checking pattern: " << i + 1 << "/" << input.patterns.size() << std::endl;
 
         auto pattern = input.patterns[i];
-        auto memo =
-            std::unordered_map<std::string_view::size_type, long long>{};
+        auto memo = std::unordered_map<std::string_view::size_type, long long>{};
         auto this_count = get_compositions(input, pattern, memo);
 
-        std::cout << "Pattern " << pattern << " can be made in " << this_count
-                  << " ways" << std::endl;
+        std::cout << "Pattern " << pattern << " can be made in " << this_count << " ways"
+                  << std::endl;
 
         permutation_count += this_count;
     }

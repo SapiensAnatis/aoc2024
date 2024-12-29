@@ -29,8 +29,7 @@ std::optional<long long> try_parse_long_long(const std::string_view &input);
 
 std::optional<int> ctoi(char c);
 
-std::vector<std::string_view> split(const std::string_view &str,
-                                    char separator);
+std::vector<std::string_view> split(const std::string_view &str, char separator);
 
 std::vector<std::string_view> split(const std::string &str, char separator);
 

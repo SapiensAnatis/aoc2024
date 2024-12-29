@@ -4,12 +4,9 @@
 
 namespace day4 {
 
-std::shared_ptr<aoc::Grid> parse_input(std::ifstream &input) {
-    return aoc::parse_grid(input);
-}
+std::shared_ptr<aoc::Grid> parse_input(std::ifstream &input) { return aoc::parse_grid(input); }
 
-bool can_find_xmas_in_direction(const aoc::Grid &grid, int x_origin,
-                                int y_origin, int dx, int dy) {
+bool can_find_xmas_in_direction(const aoc::Grid &grid, int x_origin, int y_origin, int dx, int dy) {
     int x = x_origin;
     int y = y_origin;
 
@@ -85,8 +82,7 @@ int part1(const aoc::Grid &grid) {
     return xmas_count;
 }
 
-std::optional<std::string> get_diagonal_string(const aoc::Grid &grid,
-                                               int x_origin, int y_origin,
+std::optional<std::string> get_diagonal_string(const aoc::Grid &grid, int x_origin, int y_origin,
                                                int dx, int dy) {
     char buffer[3];
 

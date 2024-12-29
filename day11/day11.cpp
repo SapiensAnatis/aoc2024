@@ -33,10 +33,8 @@ StoneBlinkResult Stone::blink() const {
     //           << std::endl;
 
     if (digit_count % 2 == 0) {
-        std::string_view first_half_str(number_str.begin(),
-                                        number_str.begin() + (digit_count / 2));
-        std::string_view second_half_str(number_str.begin() + (digit_count / 2),
-                                         number_str.end());
+        std::string_view first_half_str(number_str.begin(), number_str.begin() + (digit_count / 2));
+        std::string_view second_half_str(number_str.begin() + (digit_count / 2), number_str.end());
 
         auto first_half = aoc::try_parse_int(first_half_str);
         auto second_half = aoc::try_parse_int(second_half_str);
@@ -51,8 +49,7 @@ StoneBlinkResult Stone::blink() const {
 }
 long Stone::get_number() const { return this->number; }
 
-StoneBlinkResult::StoneBlinkResult(Stone stone,
-                                   std::optional<Stone> second_stone)
+StoneBlinkResult::StoneBlinkResult(Stone stone, std::optional<Stone> second_stone)
     : stone(stone), second_stone(second_stone) {}
 
 ParsedInput parse_input(std::ifstream &input_stream) {
@@ -95,9 +92,7 @@ int part1(const ParsedInput &input, int num_blinks) {
     return static_cast<int>(current_stone_array.size());
 }
 
-bool operator==(const Stone &a, const Stone &b) {
-    return a.get_number() == b.get_number();
-}
+bool operator==(const Stone &a, const Stone &b) { return a.get_number() == b.get_number(); }
 
 long part2(const ParsedInput &input, int num_blinks) {
     std::unordered_map<Stone, long> stone_occurrence_counts;
@@ -120,31 +115,25 @@ long part2(const ParsedInput &input, int num_blinks) {
             (*it).second += count;
 
             if (result.second_stone) {
-                auto [it_2, _] = new_stone_occurrence_counts.emplace(
-                    *result.second_stone, 0);
+                auto [it_2, _] = new_stone_occurrence_counts.emplace(*result.second_stone, 0);
                 (*it_2).second += count;
             }
         }
 
         stone_occurrence_counts = new_stone_occurrence_counts;
 
-        std::cout << "Key count: " << stone_occurrence_counts.size()
-                  << std::endl;
+        std::cout << "Key count: " << stone_occurrence_counts.size() << std::endl;
 
         long sum = std::accumulate(
             stone_occurrence_counts.begin(), stone_occurrence_counts.end(), 0L,
-            [](const long acc, const std::pair<Stone, long> pair) {
-                return acc + pair.second;
-            });
+            [](const long acc, const std::pair<Stone, long> pair) { return acc + pair.second; });
 
         std::cout << "Stone count: " << sum << std::endl;
     }
 
     return std::accumulate(
         stone_occurrence_counts.begin(), stone_occurrence_counts.end(), 0L,
-        [](const long acc, const std::pair<Stone, long> pair) {
-            return acc + pair.second;
-        });
+        [](const long acc, const std::pair<Stone, long> pair) { return acc + pair.second; });
 }
 } // namespace day11
 

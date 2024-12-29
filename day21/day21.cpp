@@ -21,8 +21,7 @@ struct Move {
 };
 
 bool operator==(const Move &lhs, const Move &rhs) {
-    return lhs.from == rhs.from && lhs.to == rhs.to &&
-           lhs.robot_num == rhs.robot_num;
+    return lhs.from == rhs.from && lhs.to == rhs.to && lhs.robot_num == rhs.robot_num;
 }
 
 } // namespace day21
@@ -82,8 +81,7 @@ std::string get_code_string(const std::vector<DpadInput> &inputs) {
     return code_str;
 }
 
-std::ostream &operator<<(std::ostream &stream,
-                         const std::vector<DpadInput> &inputs) {
+std::ostream &operator<<(std::ostream &stream, const std::vector<DpadInput> &inputs) {
     return stream << get_code_string(inputs);
 }
 
@@ -115,8 +113,7 @@ std::map<DpadInput, aoc::Point> dpad_positions = {
 };
 // clang-format on
 
-std::vector<DpadInput> get_dpad_input(aoc::Point from, aoc::Point to,
-                                      aoc::Point avoid_pos) {
+std::vector<DpadInput> get_dpad_input(aoc::Point from, aoc::Point to, aoc::Point avoid_pos) {
 
     std::vector<DpadInput> inputs;
 
@@ -191,8 +188,7 @@ get_pair_complexity(DpadInput from, DpadInput to, int robot_num,
             // This is the final robot a.k.a. us
             complexity += 1;
         } else {
-            complexity +=
-                get_pair_complexity(previous, current, robot_num - 1, cache);
+            complexity += get_pair_complexity(previous, current, robot_num - 1, cache);
         }
     }
 
@@ -216,10 +212,9 @@ std::vector<DpadInput> get_dpad_input_for_code(const std::string &code) {
     return directions;
 }
 
-unsigned long
-get_code_complexity(const std::string &code,
-                    std::unordered_map<Move, unsigned long> &complexity_memo,
-                    int num_dpad_robots) {
+unsigned long get_code_complexity(const std::string &code,
+                                  std::unordered_map<Move, unsigned long> &complexity_memo,
+                                  int num_dpad_robots) {
     auto first_directions = get_dpad_input_for_code(code);
     std::cout << "Combination for code " << code << ":" << std::endl
               << first_directions << std::endl;
@@ -227,13 +222,12 @@ get_code_complexity(const std::string &code,
     std::vector<DpadInput> current_inputs;
     unsigned long total_complexity = 0;
 
-    for (std::vector<DpadInput>::size_type i = 0; i < first_directions.size();
-         i++) {
+    for (std::vector<DpadInput>::size_type i = 0; i < first_directions.size(); i++) {
         auto current = first_directions[i];
         auto previous = i == 0 ? DpadInput::Activate : first_directions[i - 1];
 
-        total_complexity += get_pair_complexity(
-            previous, current, num_dpad_robots, complexity_memo);
+        total_complexity +=
+            get_pair_complexity(previous, current, num_dpad_robots, complexity_memo);
     }
 
     return total_complexity;
@@ -250,13 +244,10 @@ unsigned long puzzle(const ParsedInput &input, int num_dpad_robots) {
     std::unordered_map<Move, unsigned long> complexity_memo;
 
     for (const auto &code : input.codes) {
-        auto complexity =
-            get_code_complexity(code, complexity_memo, num_dpad_robots);
+        auto complexity = get_code_complexity(code, complexity_memo, num_dpad_robots);
         auto number = get_code_number(code);
 
-        std::cout << "Complexity: " << complexity << " * " << number
-                  << std::endl
-                  << std::endl;
+        std::cout << "Complexity: " << complexity << " * " << number << std::endl << std::endl;
         total_complexity += complexity * number;
     }
 

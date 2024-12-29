@@ -18,8 +18,8 @@ ParsedInput parse_input(std::ifstream &input_stream) {
     return {std::move(grid)};
 }
 
-std::unordered_map<aoc::Point, int>
-get_point_costs_djikstra(const ParsedInput &input, aoc::Point start) {
+std::unordered_map<aoc::Point, int> get_point_costs_djikstra(const ParsedInput &input,
+                                                             aoc::Point start) {
     std::unordered_map<aoc::Point, int> distances_from_start;
     std::unordered_map<aoc::Point, aoc::Point> previous;
     std::unordered_set<aoc::Point> unvisited;
@@ -44,14 +44,13 @@ get_point_costs_djikstra(const ParsedInput &input, aoc::Point start) {
             std::cout << unvisited.size() << std::endl;
         }
 
-        auto current = std::min_element(
-            unvisited.begin(), unvisited.end(),
-            [&distances_from_start](aoc::Point a, aoc::Point b) {
-                return distances_from_start.at(a) < distances_from_start.at(b);
-            });
+        auto current =
+            std::min_element(unvisited.begin(), unvisited.end(),
+                             [&distances_from_start](aoc::Point a, aoc::Point b) {
+                                 return distances_from_start.at(a) < distances_from_start.at(b);
+                             });
 
-        aoc_assert(current != unvisited.end(),
-                   "min_element returned an invalid iterator");
+        aoc_assert(current != unvisited.end(), "min_element returned an invalid iterator");
 
         if (input.grid->get_square_unsafe(*current) == 'E') {
             // We're done
@@ -71,8 +70,7 @@ get_point_costs_djikstra(const ParsedInput &input, aoc::Point start) {
 
             auto proposed_direction = adjacent - *current;
 
-            aoc_assert(std::abs(proposed_direction.dx) <= 1 &&
-                           std::abs(proposed_direction.dy) <= 1,
+            aoc_assert(std::abs(proposed_direction.dx) <= 1 && std::abs(proposed_direction.dy) <= 1,
                        "Invalid direction vector");
 
             int cost = 1;
@@ -109,8 +107,7 @@ get_shortest_path_subgraph(const ParsedInput &input, aoc::Point start) {
     std::unordered_multimap<PointWithDirection, PointWithDirection> previous;
     std::unordered_set<PointWithDirection> unvisited;
 
-    distances_from_start.emplace(
-        PointWithDirection(start, aoc::Vector(aoc::Direction::East)), 0);
+    distances_from_start.emplace(PointWithDirection(start, aoc::Vector(aoc::Direction::East)), 0);
 
     for (auto it = input.grid->begin(); it != input.grid->end(); it++) {
         if (*it == '#') {
@@ -128,15 +125,13 @@ get_shortest_path_subgraph(const ParsedInput &input, aoc::Point start) {
     }
 
     while (!unvisited.empty()) {
-        auto current = std::min_element(
-            unvisited.begin(), unvisited.end(),
-            [&distances_from_start](PointWithDirection a,
-                                    PointWithDirection b) {
-                return distances_from_start.at(a) < distances_from_start.at(b);
-            });
+        auto current =
+            std::min_element(unvisited.begin(), unvisited.end(),
+                             [&distances_from_start](PointWithDirection a, PointWithDirection b) {
+                                 return distances_from_start.at(a) < distances_from_start.at(b);
+                             });
 
-        aoc_assert(current != unvisited.end(),
-                   "min_element returned an invalid iterator");
+        aoc_assert(current != unvisited.end(), "min_element returned an invalid iterator");
 
         if (input.grid->get_square_unsafe(current->point) == 'E') {
             break;
@@ -150,11 +145,9 @@ get_shortest_path_subgraph(const ParsedInput &input, aoc::Point start) {
             }
 
             auto proposed_direction = adjacent - current->point;
-            auto proposed_pwd =
-                PointWithDirection(adjacent, proposed_direction);
+            auto proposed_pwd = PointWithDirection(adjacent, proposed_direction);
 
-            aoc_assert(std::abs(proposed_direction.dx) <= 1 &&
-                           std::abs(proposed_direction.dy) <= 1,
+            aoc_assert(std::abs(proposed_direction.dx) <= 1 && std::abs(proposed_direction.dy) <= 1,
                        "Invalid direction vector");
 
             int cost = 1;
@@ -200,8 +193,7 @@ std::unordered_set<aoc::Point> shortest_path_points;
 // NOLINTNEXTLINE(misc-no-recursion)
 void print_paths_recurse(
     aoc::Grid &grid,
-    const std::unordered_multimap<PointWithDirection, PointWithDirection>
-        &subgraph,
+    const std::unordered_multimap<PointWithDirection, PointWithDirection> &subgraph,
     PointWithDirection point) {
 
     grid.set_square(point.point, 'o');
@@ -220,8 +212,7 @@ void print_paths_recurse(
 }
 
 void print_paths(const ParsedInput &input,
-                 const std::unordered_multimap<PointWithDirection,
-                                               PointWithDirection> &subgraph,
+                 const std::unordered_multimap<PointWithDirection, PointWithDirection> &subgraph,
                  aoc::Point end) {
     auto new_grid = *input.grid;
 
@@ -253,8 +244,7 @@ int part2(const ParsedInput &input) {
 
 namespace std {
 
-size_t hash<day16::PointWithDirection>::operator()(
-    const day16::PointWithDirection &pd) const {
+size_t hash<day16::PointWithDirection>::operator()(const day16::PointWithDirection &pd) const {
     size_t seed = 0;
 
     aoc::hash_combine(seed, hash<aoc::Point>()(pd.point));

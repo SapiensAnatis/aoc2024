@@ -12,9 +12,7 @@
 
 namespace day10 {
 
-ParsedInput parse_input(std::ifstream &input_stream) {
-    return {aoc::parse_grid(input_stream)};
-}
+ParsedInput parse_input(std::ifstream &input_stream) { return {aoc::parse_grid(input_stream)}; }
 
 int get_score_bfs(const ParsedInput &input, aoc::Point start) {
     int score = 0;
@@ -111,9 +109,7 @@ int part1(const ParsedInput &input) {
 
     return std::accumulate(
         scores.begin(), scores.end(), 0,
-        [](const int acc, const std::pair<aoc::Point, int> &x) {
-            return acc + x.second;
-        });
+        [](const int acc, const std::pair<aoc::Point, int> &x) { return acc + x.second; });
 }
 
 int part2(const ParsedInput &input) {
@@ -137,9 +133,7 @@ int part2(const ParsedInput &input) {
 
     return std::accumulate(
         scores.begin(), scores.end(), 0,
-        [](const int acc, const std::pair<aoc::Point, int> &x) {
-            return acc + x.second;
-        });
+        [](const int acc, const std::pair<aoc::Point, int> &x) { return acc + x.second; });
 }
 
 } // namespace day10

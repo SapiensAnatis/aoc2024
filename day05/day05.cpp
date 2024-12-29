@@ -14,8 +14,7 @@ namespace day5 {
 Update::Update(std::vector<int> pages) : pages(std::move(pages)) {}
 
 int Update::get_middle() const {
-    assert(this->pages.size() % 2 != 0 &&
-           "Update had even number of pages - middle is undefined");
+    assert(this->pages.size() % 2 != 0 && "Update had even number of pages - middle is undefined");
 
     int index = static_cast<int>(this->pages.size()) / 2;
 
@@ -64,13 +63,11 @@ bool PageRule::fix_with_swap(Update &update) const {
         return false;
     }
 
-    std::iter_swap(update.pages.begin() + *before_index,
-                   update.pages.begin() + *after_index);
+    std::iter_swap(update.pages.begin() + *before_index, update.pages.begin() + *after_index);
     return true;
 }
 
-ParsedInput::ParsedInput(std::vector<Update> updates,
-                         std::vector<PageRule> rules)
+ParsedInput::ParsedInput(std::vector<Update> updates, std::vector<PageRule> rules)
     : updates(std::move(updates)), rules(std::move(rules)) {}
 
 ParsedInput parse_input(std::istream &input) {

@@ -42,6 +42,5 @@ TEST(day06_part2, real) {
 
     std::cout << result << std::endl;
     std::cout << "Execution time: "
-              << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1)
-              << std::endl;
+              << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1) << std::endl;
 }

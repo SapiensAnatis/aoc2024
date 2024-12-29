@@ -5,9 +5,9 @@
 #include "gtest/gtest.h"
 
 TEST(day22_part1, example) {
-    std::array<day22::secret_number, 10> expected = {
-        15887950, 16495136, 527345,   704524,  1553684,
-        12683156, 11100544, 12249484, 7753432, 5908254};
+    std::array<day22::secret_number, 10> expected = {15887950, 16495136, 527345,   704524,
+                                                     1553684,  12683156, 11100544, 12249484,
+                                                     7753432,  5908254};
 
     day22::secret_number result = 123;
 

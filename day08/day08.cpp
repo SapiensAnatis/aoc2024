@@ -7,8 +7,7 @@
 
 namespace day8 {
 
-ParsedInput::ParsedInput(std::unique_ptr<aoc::Grid> grid)
-    : grid(std::move(grid)) {}
+ParsedInput::ParsedInput(std::unique_ptr<aoc::Grid> grid) : grid(std::move(grid)) {}
 
 ParsedInput parse_input(std::ifstream &input_stream) {
     auto grid = aoc::parse_grid(input_stream);
@@ -29,8 +28,7 @@ int part1(const ParsedInput &input) {
 
     for (auto antennae_name : antennae_names) {
         std::vector<aoc::Point> positions;
-        for (auto [it, end] = antennae_map.equal_range(antennae_name);
-             it != end; it++) {
+        for (auto [it, end] = antennae_map.equal_range(antennae_name); it != end; it++) {
             positions.push_back(it->second);
         }
 
@@ -39,8 +37,7 @@ int part1(const ParsedInput &input) {
         }
 
         for (auto it_a = positions.begin(); it_a != positions.end(); it_a++) {
-            for (auto it_b = positions.begin();
-                 it_b != positions.end() && it_b != it_a; it_b++) {
+            for (auto it_b = positions.begin(); it_b != positions.end() && it_b != it_a; it_b++) {
                 auto a_to_b_vec = *it_b - *it_a;
                 auto b_to_a_vec = *it_a - *it_b;
 
@@ -79,8 +76,7 @@ int part2(const ParsedInput &input) {
 
     for (auto antennae_name : antennae_names) {
         std::vector<aoc::Point> positions;
-        for (auto [it, end] = antennae_map.equal_range(antennae_name);
-             it != end; it++) {
+        for (auto [it, end] = antennae_map.equal_range(antennae_name); it != end; it++) {
             positions.push_back(it->second);
         }
 
@@ -91,16 +87,15 @@ int part2(const ParsedInput &input) {
         for (auto it_a = positions.begin(); it_a != positions.end(); it_a++) {
             antinode_points.insert(*it_a);
 
-            for (auto it_b = positions.begin();
-                 it_b != positions.end() && it_b != it_a; it_b++) {
+            for (auto it_b = positions.begin(); it_b != positions.end() && it_b != it_a; it_b++) {
                 auto a_to_b_vec = *it_b - *it_a;
                 auto b_to_a_vec = *it_a - *it_b;
 
                 auto antinode_a = *it_a + (a_to_b_vec * 2);
                 auto antinode_b = *it_b + (b_to_a_vec * 2);
 
-                std::cout << "Pair for " << antennae_name << ": " << *it_a
-                          << " and " << *it_b << std::endl;
+                std::cout << "Pair for " << antennae_name << ": " << *it_a << " and " << *it_b
+                          << std::endl;
 
                 while (input.grid->get_square(antinode_a)) {
                     std::cout << "Antinode at: " << antinode_a << std::endl;

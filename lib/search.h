@@ -7,8 +7,8 @@
 
 namespace aoc {
 
-std::optional<std::unordered_map<Point, Point>>
-bfs(const std::unique_ptr<Grid> &grid, Point start, Point end);
+std::optional<std::unordered_map<Point, Point>> bfs(const std::unique_ptr<Grid> &grid, Point start,
+                                                    Point end);
 
 }
 

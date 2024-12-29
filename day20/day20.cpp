@@ -17,9 +17,8 @@ ParsedInput parse_input(std::ifstream &input_stream) {
     return {.grid = std::move(grid)};
 }
 
-std::vector<aoc::Point>
-get_adjacent_squares_radius(const std::unique_ptr<aoc::Grid> &grid,
-                            aoc::Point origin, int radius) {
+std::vector<aoc::Point> get_adjacent_squares_radius(const std::unique_ptr<aoc::Grid> &grid,
+                                                    aoc::Point origin, int radius) {
     std::vector<aoc::Point> result;
 
     for (int dy = -radius; dy <= radius; dy++) {
@@ -124,8 +123,8 @@ int do_puzzle(const ParsedInput &input, int max_cheat_dist) {
 
     int num_cheats_over_100 = 0;
     for (const auto [cheat_value, num_cheats] : possible_cheat_values) {
-        std::cout << "Found " << num_cheats << " cheat(s) that would save "
-                  << cheat_value << " picoseconds" << std::endl;
+        std::cout << "Found " << num_cheats << " cheat(s) that would save " << cheat_value
+                  << " picoseconds" << std::endl;
 
         if (cheat_value >= 100) {
             num_cheats_over_100 += num_cheats;

@@ -37,14 +37,13 @@ struct ChangeSequence {
 };
 
 inline bool operator==(const ChangeSequence &lhs, const ChangeSequence &rhs) {
-    return lhs.change1 == rhs.change1 && lhs.change2 == rhs.change2 &&
-           lhs.change3 == rhs.change3 && lhs.change4 == rhs.change4;
+    return lhs.change1 == rhs.change1 && lhs.change2 == rhs.change2 && lhs.change3 == rhs.change3 &&
+           lhs.change4 == rhs.change4;
 }
 
-inline std::ostream &operator<<(std::ostream &stream,
-                                const ChangeSequence &sequence) {
-    return stream << sequence.change1 << "," << sequence.change2 << ","
-                  << sequence.change3 << "," << sequence.change4;
+inline std::ostream &operator<<(std::ostream &stream, const ChangeSequence &sequence) {
+    return stream << sequence.change1 << "," << sequence.change2 << "," << sequence.change3 << ","
+                  << sequence.change4;
 }
 
 ParsedInput parse_input(std::ifstream &input);

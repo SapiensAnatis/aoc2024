@@ -24,8 +24,7 @@ struct EnableDisableInstruction {
     }
 };
 
-typedef std::variant<MultiplyInstruction, EnableDisableInstruction>
-    InstructionVariant;
+typedef std::variant<MultiplyInstruction, EnableDisableInstruction> InstructionVariant;
 
 struct ParsedInput {
     std::vector<InstructionVariant> instructions;

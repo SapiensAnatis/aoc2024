@@ -44,8 +44,7 @@ std::unique_ptr<Grid> Grid::create(char fill, int width, int height) {
     return Grid::create(squares, width);
 }
 
-Grid::Grid(std::vector<char> squares, int width)
-    : width(width), squares(std::move(squares)) {
+Grid::Grid(std::vector<char> squares, int width) : width(width), squares(std::move(squares)) {
     this->height = static_cast<int>(this->squares.size()) / this->width;
 }
 
@@ -89,8 +88,7 @@ std::unique_ptr<Grid> Grid::with_mutation(int x, int y, char new_value) {
 
 void Grid::set_square(int x, int y, char new_value) {
     auto index = this->calculate_array_index(x, y);
-    aoc_assert(index > 0 && index < this->squares.size(),
-               "Grid bounds check failure");
+    aoc_assert(index > 0 && index < this->squares.size(), "Grid bounds check failure");
 
     this->squares[index] = new_value;
 }
@@ -158,8 +156,7 @@ Point Grid::get_point(const Grid::Iterator &it) {
     return {x, y};
 }
 
-Grid::Iterator::Iterator(std::vector<char>::iterator vec_iterator)
-    : vec_iterator(vec_iterator) {}
+Grid::Iterator::Iterator(std::vector<char>::iterator vec_iterator) : vec_iterator(vec_iterator) {}
 
 Grid::Iterator::Iterator() = default;
 
@@ -170,8 +167,7 @@ Grid::Iterator &Grid::Iterator::operator++() {
     return *this;
 }
 
-Grid::Iterator::difference_type operator-(const Grid::Iterator &a,
-                                          const Grid::Iterator &b) {
+Grid::Iterator::difference_type operator-(const Grid::Iterator &a, const Grid::Iterator &b) {
     return a.vec_iterator - b.vec_iterator;
 }
 
@@ -190,21 +186,15 @@ bool operator!=(const Grid::Iterator &a, const Grid::Iterator &b) {
     return a.vec_iterator != b.vec_iterator;
 }
 
-bool Point::operator==(Point other) const {
-    return other.x == this->x && other.y == this->y;
-}
+bool Point::operator==(Point other) const { return other.x == this->x && other.y == this->y; }
 
 std::ostream &operator<<(std::ostream &stream, Point point) {
     return stream << "(" << point.x << ", " << point.y << ")";
 }
 
-Point operator+(Point point, Vector vector) {
-    return {point.x + vector.dx, point.y + vector.dy};
-}
+Point operator+(Point point, Vector vector) { return {point.x + vector.dx, point.y + vector.dy}; }
 
-Point operator-(Point point, Vector vector) {
-    return {point.x - vector.dx, point.y - vector.dy};
-}
+Point operator-(Point point, Vector vector) { return {point.x - vector.dx, point.y - vector.dy}; }
 
 Vector operator-(Point a, Point b) { return {a.x - b.x, a.y - b.y}; }
 

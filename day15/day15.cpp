@@ -44,8 +44,7 @@ ParsedInput parse_input(std::ifstream &input_stream) {
         case '\n':
             break;
         default:
-            std::cerr << "Invalid character in input: '" << c << "'"
-                      << std::endl;
+            std::cerr << "Invalid character in input: '" << c << "'" << std::endl;
             exit(1);
         }
     }
@@ -53,8 +52,7 @@ ParsedInput parse_input(std::ifstream &input_stream) {
     return {std::move(parsed_grid), parsed_moves};
 }
 
-bool try_move_obstacle(ParsedInput &input, aoc::Point obstacle_pos,
-                       aoc::Vector offset) {
+bool try_move_obstacle(ParsedInput &input, aoc::Point obstacle_pos, aoc::Vector offset) {
     auto candidate_pos = obstacle_pos + offset;
     while (input.grid->get_square(candidate_pos) == 'O') {
         candidate_pos = candidate_pos + offset;
@@ -70,8 +68,7 @@ bool try_move_obstacle(ParsedInput &input, aoc::Point obstacle_pos,
     return true;
 }
 
-void move_robot(const std::unique_ptr<aoc::Grid> &grid, aoc::Point old_pos,
-                aoc::Point new_pos) {
+void move_robot(const std::unique_ptr<aoc::Grid> &grid, aoc::Point old_pos, aoc::Point new_pos) {
     grid->set_square(old_pos, '.');
     grid->set_square(new_pos, '@');
 }
@@ -89,11 +86,9 @@ int part1(ParsedInput &input) {
 
         aoc::Vector offset(move);
         aoc::Point new_robot_pos = robot_pos + offset;
-        std::optional<char> new_robot_square =
-            input.grid->get_square(new_robot_pos);
+        std::optional<char> new_robot_square = input.grid->get_square(new_robot_pos);
 
-        aoc_assert(new_robot_square,
-                   "Robot tried to move out of bounds - where are the walls?");
+        aoc_assert(new_robot_square, "Robot tried to move out of bounds - where are the walls?");
 
         if (new_robot_square == '.') {
             // Free
@@ -103,19 +98,17 @@ int part1(ParsedInput &input) {
             continue;
         } else if (new_robot_square == '#') {
             // Wall, cannot do anything
-            std::cout << "Failed to move robot: wall encountered at"
-                      << new_robot_pos << std::endl;
+            std::cout << "Failed to move robot: wall encountered at" << new_robot_pos << std::endl;
             continue;
         } else if (new_robot_square == 'O') {
             // We have an obstacle, try to move it
             if (!try_move_obstacle(input, new_robot_pos, offset)) {
-                std::cout << "Failed to move robot: obstacle cannot be moved at"
-                          << new_robot_pos << std::endl;
+                std::cout << "Failed to move robot: obstacle cannot be moved at" << new_robot_pos
+                          << std::endl;
                 continue;
             }
 
-            std::cout << "Robot moved obstacle and moved to " << new_robot_pos
-                      << std::endl;
+            std::cout << "Robot moved obstacle and moved to " << new_robot_pos << std::endl;
 
             move_robot(input.grid, robot_pos, new_robot_pos);
             robot_pos = new_robot_pos;
@@ -143,14 +136,12 @@ struct ObstacleMoveOperation {
 };
 
 // NOLINTNEXTLINE(misc-no-recursion)
-bool try_move_obstacle_recursive(const std::unique_ptr<aoc::Grid> &grid,
-                                 aoc::Point obstacle_pos, aoc::Vector offset,
-                                 std::queue<ObstacleMoveOperation> &ops) {
+bool try_move_obstacle_recursive(const std::unique_ptr<aoc::Grid> &grid, aoc::Point obstacle_pos,
+                                 aoc::Vector offset, std::queue<ObstacleMoveOperation> &ops) {
     auto obstacle_char = grid->get_square_unsafe(obstacle_pos);
 
-    auto obstacle_pos_2 = obstacle_char == '['
-                              ? obstacle_pos + aoc::Vector(1, 0)
-                              : obstacle_pos + aoc::Vector(-1, 0);
+    auto obstacle_pos_2 =
+        obstacle_char == '[' ? obstacle_pos + aoc::Vector(1, 0) : obstacle_pos + aoc::Vector(-1, 0);
     auto obstacle_char_2 = grid->get_square_unsafe(obstacle_pos_2);
 
     aoc_assert(obstacle_char != obstacle_char_2, "Invalid character");
@@ -179,8 +170,7 @@ bool try_move_obstacle_recursive(const std::unique_ptr<aoc::Grid> &grid,
         }
     }
 
-    std::cout << "Moving obstacle at " << obstacle_pos << " and "
-              << obstacle_pos_2 << std::endl;
+    std::cout << "Moving obstacle at " << obstacle_pos << " and " << obstacle_pos_2 << std::endl;
 
     // only do a change if all changes succeed
     ObstacleMoveOperation operation{.old_pos = obstacle_pos,
@@ -194,8 +184,8 @@ bool try_move_obstacle_recursive(const std::unique_ptr<aoc::Grid> &grid,
     return true;
 }
 
-bool try_move_obstacle_part2(const std::unique_ptr<aoc::Grid> &grid,
-                             aoc::Point obstacle_pos, aoc::Vector offset) {
+bool try_move_obstacle_part2(const std::unique_ptr<aoc::Grid> &grid, aoc::Point obstacle_pos,
+                             aoc::Vector offset) {
     std::queue<ObstacleMoveOperation> ops;
 
     if (!try_move_obstacle_recursive(grid, obstacle_pos, offset, ops)) {
@@ -227,8 +217,7 @@ bool try_move_obstacle_part2(const std::unique_ptr<aoc::Grid> &grid,
 
 int part2(const ParsedInput &input) {
     std::vector<char> new_grid_squares;
-    new_grid_squares.reserve(input.grid->get_width() * 2 *
-                             input.grid->get_height());
+    new_grid_squares.reserve(input.grid->get_width() * 2 * input.grid->get_height());
 
     for (auto ch : *input.grid) {
 
@@ -255,8 +244,7 @@ int part2(const ParsedInput &input) {
         }
     }
 
-    auto grid = std::make_unique<aoc::Grid>(new_grid_squares,
-                                            input.grid->get_width() * 2);
+    auto grid = std::make_unique<aoc::Grid>(new_grid_squares, input.grid->get_width() * 2);
 
     auto robot_pos_it = std::find(grid->begin(), grid->end(), '@');
     aoc_assert(robot_pos_it != grid->end(), "Failed to find robot");
@@ -281,8 +269,7 @@ int part2(const ParsedInput &input) {
         aoc::Point new_robot_pos = robot_pos + offset;
         std::optional<char> new_robot_square = grid->get_square(new_robot_pos);
 
-        aoc_assert(new_robot_square,
-                   "Robot tried to move out of bounds - where are the walls?");
+        aoc_assert(new_robot_square, "Robot tried to move out of bounds - where are the walls?");
 
         if (new_robot_square == '.') {
             // Free
@@ -292,19 +279,17 @@ int part2(const ParsedInput &input) {
             continue;
         } else if (new_robot_square == '#') {
             // Wall, cannot do anything
-            std::cout << "Failed to move robot: wall encountered at"
-                      << new_robot_pos << std::endl;
+            std::cout << "Failed to move robot: wall encountered at" << new_robot_pos << std::endl;
             continue;
         } else if (new_robot_square == '[' || new_robot_square == ']') {
             // We have an obstacle, try to move it
             if (!try_move_obstacle_part2(grid, new_robot_pos, offset)) {
-                std::cout << "Failed to move robot: obstacle cannot be moved at"
-                          << new_robot_pos << std::endl;
+                std::cout << "Failed to move robot: obstacle cannot be moved at" << new_robot_pos
+                          << std::endl;
                 continue;
             }
 
-            std::cout << "Robot moved obstacle and moved to " << new_robot_pos
-                      << std::endl;
+            std::cout << "Robot moved obstacle and moved to " << new_robot_pos << std::endl;
 
             move_robot(grid, robot_pos, new_robot_pos);
             robot_pos = new_robot_pos;
