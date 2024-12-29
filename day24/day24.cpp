@@ -3,6 +3,7 @@
 #include "../lib/assert.h"
 
 #include <algorithm>
+#include <format>
 #include <fstream>
 #include <iostream>
 #include <ranges>
@@ -108,13 +109,10 @@ unsigned long part1(const ParsedInput &input) {
             operation.wire_3->value = result;
         }
 
-        auto uninitialized_z_wires =
-            input.wires | std::ranges::views::values |
-            std::ranges::views::filter([](const std::shared_ptr<Wire> &wire) {
-                return wire->name.starts_with('z') && !wire->value.has_value();
-            });
-
-        all_z_wires_have_value = uninitialized_z_wires.empty();
+        all_z_wires_have_value = std::ranges::none_of(input.wires, [](const auto &p) {
+            auto &wire = p.second;
+            return wire->name.starts_with('z') && !wire->value.has_value();
+        });
     }
 
     auto wire_view = input.wires | std::ranges::views::values |
@@ -132,7 +130,7 @@ unsigned long part1(const ParsedInput &input) {
     for (std::vector<std::shared_ptr<Wire>>::size_type i = 0; i < wires.size(); i++) {
         auto &wire = wires[i];
         std::cout << wire->name << ": " << *wire->value << std::endl;
-        result |= *wire->value << i;
+        result |= static_cast<unsigned long>(*wire->value) << i;
     }
 
     return result;

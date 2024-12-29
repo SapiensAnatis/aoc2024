@@ -1,6 +1,7 @@
 #include "../lib/aoc.h"
 #include "day24.h"
 #include "gtest/gtest.h"
+#include <format>
 
 TEST(day24_part1, example) {
     auto input_stream = aoc::get_example_ifstream();
@@ -26,8 +27,6 @@ TEST(day24_part1, real) {
 
     auto result = day24::part1(input);
 
-    // this is probably wrong because of how I prioritize operations
-    // don't iterate the list in order
     std::cout << result << std::endl;
 }
 
