@@ -46,6 +46,18 @@ struct Vector {
         }
     }
 
+    [[nodiscard]] int get_square_magnitude() const { return dx * dx + dy * dy; }
+
+    [[nodiscard]] Vector rotate_90deg_clockwise() const {
+        // Matrix multiplication with rotational matrix:
+        // x' = x cos(pi / 2) - y sin(pi / 2) = -y
+        // y' = x sin(pi / 2) + y cos(pi / 2) = x
+        int new_x = -this->dy;
+        int new_y = this->dx;
+
+        return {new_x, new_y};
+    }
+
     Vector operator-() const;
 };
 

@@ -18,6 +18,12 @@ int part1(const ParsedInput &input);
 
 int part2(const ParsedInput &input);
 
-} // namespace day6
+namespace faster {
+
+int part2(const ParsedInput &input);
+
+}
+
+} // namespace day06
 
 #endif // AOC2024_DAY06_H

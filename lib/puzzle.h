@@ -10,7 +10,9 @@
 #include <functional>
 
 namespace aoc {
+
 struct PuzzleRunResult {
+    Day day;
     std::chrono::duration<long, std::ratio<1, 1000000>> parse_time;
     std::chrono::duration<long, std::ratio<1, 1000000>> part_1_time;
     std::chrono::duration<long, std::ratio<1, 1000000>> part_2_time;
@@ -18,11 +20,11 @@ struct PuzzleRunResult {
 
 template <typename Input> class Puzzle {
   public:
-    Puzzle(aoc::Day day, std::function<Input(std::ifstream &)> parse_input,
+    Puzzle(Day day, std::function<Input(std::ifstream &)> parse_input,
            std::function<void(const Input &)> part1, std::function<void(const Input &)> part2)
         : day(day), parse_input(parse_input), part1(part1), part2(part2) {}
 
-    PuzzleRunResult run() const {
+    [[nodiscard]] PuzzleRunResult run() const {
         using namespace std::chrono;
 
         std::string day_name = std::to_string(day);
@@ -40,12 +42,11 @@ template <typename Input> class Puzzle {
         this->part2(input);
         auto part2_done = high_resolution_clock::now();
 
-        return {.parse_time = duration_cast<microseconds>(parsed_input - start),
+        return {.day = this->day,
+                .parse_time = duration_cast<microseconds>(parsed_input - start),
                 .part_1_time = duration_cast<microseconds>(part1_done - parsed_input),
                 .part_2_time = duration_cast<microseconds>(part2_done - part1_done)};
     }
-
-    Day get_day() const { return this->day; }
 
   private:
     Day day;

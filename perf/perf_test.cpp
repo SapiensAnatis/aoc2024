@@ -45,23 +45,23 @@ TEST(perf, under_1_second) {
     Puzzle<day08::ParsedInput> day08(Day08, day08::parse_input, day08::part1, day08::part2);
     Puzzle<day09::ParsedInput> day09(Day09, day09::parse_input, day09::part1, day09::part2);
 
-    std::vector<std::pair<Day, PuzzleRunResult>> results;
+    std::vector<PuzzleRunResult> results;
 
     auto t0 = std::chrono::high_resolution_clock::now();
 
-    results.emplace_back(day01.get_day(), day01.run());
-    results.emplace_back(day02.get_day(), day02.run());
-    results.emplace_back(day03.get_day(), day03.run());
-    results.emplace_back(day04.get_day(), day04.run());
-    results.emplace_back(day05.get_day(), day05.run());
-    results.emplace_back(day06.get_day(), day06.run()); // optimize this
+    results.push_back(day01.run());
+    results.push_back(day02.run());
+    results.push_back(day03.run());
+    results.push_back(day04.run());
+    results.push_back(day05.run());
+    results.push_back(day06.run()); // optimize this
 
     auto t_final = std::chrono::high_resolution_clock::now();
 
-    for (const auto &[day, result] : results) {
-        std::cout << "Parsed day " << day << " input in " << result.parse_time << std::endl;
-        std::cout << "Ran day " << day << " part 1 in " << result.part_1_time << std::endl;
-        std::cout << "Ran day " << day << " part 2 in " << result.part_2_time << std::endl;
+    for (const auto result : results) {
+        std::cout << "Parsed day " << result.day << " input in " << result.parse_time << std::endl;
+        std::cout << "Ran day " << result.day << " part 1 in " << result.part_1_time << std::endl;
+        std::cout << "Ran day " << result.day << " part 2 in " << result.part_2_time << std::endl;
         std::cout << std::endl;
     }
 
