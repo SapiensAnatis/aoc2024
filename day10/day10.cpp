@@ -103,10 +103,6 @@ int part1(const ParsedInput &input) {
         scores.insert({trailhead, score});
     }
 
-    for (auto pair : scores) {
-        std::cout << pair.first << ": " << pair.second << std::endl;
-    }
-
     return std::accumulate(
         scores.begin(), scores.end(), 0,
         [](const int acc, const std::pair<aoc::Point, int> &x) { return acc + x.second; });
@@ -125,10 +121,6 @@ int part2(const ParsedInput &input) {
     for (auto trailhead : trailheads) {
         auto score = get_score_dfs_part2(input, trailhead);
         scores.insert({trailhead, score});
-    }
-
-    for (auto pair : scores) {
-        std::cout << pair.first << ": " << pair.second << std::endl;
     }
 
     return std::accumulate(

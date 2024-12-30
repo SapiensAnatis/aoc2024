@@ -81,7 +81,6 @@ int part1(ParsedInput &input) {
 
     auto robot_pos = input.grid->get_point(robot_pos_it);
     for (const auto move : input.moves) {
-        std::cout << "Processing move..." << std::endl;
         // std::cout << *input.grid << std::endl;
 
         aoc::Vector offset(move);
@@ -94,21 +93,19 @@ int part1(ParsedInput &input) {
             // Free
             move_robot(input.grid, robot_pos, new_robot_pos);
             robot_pos = new_robot_pos;
-            std::cout << "Robot moved to: " << new_robot_pos << std::endl;
             continue;
-        } else if (new_robot_square == '#') {
+        }
+
+        if (new_robot_square == '#') {
             // Wall, cannot do anything
-            std::cout << "Failed to move robot: wall encountered at" << new_robot_pos << std::endl;
             continue;
-        } else if (new_robot_square == 'O') {
+        }
+
+        if (new_robot_square == 'O') {
             // We have an obstacle, try to move it
             if (!try_move_obstacle(input, new_robot_pos, offset)) {
-                std::cout << "Failed to move robot: obstacle cannot be moved at" << new_robot_pos
-                          << std::endl;
                 continue;
             }
-
-            std::cout << "Robot moved obstacle and moved to " << new_robot_pos << std::endl;
 
             move_robot(input.grid, robot_pos, new_robot_pos);
             robot_pos = new_robot_pos;

@@ -3,7 +3,32 @@
 //
 #include "../day01/day01.h"
 #include "../day02/day02.h"
+#include "../day03/day03.h"
+#include "../day04/day04.h"
+#include "../day05/day05.h"
+#include "../day06/day06.h"
+#include "../day07/day07.h"
+#include "../day08/day08.h"
+#include "../day09/day09.h"
+#include "../day10/day10.h"
+#include "../day11/day11.h"
+#include "../day12/day12.h"
+#include "../day13/day13.h"
+#include "../day14/day14.h"
+#include "../day15/day15.h"
+#include "../day16/day16.h"
+#include "../day17/day17.h"
+#include "../day18/day18.h"
+#include "../day19/day19.h"
+#include "../day20/day20.h"
+#include "../day21/day21.h"
+#include "../day22/day22.h"
+#include "../day23/day23.h"
+#include "../day24/day24.h"
+#include "../day25/day25.h"
 #include "../lib/aoc.h"
+#include "../lib/puzzle.h"
+
 #include "gtest/gtest.h"
 #include <chrono>
 
@@ -32,14 +57,32 @@
                   << std::endl;                                                                    \
     }
 
+void exec() {
+    Puzzle<day01::ParsedInput> day01(aoc::Day01, day01::parse_input, day01::part1, day01::part2);
+    day01.run();
+    std::cout << std::endl;
+}
+
 TEST(perf, under_1_second) {
     auto t0 = std::chrono::high_resolution_clock::now();
 
     EXECUTE_DAY(01)
     EXECUTE_DAY(02)
+    EXECUTE_DAY(03)
+    EXECUTE_DAY(04)
+    EXECUTE_DAY(05)
+    EXECUTE_DAY(06)
+    EXECUTE_DAY(07)
+    EXECUTE_DAY(08)
+    EXECUTE_DAY(09)
+    EXECUTE_DAY(10)
+    EXECUTE_DAY(11)
+    EXECUTE_DAY(12)
+    EXECUTE_DAY(13)
+    EXECUTE_DAY(14)
 
     auto t_final = std::chrono::high_resolution_clock::now();
 
     std::cout << "Executed all days in "
-              << std::chrono::duration_cast<std::chrono::milliseconds>(t_final - t0) << std::endl;
+              << std::chrono::duration_cast<std::chrono::microseconds>(t_final - t0) << std::endl;
 }

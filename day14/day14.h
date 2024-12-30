@@ -13,8 +13,14 @@ enum class GridQuadrant {
     Ambiguous // on the midpoint line of one or both axes
 };
 
+struct RobotPosition {
+    aoc::Point position;
+    aoc::Vector velocity;
+};
+
 class Robot {
   public:
+    Robot() : Robot(aoc::Point{0, 0}, aoc::Vector{0, 0}, nullptr) {}
     Robot(aoc::Point position, aoc::Vector velocity, std::shared_ptr<aoc::Grid> grid_ptr);
     [[nodiscard]] aoc::Point get_position() const;
     [[nodiscard]] GridQuadrant calculate_quadrant() const;
@@ -28,13 +34,16 @@ class Robot {
 };
 
 struct ParsedInput {
-    std::vector<Robot> robots;
+    std::vector<RobotPosition> robot_positions;
 };
 
-ParsedInput parse_input(std::ifstream &input_stream, const std::shared_ptr<aoc::Grid> &grid);
+ParsedInput parse_input(std::ifstream &input_stream);
+
+int puzzle_part1(const ParsedInput &input, const std::shared_ptr<aoc::Grid> &grid);
 
 int part1(const ParsedInput &input);
-int part2(const ParsedInput &input, const std::shared_ptr<aoc::Grid> &grid);
+
+int part2(const ParsedInput &input);
 
 } // namespace day14
 

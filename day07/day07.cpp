@@ -56,7 +56,6 @@ void write_node_children(Operation &op, int level, std::shared_ptr<aoc::TreeNode
     if (level + 1 >= static_cast<int>(op.operands.size())) {
         // Edge of the tree
         if (node->get_value() == op.result) {
-            std::cout << "Possible to achieve: " << op.result;
             op.possible = true;
 
             // std::cout << " via ";
@@ -75,8 +74,6 @@ void write_node_children(Operation &op, int level, std::shared_ptr<aoc::TreeNode
 
             //     std::cout << " " << current_lock->get_value() << ",";
             // }
-
-            std::cout << std::endl;
         }
 
         return;
@@ -135,4 +132,4 @@ NodeType part2(const ParsedInput &input) {
     return possible_result_sum;
 }
 
-} // namespace day7
+} // namespace day07

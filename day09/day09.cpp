@@ -2,8 +2,6 @@
 #include "../lib/aoc.h"
 #include <algorithm>
 #include <cassert>
-#include <functional>
-#include <iostream>
 #include <iterator>
 #include <memory>
 #include <optional>
@@ -75,15 +73,6 @@ ParsedInput parse_input(std::ifstream &input_stream) {
     return {.blocks = std::move(blocks)};
 }
 
-void print_filesystem(std::vector<std::shared_ptr<Block>> vec, int start) {
-
-    for (auto it = vec.begin() + start; it != vec.end(); it++) {
-        std::cout << **it;
-    }
-
-    std::cout << std::endl;
-}
-
 long part1(const ParsedInput &input) {
     std::vector<std::shared_ptr<Block>> blocks_copy = input.blocks;
 
@@ -132,8 +121,6 @@ long part2(const ParsedInput &input) {
     auto blocks_copy = input.blocks;
     std::vector<ContiguousFile> contiguous_blocks;
 
-    print_filesystem(input.blocks, 0);
-
     for (auto it = input.blocks.begin(); it != input.blocks.end();) {
         if ((*it)->get_type() != BlockType::File) {
             it++;
@@ -151,9 +138,6 @@ long part2(const ParsedInput &input) {
         assert(ptr && "FileBlock dynamic cast failed");
 
         contiguous_blocks.emplace_back(ptr, position, contig_size);
-
-        std::cout << "Contiguous block: " << **it << " of size " << contig_size << " at position "
-                  << position << std::endl;
 
         it += contig_size;
     }
@@ -217,4 +201,4 @@ long part2(const ParsedInput &input) {
     return checksum;
 }
 
-} // namespace day9
+} // namespace day09

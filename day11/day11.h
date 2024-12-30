@@ -38,17 +38,16 @@ struct ParsedInput {
 
 ParsedInput parse_input(std::ifstream &input_stream);
 
-int part1(const ParsedInput &input, int num_blinks);
+long puzzle(const ParsedInput &input, int num_blinks);
 
-long part2(const ParsedInput &input, int num_blinks);
+int part1(const ParsedInput &input);
+
+long part2(const ParsedInput &input);
 
 } // namespace day11
 
-namespace std {
-template <> struct hash<day11::Stone> {
-    size_t operator()(const day11::Stone &stone) const;
+template <> struct std::hash<day11::Stone> {
+    size_t operator()(const day11::Stone &stone) const noexcept;
 };
-
-} // namespace std
 
 #endif // AOC2024_DAY11_H

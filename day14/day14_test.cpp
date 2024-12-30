@@ -4,18 +4,18 @@
 
 TEST(day14_part1, example) {
     auto input_stream = aoc::get_example_ifstream(aoc::Day14);
-    std::shared_ptr<aoc::Grid> grid = aoc::Grid::create('.', 11, 7);
-    const auto input = day14::parse_input(input_stream, grid);
+    const auto input = day14::parse_input(input_stream);
 
-    auto result = day14::part1(input);
+    std::shared_ptr grid = aoc::Grid::create('.', 11, 7);
+
+    auto result = day14::puzzle_part1(input, grid);
 
     std::cout << result << std::endl;
 }
 
 TEST(day14_part1, real) {
     auto input_stream = aoc::get_real_ifstream(aoc::Day14);
-    std::shared_ptr<aoc::Grid> grid = aoc::Grid::create('.', 101, 103);
-    const auto input = day14::parse_input(input_stream, grid);
+    const auto input = day14::parse_input(input_stream);
 
     auto result = day14::part1(input);
 
@@ -28,10 +28,9 @@ TEST(day14_part2, example) {
 
 TEST(day14_part2, real) {
     auto input_stream = aoc::get_real_ifstream(aoc::Day14);
-    std::shared_ptr<aoc::Grid> grid = aoc::Grid::create('.', 101, 103);
-    const auto input = day14::parse_input(input_stream, grid);
+    const auto input = day14::parse_input(input_stream);
 
-    int result = day14::part2(input, grid);
+    int result = day14::part2(input);
 
     std::cout << result << std::endl;
 }

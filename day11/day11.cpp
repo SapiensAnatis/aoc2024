@@ -2,7 +2,6 @@
 #include "../lib/aoc.h"
 #include <algorithm>
 #include <cassert>
-#include <cmath>
 #include <fstream>
 #include <numeric>
 #include <optional>
@@ -47,7 +46,10 @@ StoneBlinkResult Stone::blink() const {
 
     return {Stone(this->number * 2024), std::nullopt};
 }
+
 long Stone::get_number() const { return this->number; }
+
+bool operator==(const Stone &a, const Stone &b) { return a.get_number() == b.get_number(); }
 
 StoneBlinkResult::StoneBlinkResult(Stone stone, std::optional<Stone> second_stone)
     : stone(stone), second_stone(second_stone) {}
@@ -66,45 +68,15 @@ ParsedInput parse_input(std::ifstream &input_stream) {
     return {stones};
 }
 
-int part1(const ParsedInput &input, int num_blinks) {
-    std::vector<Stone> current_stone_array = input.stones;
-
-    for (int i = 0; i < num_blinks; i++) {
-        std::vector<Stone> next_stone_array;
-        next_stone_array.reserve(current_stone_array.size());
-        std::cout << "Blink: " << i << std::endl;
-
-        for (const auto &stone : current_stone_array) {
-            std::cout << stone << " ";
-
-            auto result = stone.blink();
-            next_stone_array.push_back(result.stone);
-            if (result.second_stone) {
-                next_stone_array.push_back(*result.second_stone);
-            }
-        }
-
-        std::cout << std::endl;
-
-        current_stone_array = next_stone_array;
-    }
-
-    return static_cast<int>(current_stone_array.size());
-}
-
-bool operator==(const Stone &a, const Stone &b) { return a.get_number() == b.get_number(); }
-
-long part2(const ParsedInput &input, int num_blinks) {
+long puzzle(const ParsedInput &input, int num_blinks) {
     std::unordered_map<Stone, long> stone_occurrence_counts;
 
     for (const auto &stone : input.stones) {
         auto [it, inserted] = stone_occurrence_counts.emplace(stone, 0);
-        (*it).second++;
+        it->second++;
     }
 
     for (int blink = 0; blink < num_blinks; blink++) {
-        std::cout << "Blink: " << blink << std::endl;
-
         std::unordered_map<Stone, long> new_stone_occurrence_counts;
         new_stone_occurrence_counts.reserve(stone_occurrence_counts.size());
 
@@ -112,33 +84,30 @@ long part2(const ParsedInput &input, int num_blinks) {
             auto result = stone.blink();
 
             auto [it, _] = new_stone_occurrence_counts.emplace(result.stone, 0);
-            (*it).second += count;
+            it->second += count;
 
             if (result.second_stone) {
                 auto [it_2, _] = new_stone_occurrence_counts.emplace(*result.second_stone, 0);
-                (*it_2).second += count;
+                it_2->second += count;
             }
         }
 
         stone_occurrence_counts = new_stone_occurrence_counts;
-
-        std::cout << "Key count: " << stone_occurrence_counts.size() << std::endl;
-
-        long sum = std::accumulate(
-            stone_occurrence_counts.begin(), stone_occurrence_counts.end(), 0L,
-            [](const long acc, const std::pair<Stone, long> pair) { return acc + pair.second; });
-
-        std::cout << "Stone count: " << sum << std::endl;
     }
 
     return std::accumulate(
         stone_occurrence_counts.begin(), stone_occurrence_counts.end(), 0L,
-        [](const long acc, const std::pair<Stone, long> pair) { return acc + pair.second; });
+        [](const long acc, const std::pair<Stone, long> &pair) { return acc + pair.second; });
 }
+
+int part1(const ParsedInput &input) { return static_cast<int>(puzzle(input, 25)); }
+
+long part2(const ParsedInput &input) { return puzzle(input, 75); }
+
 } // namespace day11
 
 namespace std {
-size_t hash<day11::Stone>::operator()(const day11::Stone &stone) const {
+size_t hash<day11::Stone>::operator()(const day11::Stone &stone) const noexcept {
     return hash<long>()(stone.get_number());
 }
 } // namespace std

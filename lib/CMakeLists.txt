@@ -8,4 +8,5 @@ target_sources(aoc PRIVATE
         assert.h
         assert.cpp
         search.h
-        search.cpp)
+        search.cpp
+        puzzle.h)

@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <numeric>
+#include <pstl/glue_execution_defs.h>
 #include <regex>
 #include <unordered_map>
 
@@ -48,11 +49,11 @@ GridQuadrant Robot::calculate_quadrant() const {
     }
 }
 
-ParsedInput parse_input(std::ifstream &input_stream, const std::shared_ptr<aoc::Grid> &grid) {
+ParsedInput parse_input(std::ifstream &input_stream) {
     std::regex x_y_regex(R"(=(-?\d+),(-?\d+))");
     std::string line;
 
-    std::vector<Robot> robots;
+    std::vector<RobotPosition> robots;
 
     while (std::getline(input_stream, line)) {
         auto x_y_begin = std::sregex_iterator(line.begin(), line.end(), x_y_regex);
@@ -69,18 +70,23 @@ ParsedInput parse_input(std::ifstream &input_stream, const std::shared_ptr<aoc::
         int velocity_x = std::stoi(velocity_match.str(1));
         int velocity_y = std::stoi(velocity_match.str(2));
 
-        robots.emplace_back(aoc::Point(position_x, position_y), aoc::Vector(velocity_x, velocity_y),
-                            grid);
+        robots.emplace_back(aoc::Point(position_x, position_y),
+                            aoc::Vector(velocity_x, velocity_y));
     }
 
     return {robots};
 }
 
-int part1(const ParsedInput &input) {
-    auto robots_copy = input.robots;
+int puzzle_part1(const ParsedInput &input, const std::shared_ptr<aoc::Grid> &grid) {
+    std::vector<Robot> robots(input.robot_positions.size());
+
+    std::ranges::transform(input.robot_positions, robots.begin(),
+                           [&grid](const RobotPosition &robot_pos) {
+                               return Robot(robot_pos.position, robot_pos.velocity, grid);
+                           });
 
     for (int second = 0; second < 100; second++) {
-        for (auto &robot : robots_copy) {
+        for (auto &robot : robots) {
             robot.walk();
         }
     }
@@ -92,7 +98,7 @@ int part1(const ParsedInput &input) {
 
     std::unordered_map<aoc::Point, int> robot_positions;
 
-    for (auto &robot : robots_copy) {
+    for (auto &robot : robots) {
         auto [it, _] = robot_positions.emplace(robot.get_position(), 0);
         it->second++;
 
@@ -108,15 +114,24 @@ int part1(const ParsedInput &input) {
                            [](int acc, const auto &pair) { return acc * pair.second; });
 }
 
-int part2(const ParsedInput &input, const std::shared_ptr<aoc::Grid> &grid_ptr) {
-    auto robots_copy = input.robots;
+int part1(const ParsedInput &input) {
+    return puzzle_part1(input, aoc::Grid::create('.', 101, 103));
+}
+
+int puzzle_part2(const ParsedInput &input, const std::shared_ptr<aoc::Grid> &grid) {
+    std::vector<Robot> robots(input.robot_positions.size());
+
+    std::ranges::transform(input.robot_positions, robots.begin(),
+                           [&grid](const RobotPosition &robot_pos) {
+                               return Robot(robot_pos.position, robot_pos.velocity, grid);
+                           });
 
     int second = 0;
     for (; second < 100000; second++) {
 
         std::unordered_map<aoc::Point, int> robot_positions;
 
-        for (auto &robot : robots_copy) {
+        for (auto &robot : robots) {
             robot.walk();
 
             auto [it, _] = robot_positions.emplace(robot.get_position(), 0);
@@ -127,21 +142,15 @@ int part2(const ParsedInput &input, const std::shared_ptr<aoc::Grid> &grid_ptr) 
         // several thousand grids and checked them myself
         if (std::all_of(robot_positions.begin(), robot_positions.end(),
                         [](const auto &pair) { return pair.second == 1; })) {
-
-            aoc::Grid grid_copy = *grid_ptr;
-
-            for (auto &[pos, count] : robot_positions) {
-                char hex_count = std::format("{:x}", count)[0];
-                grid_copy.set_square(pos, hex_count);
-            }
-
-            std::cout << grid_copy << std::endl;
-
             break;
         }
     }
 
     return second + 1; // elapsed seconds
+}
+
+int part2(const ParsedInput &input) {
+    return puzzle_part2(input, aoc::Grid::create('.', 101, 103));
 }
 
 } // namespace day14

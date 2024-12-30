@@ -5,12 +5,16 @@
 
 namespace day04 {
 
-std::shared_ptr<aoc::Grid> parse_input(std::ifstream &input);
+struct ParsedInput {
+    std::unique_ptr<aoc::Grid> grid;
+};
 
-int part1(const aoc::Grid &grid);
+ParsedInput parse_input(std::ifstream &input);
 
-int part2(const aoc::Grid &grid);
+int part1(const ParsedInput &input);
 
-} // namespace day4
+int part2(const ParsedInput &input);
+
+} // namespace day04
 
 #endif // AOC2024_DAY04_H
