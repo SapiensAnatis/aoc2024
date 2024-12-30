@@ -5,7 +5,7 @@
 #include <variant>
 #include <vector>
 
-namespace day3 {
+namespace day03 {
 struct MultiplyInstruction {
     int multiplier;
     int multiplicand;

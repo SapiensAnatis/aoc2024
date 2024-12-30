@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-namespace day1 {
+namespace day01 {
 ParsedInput parse_input(std::ifstream &inputStream) {
     std::string line;
     std::string delimiter = "   ";
@@ -28,9 +28,12 @@ ParsedInput parse_input(std::ifstream &inputStream) {
     return ParsedInput{.left = left, .right = right};
 }
 
-int part1(ParsedInput &input) {
-    std::sort(input.left.begin(), input.left.end());
-    std::sort(input.right.begin(), input.right.end());
+int part1(const ParsedInput &input) {
+    auto left_copy = input.left;
+    auto right_copy = input.right;
+
+    std::ranges::sort(left_copy);
+    std::ranges::sort(right_copy);
 
     int totalDistance = 0;
 
@@ -65,4 +68,4 @@ int part2(const ParsedInput &input) {
 
     return similarityScore;
 }
-} // namespace day1
+} // namespace day01

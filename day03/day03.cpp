@@ -7,9 +7,7 @@
 #include <regex>
 #include <variant>
 
-using namespace day3;
-
-namespace day3 {
+namespace day03 {
 ParsedInput parse_input(std::istream &input) {
     std::string content((std::istreambuf_iterator<char>(input)),
                         (std::istreambuf_iterator<char>()));
@@ -88,4 +86,4 @@ int part2(const ParsedInput &input) {
 
     return visitor.get_result();
 }
-} // namespace day3
+} // namespace day03

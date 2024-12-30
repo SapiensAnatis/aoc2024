@@ -3,7 +3,7 @@
 
 #include "../lib/grid.h"
 
-namespace day6 {
+namespace day06 {
 
 struct ParsedInput {
     std::shared_ptr<aoc::Grid> grid;

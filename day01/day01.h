@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-namespace day1 {
+namespace day01 {
 struct ParsedInput {
     std::vector<int> left;
     std::vector<int> right;
@@ -16,9 +16,9 @@ struct ParsedInput {
 
 ParsedInput parse_input(std::ifstream &inputStream);
 
-int part1(ParsedInput &input);
+int part1(const ParsedInput &input);
 
 int part2(const ParsedInput &input);
-} // namespace day1
+} // namespace day01
 
 #endif // AOC2024_DAY01_H

@@ -9,7 +9,7 @@
 #include <map>
 #include <optional>
 
-namespace day5 {
+namespace day05 {
 
 Update::Update(std::vector<int> pages) : pages(std::move(pages)) {}
 

@@ -5,7 +5,7 @@
 #include <memory>
 #include <vector>
 
-namespace day9 {
+namespace day09 {
 
 enum class BlockType { File, FreeSpace };
 

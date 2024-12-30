@@ -4,7 +4,7 @@
 #include "gtest/gtest.h"
 #include <iostream>
 
-using namespace day1;
+using namespace day01;
 
 TEST(day01_part1, example) {
     auto input_stream = aoc::get_example_ifstream(aoc::Day01);

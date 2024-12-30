@@ -4,7 +4,7 @@
 #include "day05.h"
 #include "gtest/gtest.h"
 
-using namespace day5;
+using namespace day05;
 
 TEST(day05_part1, example) {
     std::ifstream input_stream = aoc::get_example_ifstream(aoc::Day05);

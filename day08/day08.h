@@ -4,7 +4,7 @@
 #include "../lib/grid.h"
 #include <memory>
 
-namespace day8 {
+namespace day08 {
 
 struct ParsedInput {
     explicit ParsedInput(std::unique_ptr<aoc::Grid> grid);

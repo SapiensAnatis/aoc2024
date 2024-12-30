@@ -2,7 +2,7 @@
 #include <cassert>
 #include <fstream>
 
-namespace day4 {
+namespace day04 {
 
 std::shared_ptr<aoc::Grid> parse_input(std::ifstream &input) { return aoc::parse_grid(input); }
 

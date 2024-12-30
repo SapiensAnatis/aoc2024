@@ -6,7 +6,7 @@
 #include <cmath>
 #include <iostream>
 
-namespace day7 {
+namespace day07 {
 
 Operation::Operation(NodeType result, std::vector<int> operands)
     : result(result), operands(std::move(operands)), possible(false) {}

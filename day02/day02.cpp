@@ -6,7 +6,7 @@
 #include <sstream>
 #include <vector>
 
-namespace day2 {
+namespace day02 {
 
 bool is_pair_safe(int current, int previous, bool increasing) {
     if (current > previous && !increasing) {
@@ -112,4 +112,4 @@ int part2(const ParsedInput &input) {
 
     return safeReportCount;
 }
-} // namespace day2
+} // namespace day02

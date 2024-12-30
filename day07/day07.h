@@ -4,7 +4,7 @@
 #include <fstream>
 #include <vector>
 
-namespace day7 {
+namespace day07 {
 
 typedef long NodeType;
 

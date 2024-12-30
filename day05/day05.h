@@ -10,7 +10,7 @@
 #include <tuple>
 #include <vector>
 
-namespace day5 {
+namespace day05 {
 struct Update {
     explicit Update(std::vector<int> pages);
 

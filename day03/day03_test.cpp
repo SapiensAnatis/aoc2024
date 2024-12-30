@@ -3,7 +3,7 @@
 #include "gtest/gtest.h"
 #include <fstream>
 
-using namespace day3;
+using namespace day03;
 
 TEST(day03_part1, example) {
     std::ifstream input_stream = aoc::get_example_ifstream(aoc::Day03);

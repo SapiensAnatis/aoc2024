@@ -6,7 +6,7 @@
 #include <unordered_set>
 #include <utility>
 
-namespace day6 {
+namespace day06 {
 
 struct Velocity {
     int x;

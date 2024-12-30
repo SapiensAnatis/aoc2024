@@ -11,7 +11,7 @@
 #include <utility>
 #include <vector>
 
-namespace day9 {
+namespace day09 {
 
 std::ostream &operator<<(std::ostream &stream, const Block &block) {
     stream << block.get_display_string();

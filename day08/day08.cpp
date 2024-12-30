@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-namespace day8 {
+namespace day08 {
 
 ParsedInput::ParsedInput(std::unique_ptr<aoc::Grid> grid) : grid(std::move(grid)) {}
 

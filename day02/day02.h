@@ -8,7 +8,7 @@
 #include <fstream>
 #include <vector>
 
-namespace day2 {
+namespace day02 {
 struct ParsedInput {
     std::vector<std::vector<int>> reports;
 };
