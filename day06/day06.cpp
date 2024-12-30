@@ -78,9 +78,9 @@ GuardWalkResult simulate_finite_guard_walk(const std::shared_ptr<aoc::Grid> &gri
             state.direction = state.direction.rotate_90deg_clockwise();
             obstacles_hit.emplace_back(proposed_next_point, state.position, state.direction);
         } else if (next_square) {
-            path.insert(state.position);
             state.position.x += state.direction.dx;
             state.position.y += state.direction.dy;
+            path.insert(state.position);
         } else {
             break;
         }
@@ -144,18 +144,57 @@ int part2(const ParsedInput &input) {
     return infinite_loop_opportunities;
 }
 
-std::optional<aoc::Point> find_adjacent_point_on_path(const std::shared_ptr<aoc::Grid> &grid,
-                                                      const GuardWalkResult &result,
-                                                      aoc::Point point) {
-    auto adjacent = grid->get_adjacent_points(point);
-    auto path_square_it =
-        std::ranges::find_if(adjacent, [&result](aoc::Point p) { return result.path.contains(p); });
+std::optional<std::array<aoc::Point, 4>>
+try_find_infinite_loop(const std::shared_ptr<aoc::Grid> &grid, const ObstacleHitResult &hit) {
+    auto obstacle_a_position = hit.obstacle_position;
 
-    if (path_square_it != adjacent.end()) {
-        return *path_square_it;
+    // Move until we reach a new obstacle or the edge of the grid
+    aoc::Point obstacle_b_position = hit.guard_position;
+    aoc::Vector direction = hit.new_direction;
+    std::optional<char> obstacle_b_square = grid->get_square(obstacle_b_position);
+    while (obstacle_b_square && obstacle_b_square != '#') {
+        obstacle_b_position = obstacle_b_position + direction;
+        obstacle_b_square = grid->get_square(obstacle_b_position);
     }
 
-    return std::nullopt;
+    if (!obstacle_b_square) {
+        // We hit the edge of the grid without finding another obstacle
+        return std::nullopt;
+    }
+
+    // Move until we find obstacle C
+    aoc::Point obstacle_c_position = obstacle_b_position - direction;
+    direction = direction.rotate_90deg_clockwise();
+    std::optional<char> obstacle_c_square = grid->get_square(obstacle_c_position);
+    while (obstacle_c_square && obstacle_c_square != '#') {
+        obstacle_c_position = obstacle_c_position + direction;
+        obstacle_c_square = grid->get_square(obstacle_c_position);
+    }
+
+    if (!obstacle_c_square) {
+        return std::nullopt;
+    }
+
+    // We have found obstacle A, B, and C - now we know we can make an infinite loop if we place
+    // obstacle D at some coordinates. It will be positioned such that if the guard faces it,
+    // their position will line up with obstacle A on the X or Y axis.
+    // But, if we find another obstacle along the way, this is not a valid shape, and we need to
+    // return nullopt.
+    aoc::Point obstacle_d_position = obstacle_c_position - direction;
+    direction = direction.rotate_90deg_clockwise();
+    while (obstacle_d_position.x - direction.dx != obstacle_a_position.x &&
+           obstacle_d_position.y - direction.dy != obstacle_a_position.y) {
+        obstacle_d_position = obstacle_d_position + direction;
+
+        if (grid->get_square(obstacle_d_position) == '#') {
+            return std::nullopt;
+        }
+    }
+
+    std::array infinite_loop_points{obstacle_a_position, obstacle_b_position, obstacle_c_position,
+                                    obstacle_d_position};
+
+    return infinite_loop_points;
 }
 
 int faster::part2(const ParsedInput &input) {
@@ -188,49 +227,22 @@ int faster::part2(const ParsedInput &input) {
      * .......C.
      */
 
-    std::vector<aoc::Point> infinite_loop_obstacles;
+    std::unordered_set<aoc::Point> infinite_loop_obstacles;
 
     for (auto &hit : result.obstacles_hit) {
-        // Let's test assuming this is obstacle A, to avoid counting the same potential shape more
-        // than once
-        auto obstacle_a_position = hit.obstacle_position;
+        auto obstacle_find_result = try_find_infinite_loop(input.grid, hit);
 
-        // Go right until we find a new obstacle, or we reach the end of the grid
-        aoc::Point obstacle_b_position = hit.guard_position;
-        std::optional<char> obstacle_b_square = input.grid->get_square(obstacle_b_position);
-        while (obstacle_b_square && obstacle_b_square != '#') {
-            obstacle_b_position.x += 1;
-            obstacle_b_square = input.grid->get_square(obstacle_b_position);
-        }
-
-        if (!obstacle_b_square) {
-            // We hit the edge of the grid without finding another obstacle
+        if (!obstacle_find_result) {
             continue;
         }
 
-        // Go down until we find obstacle C
-        aoc::Point obstacle_c_position = obstacle_b_position - aoc::Vector(-1, 0);
-        std::optional<char> obstacle_c_square = input.grid->get_square(obstacle_c_position);
-        while (obstacle_c_square && obstacle_c_square != '#') {
-            obstacle_c_position.y += 1;
-            obstacle_c_square = input.grid->get_square(obstacle_c_position);
-        }
+        auto points = *obstacle_find_result;
 
-        if (!obstacle_c_square) {
-            continue;
-        }
+        aoc_assert(check_for_cycle(input.grid->with_mutation(points[3].x, points[3].y, '#'),
+                                   input.guard_start_point),
+                   "failed to create infinite loop");
 
-        // We have found obstacle A, B, and C - now we know we can make an infinite loop if we place
-        // obstacle D at some coordinates
-        aoc::Point obstacle_d_position(obstacle_a_position.x - 1, obstacle_c_position.y - 1);
-        infinite_loop_obstacles.push_back(obstacle_d_position);
-
-        std::shared_ptr grid_with_obstacle_here =
-            input.grid->with_mutation(obstacle_d_position.x, obstacle_d_position.y, '#');
-        if (!check_for_cycle(grid_with_obstacle_here, input.guard_start_point)) {
-            aoc_assert(check_for_cycle(grid_with_obstacle_here, input.guard_start_point),
-                       "failed to create infinite loop");
-        }
+        infinite_loop_obstacles.insert(points[3]);
     }
 
     return static_cast<int>(infinite_loop_obstacles.size());
