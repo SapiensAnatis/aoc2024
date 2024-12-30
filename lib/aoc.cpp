@@ -6,6 +6,7 @@
 #include <cassert>
 #include <charconv>
 #include <filesystem>
+#include <format>
 #include <iostream>
 #include <optional>
 #include <ranges>
@@ -14,7 +15,8 @@
 namespace aoc {
 
 std::ifstream get_ifstream(Day day, const std::string &filename) {
-    std::filesystem::path folder_name("day" + std::to_string(day));
+    std::string day_name = std::format("{:02d}", static_cast<int>(day));
+    std::filesystem::path folder_name("day" + day_name);
     std::string path = folder_name / filename;
     std::ifstream stream(path); // copied by CMake
 

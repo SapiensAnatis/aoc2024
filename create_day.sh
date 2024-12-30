@@ -17,10 +17,10 @@ touch "./${day_name}/example.txt"
 
 # We don't care as much about overwriting this file if it already exists as it's auto-generated boilerplate
 tee "./${day_name}/CMakeLists.txt" <<EOF > /dev/null
-configure_file("\${CMAKE_CURRENT_SOURCE_DIR}/example.txt" "\${CMAKE_CURRENT_BINARY_DIR}/${day_name}/example.txt" COPYONLY)
+configure_file("\${CMAKE_CURRENT_SOURCE_DIR}/example.txt" "\${CMAKE_CURRENT_BINARY_DIR}/example.txt" COPYONLY)
 
 if (EXISTS "\${CMAKE_CURRENT_SOURCE_DIR}/input.txt")
-    configure_file("\${CMAKE_CURRENT_SOURCE_DIR}/input.txt" "\${CMAKE_CURRENT_BINARY_DIR}/${day_name}/input.txt" COPYONLY)
+    configure_file("\${CMAKE_CURRENT_SOURCE_DIR}/input.txt" "\${CMAKE_CURRENT_BINARY_DIR}/input.txt" COPYONLY)
 endif ()
 
 target_sources(aoc PRIVATE
