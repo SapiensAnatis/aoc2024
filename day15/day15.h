@@ -13,7 +13,7 @@ struct ParsedInput {
 
 ParsedInput parse_input(std::ifstream &input_stream);
 
-int part1(ParsedInput &input);
+int part1(const ParsedInput &input);
 int part2(const ParsedInput &input);
 
 } // namespace day15

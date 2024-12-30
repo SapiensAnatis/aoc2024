@@ -190,39 +190,6 @@ int part1(const ParsedInput &input) {
 
 std::unordered_set<aoc::Point> shortest_path_points;
 
-// NOLINTNEXTLINE(misc-no-recursion)
-void print_paths_recurse(
-    aoc::Grid &grid,
-    const std::unordered_multimap<PointWithDirection, PointWithDirection> &subgraph,
-    PointWithDirection point) {
-
-    grid.set_square(point.point, 'o');
-    shortest_path_points.insert(point.point);
-
-    if (subgraph.contains(point)) {
-        auto [begin, end] = subgraph.equal_range(point);
-
-        auto diff = std::distance(begin, end);
-        std::cout << "Scanning " << diff << " paths" << std::endl;
-
-        for (auto it = begin; it != end; it++) {
-            print_paths_recurse(grid, subgraph, it->second);
-        }
-    }
-}
-
-void print_paths(const ParsedInput &input,
-                 const std::unordered_multimap<PointWithDirection, PointWithDirection> &subgraph,
-                 aoc::Point end) {
-    auto new_grid = *input.grid;
-
-    for (auto dir : aoc::direction_vectors) {
-        auto pwd = PointWithDirection(end, dir);
-        print_paths_recurse(new_grid, subgraph, pwd);
-    }
-    std::cout << new_grid << std::endl;
-}
-
 int part2(const ParsedInput &input) {
     auto start_it = std::find(input.grid->begin(), input.grid->end(), 'S');
     aoc_assert(start_it != input.grid->end(), "Failed to find maze start");
@@ -230,12 +197,6 @@ int part2(const ParsedInput &input) {
     auto start = input.grid->get_point(start_it);
 
     auto subgraph = get_shortest_path_subgraph(input, start);
-
-    auto end_it = std::find(input.grid->begin(), input.grid->end(), 'E');
-    aoc_assert(end_it != input.grid->end(), "Could not find maze end");
-    auto end_point = input.grid->get_point(end_it);
-
-    print_paths(input, subgraph, end_point);
 
     return static_cast<int>(shortest_path_points.size());
 }

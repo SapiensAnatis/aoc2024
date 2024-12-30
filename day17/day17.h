@@ -52,9 +52,9 @@ struct ParsedInput {
 
 ParsedInput parse_input(std::ifstream &input_stream);
 
-void part1(ParsedInput &input);
+std::string part1(ParsedInput input);
 
-ulong part2(ParsedInput &input);
+ulong part2(ParsedInput input);
 
 } // namespace day17
 

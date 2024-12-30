@@ -42,8 +42,7 @@ std::vector<aoc::Point> get_bfs_path(const std::unordered_map<aoc::Point, aoc::P
     return {path.rbegin(), path.rend()};
 }
 
-int part1(const ParsedInput &input, int grid_size, int num_bytes_fall) {
-
+int puzzle_part1(const ParsedInput &input, int grid_size, int num_bytes_fall) {
     aoc_assert(num_bytes_fall < static_cast<int>(input.byte_positions.size()),
                "Cannot simulate beyond end of input byte positions");
 
@@ -65,7 +64,14 @@ int part1(const ParsedInput &input, int grid_size, int num_bytes_fall) {
     return static_cast<int>(bfs_path.size());
 }
 
-aoc::Point part2(const ParsedInput &input, int grid_size, int num_bytes_fall) {
+int part1(const ParsedInput &input) {
+    int grid_size = 71;
+    int num_bytes = 1024;
+
+    return puzzle_part1(input, grid_size, num_bytes);
+}
+
+aoc::Point puzzle_part2(const ParsedInput &input, int grid_size, int num_bytes_fall) {
     aoc_assert(num_bytes_fall < static_cast<int>(input.byte_positions.size()),
                "Cannot simulate beyond end of input byte positions");
 
@@ -99,6 +105,13 @@ aoc::Point part2(const ParsedInput &input, int grid_size, int num_bytes_fall) {
     }
 
     throw std::logic_error("No bytes will block the exit");
+}
+
+aoc::Point part2(const ParsedInput &input) {
+    int grid_size = 71;
+    int num_bytes = 1024;
+
+    return puzzle_part2(input, grid_size, num_bytes);
 }
 
 } // namespace day18

@@ -12,9 +12,13 @@ struct ParsedInput {
 
 ParsedInput parse_input(std::ifstream &input_stream);
 
-int part1(const ParsedInput &input, int grid_size, int num_bytes_fall);
+int puzzle_part1(const ParsedInput &input, int grid_size, int num_bytes_fall);
 
-aoc::Point part2(const ParsedInput &input, int grid_size, int num_bytes_fall);
+int part1(const ParsedInput &input);
+
+aoc::Point puzzle_part2(const ParsedInput &input, int grid_size, int num_bytes_fall);
+
+aoc::Point part2(const ParsedInput &input);
 
 } // namespace day18
 

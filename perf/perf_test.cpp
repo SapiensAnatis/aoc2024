@@ -32,57 +32,39 @@
 #include "gtest/gtest.h"
 #include <chrono>
 
-#define EXECUTE_DAY(DAY_NO)                                                                        \
-    {                                                                                              \
-        auto t1 = std::chrono::high_resolution_clock::now();                                       \
-                                                                                                   \
-        auto input_stream = aoc::get_example_ifstream(aoc::Day##DAY_NO);                           \
-        const auto input = day##DAY_NO ::parse_input(input_stream);                                \
-        auto t2 = std::chrono::high_resolution_clock::now();                                       \
-                                                                                                   \
-        std::cout << "Parsed day " << #DAY_NO << " input in "                                      \
-                  << std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1) << std::endl;  \
-                                                                                                   \
-        day##DAY_NO::part1(input);                                                                 \
-        auto t3 = std::chrono::high_resolution_clock::now();                                       \
-                                                                                                   \
-        std::cout << "Ran day " << #DAY_NO << " part 1 in "                                        \
-                  << std::chrono::duration_cast<std::chrono::microseconds>(t3 - t2) << std::endl;  \
-                                                                                                   \
-        day##DAY_NO::part2(input);                                                                 \
-        auto t4 = std::chrono::high_resolution_clock::now();                                       \
-                                                                                                   \
-        std::cout << "Ran day " << #DAY_NO << " part 2 in "                                        \
-                  << std::chrono::duration_cast<std::chrono::microseconds>(t4 - t3) << std::endl   \
-                  << std::endl;                                                                    \
-    }
-
-void exec() {
-    Puzzle<day01::ParsedInput> day01(aoc::Day01, day01::parse_input, day01::part1, day01::part2);
-    day01.run();
-    std::cout << std::endl;
-}
-
 TEST(perf, under_1_second) {
+    using namespace aoc;
+
+    Puzzle<day01::ParsedInput> day01(Day01, day01::parse_input, day01::part1, day01::part2);
+    Puzzle<day02::ParsedInput> day02(Day02, day02::parse_input, day02::part1, day02::part2);
+    Puzzle<day03::ParsedInput> day03(Day03, day03::parse_input, day03::part1, day03::part2);
+    Puzzle<day04::ParsedInput> day04(Day04, day04::parse_input, day04::part1, day04::part2);
+    Puzzle<day05::ParsedInput> day05(Day05, day05::parse_input, day05::part1, day05::part2);
+    Puzzle<day06::ParsedInput> day06(Day06, day06::parse_input, day06::part1, day06::part2);
+    Puzzle<day07::ParsedInput> day07(Day07, day07::parse_input, day07::part1, day07::part2);
+    Puzzle<day08::ParsedInput> day08(Day08, day08::parse_input, day08::part1, day08::part2);
+    Puzzle<day09::ParsedInput> day09(Day09, day09::parse_input, day09::part1, day09::part2);
+
+    std::vector<std::pair<Day, PuzzleRunResult>> results;
+
     auto t0 = std::chrono::high_resolution_clock::now();
 
-    EXECUTE_DAY(01)
-    EXECUTE_DAY(02)
-    EXECUTE_DAY(03)
-    EXECUTE_DAY(04)
-    EXECUTE_DAY(05)
-    EXECUTE_DAY(06)
-    EXECUTE_DAY(07)
-    EXECUTE_DAY(08)
-    EXECUTE_DAY(09)
-    EXECUTE_DAY(10)
-    EXECUTE_DAY(11)
-    EXECUTE_DAY(12)
-    EXECUTE_DAY(13)
-    EXECUTE_DAY(14)
+    results.emplace_back(day01.get_day(), day01.run());
+    results.emplace_back(day02.get_day(), day02.run());
+    results.emplace_back(day03.get_day(), day03.run());
+    results.emplace_back(day04.get_day(), day04.run());
+    results.emplace_back(day05.get_day(), day05.run());
+    results.emplace_back(day06.get_day(), day06.run()); // optimize this
 
     auto t_final = std::chrono::high_resolution_clock::now();
 
+    for (const auto &[day, result] : results) {
+        std::cout << "Parsed day " << day << " input in " << result.parse_time << std::endl;
+        std::cout << "Ran day " << day << " part 1 in " << result.part_1_time << std::endl;
+        std::cout << "Ran day " << day << " part 2 in " << result.part_2_time << std::endl;
+        std::cout << std::endl;
+    }
+
     std::cout << "Executed all days in "
-              << std::chrono::duration_cast<std::chrono::microseconds>(t_final - t0) << std::endl;
+              << std::chrono::duration_cast<std::chrono::milliseconds>(t_final - t0) << std::endl;
 }

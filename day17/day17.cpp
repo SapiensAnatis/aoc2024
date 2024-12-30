@@ -199,12 +199,13 @@ ParsedInput parse_input(std::ifstream &input_stream) {
     return {Computer(register_a, register_b, register_c, program)};
 }
 
-void part1(ParsedInput &input) {
+std::string part1(ParsedInput input) {
     input.computer.execute();
-    input.computer.print_output();
+    auto buf = input.computer.get_output_buffer();
+    return aoc::join(',', buf.begin(), buf.end());
 }
 
-ulong part2(ParsedInput &input) {
+ulong part2(ParsedInput input) {
     auto program = input.computer.get_program();
 
     int target_program_digit = static_cast<int>(program.size()) - 1;
