@@ -139,6 +139,9 @@ std::ostream &operator<<(std::ostream &stream, const Grid &grid) {
 }
 
 std::vector<char>::size_type Grid::calculate_array_index(int x, int y) const {
+    aoc_assert(x >= 0 && x < this->width && y >= 0 && y < this->height,
+               "grid bounds check failure");
+
     int offset = y * this->width;
     int index = offset + x;
     return index;
