@@ -128,49 +128,46 @@ bool check_for_cycle(const std::shared_ptr<aoc::Grid> &grid, const aoc::Point &g
     return false;
 }
 
-void advance_state(GuardState &state, const std::shared_ptr<aoc::Grid> &grid) {
-    std::optional<char> next_square;
-    int proposed_next_x = state.position.x;
-    int proposed_next_y = state.position.y;
-
-    // Teleport to the next obstacle
-    do {
-        proposed_next_x += state.direction.dx;
-        proposed_next_y += state.direction.dy;
-        next_square = grid->get_square(proposed_next_x, proposed_next_y);
-    } while (next_square == '.' || next_square == '^');
-
-    if (next_square == '#') {
-        // Back up one
-        state.position.x = proposed_next_x - state.direction.dx;
-        state.position.y = proposed_next_y - state.direction.dy;
-        // Rotate
-        state.direction = state.direction.rotate_90deg_clockwise();
-    } else {
-        state.position.x = proposed_next_x;
-        state.position.y = proposed_next_y;
-    }
-}
-
 bool check_for_cycle_faster(const std::shared_ptr<aoc::Grid> &grid,
                             const aoc::Point &guard_start_point) {
 
-    GuardState hare_state(guard_start_point, aoc::Vector(0, -1));
-    GuardState tortoise_state(guard_start_point, aoc::Vector(0, -1));
+    GuardState state(guard_start_point, aoc::Vector(0, -1));
+    std::unordered_set<GuardState> obstacle_hit_states;
+    obstacle_hit_states.reserve(150); // approximation from debugging
 
-    while (grid->get_square(hare_state.position)) {
-        advance_state(hare_state, grid);
-        advance_state(hare_state, grid);
-        advance_state(tortoise_state, grid);
+    while (grid->get_square(state.position)) {
+        std::optional<char> next_square;
+        int proposed_next_x = state.position.x;
+        int proposed_next_y = state.position.y;
 
-        if (hare_state.position == tortoise_state.position &&
-            hare_state.direction == tortoise_state.direction) {
-            // The hare has lapped the tortoise - this is an infinite loop
-            return true;
+        // Teleport to the next obstacle
+        do {
+            proposed_next_x += state.direction.dx;
+            proposed_next_y += state.direction.dy;
+            next_square = grid->get_square(proposed_next_x, proposed_next_y);
+        } while (next_square == '.' || next_square == '^');
+
+        if (next_square == '#') {
+            // Obstacle hit, turn right
+            state.position.x = proposed_next_x - state.direction.dx;
+            state.position.y = proposed_next_y - state.direction.dy;
+            state.direction = state.direction.rotate_90deg_clockwise();
+
+            auto [_, inserted] = obstacle_hit_states.insert(state);
+
+            if (!inserted) {
+                // We have hit this obstacle with the same direction before, we're looping
+                return true;
+            }
+        } else if (next_square) {
+            state.position.x = proposed_next_x;
+            state.position.x = proposed_next_y;
+        } else {
+            break;
         }
     }
 
-    // Hare has exited the grid
+    // Guard has exited the grid
     return false;
 }
 

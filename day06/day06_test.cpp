@@ -71,3 +71,12 @@ TEST(day06_part2_faster, real) {
 
     ASSERT_EQ(faster_result, result);
 }
+
+TEST(day06_part2_faster, perf) {
+    auto input_stream = aoc::get_real_ifstream(aoc::Day06);
+    auto input = day06::parse_input(input_stream);
+
+    int result = day06::faster::part2(input);
+
+    std::cout << result << std::endl;
+}
