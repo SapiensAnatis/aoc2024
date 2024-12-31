@@ -45,7 +45,7 @@ TEST(perf, under_1_second) {
     Puzzle<day07::ParsedInput> day07(Day07, day07::parse_input, day07::part1, day07::part2        );
     Puzzle<day08::ParsedInput> day08(Day08, day08::parse_input, day08::part1, day08::part2        );
     Puzzle<day09::ParsedInput> day09(Day09, day09::parse_input, day09::part1, day09::part2        );
-    // clang-forrmat on
+    // clang-format on
 
     std::vector<PuzzleRunResult> results;
 
@@ -56,7 +56,8 @@ TEST(perf, under_1_second) {
     results.push_back(day03.run());
     results.push_back(day04.run());
     results.push_back(day05.run());
-    results.push_back(day06.run()); // optimize this
+    results.push_back(day06.run());
+    results.push_back(day07.run()); // optimize this
 
     auto t_final = std::chrono::high_resolution_clock::now();
 
