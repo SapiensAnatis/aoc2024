@@ -50,6 +50,12 @@ TEST(perf, under_1_second) {
     Puzzle<day07::ParsedInput>         day07(Day07, day07::parse_input,         day07::faster::part1, day07::faster::part2);
     Puzzle<day08::ParsedInput>         day08(Day08, day08::parse_input,         day08::part1,         day08::part2        );
     Puzzle<day09::faster::ParsedInput> day09(Day09, day09::faster::parse_input, day09::faster::part1, day09::faster::part2);
+    Puzzle<day10::ParsedInput>         day10(Day10, day10::parse_input,         day10::part1,         day10::part2        );
+    Puzzle<day11::ParsedInput>         day11(Day11, day11::parse_input,         day11::part1,         day11::part2        );
+    Puzzle<day12::ParsedInput>         day12(Day12, day12::parse_input,         day12::part1,         day12::part2        );
+    Puzzle<day13::ParsedInput>         day13(Day13, day13::parse_input,         day13::part1,         day13::part2        );
+    Puzzle<day14::ParsedInput>         day14(Day14, day14::parse_input,         day14::part1,         day14::part2        );
+    Puzzle<day15::ParsedInput>         day15(Day15, day15::parse_input,         day15::part1,         day15::part2        );
     // clang-format on
 
     std::vector<PuzzleRunResult> results;
@@ -65,19 +71,28 @@ TEST(perf, under_1_second) {
     results.push_back(day07.run());
     results.push_back(day08.run());
     results.push_back(day09.run());
+    results.push_back(day10.run());
+    results.push_back(day11.run());
+    results.push_back(day12.run());
+    results.push_back(day13.run());
+    results.push_back(day14.run()); // optimize this
 
     auto t_final = std::chrono::high_resolution_clock::now();
 
     for (const auto result : results) {
-        std::cout << "Parsed day " << result.day << " input in " << std::setw(8)
-                  << result.parse_time << std::endl;
-        std::cout << "Ran day " << result.day << " part 1 in " << std::setw(10)
-                  << result.part_1_time << std::endl;
-        std::cout << "Ran day " << result.day << " part 2 in " << std::setw(10)
-                  << result.part_2_time << std::endl;
+        auto day_fmt = std::format("{:02d}", static_cast<int>(result.day));
+
+        std::cout << "Parsed day " << day_fmt << " input in " << std::setw(8) << result.parse_time
+                  << std::endl;
+        std::cout << "Ran day " << day_fmt << " part 1 in " << std::setw(10) << result.part_1_time
+                  << std::endl;
+        std::cout << "Ran day " << day_fmt << " part 2 in " << std::setw(10) << result.part_2_time
+                  << std::endl;
         std::cout << std::endl;
     }
 
-    std::cout << "Executed all days in "
-              << std::chrono::duration_cast<std::chrono::milliseconds>(t_final - t0) << std::endl;
+    auto total_duration = std::chrono::duration_cast<std::chrono::milliseconds>(t_final - t0);
+    std::cout << "Executed all days in " << total_duration << std::endl;
+
+    ASSERT_LT(total_duration.count(), 1000);
 }
