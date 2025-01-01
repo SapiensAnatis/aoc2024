@@ -11,30 +11,7 @@
 #include <unordered_set>
 #include <utility>
 
-namespace day06 {
-struct GuardState {
-    aoc::Point position;
-    aoc::Vector direction;
-
-    GuardState(aoc::Point position, aoc::Vector direction)
-        : position(position), direction(direction) {}
-};
-
-bool operator==(const GuardState &a, const GuardState &b) {
-    return a.position == b.position && a.direction == b.direction;
-}
-
-} // namespace day06
-
-template <> struct std::hash<day06::GuardState> {
-    size_t operator()(const day06::GuardState &state) const noexcept {
-        size_t seed = 0;
-        aoc::hash_combine(seed, state.position);
-        aoc::hash_combine(seed, state.direction);
-
-        return seed;
-    }
-};
+namespace day06 {} // namespace day06
 
 namespace day06 {
 
@@ -55,22 +32,10 @@ ParsedInput parse_input(std::ifstream &input) {
     return {std::move(grid), guard_start_point};
 }
 
-struct ObstacleHitResult {
-    aoc::Point obstacle_position;
-    aoc::Point guard_position;
-    aoc::Vector new_direction;
-};
-
-struct GuardWalkResult {
-    std::unordered_set<aoc::Point> path;
-    std::vector<ObstacleHitResult> obstacles_hit;
-};
-
 GuardWalkResult simulate_finite_guard_walk(const std::shared_ptr<aoc::Grid> &grid,
                                            const aoc::Point &guard_start_point) {
     GuardState state(guard_start_point, aoc::Vector(0, -1));
     std::unordered_set path{guard_start_point};
-    std::vector<ObstacleHitResult> obstacles_hit;
 
     while (true) {
         int proposed_next_x = state.position.x + state.direction.dx;
@@ -81,7 +46,6 @@ GuardWalkResult simulate_finite_guard_walk(const std::shared_ptr<aoc::Grid> &gri
         if (next_square == '#') {
             // Obstacle hit, turn right
             state.direction = state.direction.rotate_90deg_clockwise();
-            obstacles_hit.emplace_back(proposed_next_point, state.position, state.direction);
         } else if (next_square) {
             state.position.x += state.direction.dx;
             state.position.y += state.direction.dy;
@@ -91,7 +55,7 @@ GuardWalkResult simulate_finite_guard_walk(const std::shared_ptr<aoc::Grid> &gri
         }
     }
 
-    return {.path = path, .obstacles_hit = obstacles_hit};
+    return {.path = path};
 }
 
 bool check_for_cycle(const std::shared_ptr<aoc::Grid> &grid, const aoc::Point &guard_start_point) {
@@ -187,21 +151,6 @@ int part2(const ParsedInput &input) {
             infinite_loop_opportunities++;
             infinite_loop_points.push_back(point);
         }
-    }
-
-    return infinite_loop_opportunities;
-}
-
-int faster::part2(const ParsedInput &input) {
-    auto result = simulate_finite_guard_walk(input.grid, input.guard_start_point);
-    int infinite_loop_opportunities = 0;
-
-    for (auto &point : result.path) {
-        input.grid->set_square(point.x, point.y, '#');
-        if (check_for_cycle_faster(input.grid, input.guard_start_point)) {
-            infinite_loop_opportunities++;
-        }
-        input.grid->set_square(point.x, point.y, '.');
     }
 
     return infinite_loop_opportunities;
