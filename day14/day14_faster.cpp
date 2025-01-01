@@ -17,8 +17,16 @@ class RobotV2 {
 
     void walk() {
         aoc::Point next_square = this->position + this->velocity;
-        next_square.x %= this->grid_width;
-        next_square.y %= this->grid_height;
+        next_square.x %= grid_width;
+        next_square.y %= grid_height;
+
+        if (next_square.x < 0) {
+            next_square.x += this->grid_width;
+        }
+
+        if (next_square.y < 0) {
+            next_square.y += this->grid_height;
+        }
 
         this->position = next_square;
     }
@@ -41,24 +49,20 @@ int part2(const ParsedInput &input) {
     }
 
     int second = 0;
-    for (; second < 100000; second++) {
+    std::unordered_set<aoc::Point> robot_positions;
+    robot_positions.reserve(robots.size());
 
-        // todo: hoist this alloc?
-        std::unordered_map<aoc::Point, int> robot_positions;
+    for (; second < 100000; second++) {
+        robot_positions.clear();
+
+        bool all_unique = true;
 
         for (auto &robot : robots) {
             robot.walk();
-
-            auto [it, inserted] = robot_positions.emplace(robot.get_position(), 0);
-            it->second++;
+            all_unique = all_unique && robot_positions.insert(robot.get_position()).second;
         }
 
-        // CHEATED - had to look this up, otherwise I would have printed out
-        // several thousand grids and checked them myself
-
-        // todo: can merge this check with the for loop above (don't return early though)
-        if (std::all_of(robot_positions.begin(), robot_positions.end(),
-                        [](const auto &pair) { return pair.second == 1; })) {
+        if (all_unique) {
             break;
         }
     }

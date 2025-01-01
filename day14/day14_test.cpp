@@ -49,6 +49,6 @@ TEST(day14_part2_faster, perf) {
     auto input_stream = aoc::get_real_ifstream(aoc::Day14);
     auto input = day14::parse_input(input_stream);
 
-    aoc::time_execution("day14_part2 original", [&input] { day14::part2(input); });
+    // aoc::time_execution("day14_part2 original", [&input] { day14::part2(input); });
     aoc::time_execution("day14_part2 faster", [&input] { day14::faster::part2(input); });
 }
