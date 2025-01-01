@@ -2,6 +2,7 @@
 #include "../lib/aoc.h"
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 #include <iterator>
 #include <memory>
 #include <optional>

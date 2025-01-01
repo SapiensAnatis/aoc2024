@@ -1,6 +1,7 @@
 #ifndef AOC2024_DAY09_H
 #define AOC2024_DAY09_H
 
+#include <deque>
 #include <fstream>
 #include <memory>
 #include <vector>
@@ -51,6 +52,32 @@ long part1(const ParsedInput &input);
 
 long part2(const ParsedInput &input);
 
-} // namespace day9
+} // namespace day09
+
+namespace day09::faster {
+
+struct FileBlockV2 {
+    int position;
+    int id;
+    int size;
+};
+
+struct FreeSpaceBlockV2 {
+    int position;
+    int size;
+};
+
+struct ParsedInput {
+    std::vector<FileBlockV2> file_blocks;
+    std::deque<FreeSpaceBlockV2> free_space_blocks;
+};
+
+ParsedInput parse_input(std::ifstream &input_stream);
+
+long part1(ParsedInput input);
+
+long part2(ParsedInput input);
+
+} // namespace day09::faster
 
 #endif // AOC2024_DAY09_H

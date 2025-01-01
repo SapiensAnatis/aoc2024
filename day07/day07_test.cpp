@@ -52,8 +52,8 @@ TEST(day07_part1_faster, perf) {
     auto input_stream = aoc::get_real_ifstream(aoc::Day07);
     auto input = day07::parse_input(input_stream);
 
-    aoc::time_execution("day07p1 original", [&input] { day07::part1(input); });
-    aoc::time_execution("day07p1 optimized", [&input] { day07::faster::part1(input); });
+    aoc::time_execution("day07_part1 original", [&input] { day07::part1(input); });
+    aoc::time_execution("day07_part1 faster", [&input] { day07::faster::part1(input); });
 }
 
 TEST(day07_part2_faster, example) {
@@ -79,6 +79,6 @@ TEST(day07_part2_faster, perf) {
     auto input_stream = aoc::get_real_ifstream(aoc::Day07);
     auto input = day07::parse_input(input_stream);
 
-    aoc::time_execution("day07p2 original", [&input] { day07::part2(input); });
-    aoc::time_execution("day07p2 optimized", [&input] { day07::faster::part2(input); });
+    aoc::time_execution("day07_part2 original", [&input] { day07::part2(input); });
+    aoc::time_execution("day07_part2 faster", [&input] { day07::faster::part2(input); });
 }
