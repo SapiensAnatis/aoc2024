@@ -69,9 +69,12 @@ TEST(perf, under_1_second) {
     auto t_final = std::chrono::high_resolution_clock::now();
 
     for (const auto result : results) {
-        std::cout << "Parsed day " << result.day << " input in " << result.parse_time << std::endl;
-        std::cout << "Ran day " << result.day << " part 1 in " << result.part_1_time << std::endl;
-        std::cout << "Ran day " << result.day << " part 2 in " << result.part_2_time << std::endl;
+        std::cout << "Parsed day " << result.day << " input in " << std::setw(8)
+                  << result.parse_time << std::endl;
+        std::cout << "Ran day " << result.day << " part 1 in " << std::setw(10)
+                  << result.part_1_time << std::endl;
+        std::cout << "Ran day " << result.day << " part 2 in " << std::setw(10)
+                  << result.part_2_time << std::endl;
         std::cout << std::endl;
     }
 
