@@ -63,6 +63,8 @@ TEST(perf, under_1_second) {
     results.push_back(day05.run());
     results.push_back(day06.run());
     results.push_back(day07.run());
+    results.push_back(day08.run());
+    results.push_back(day09.run()); // optimize this
 
     auto t_final = std::chrono::high_resolution_clock::now();
 
