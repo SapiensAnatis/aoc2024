@@ -37,3 +37,41 @@ TEST(day07_part2, real) {
 
     std::cout << result << std::endl;
 }
+
+TEST(day07_part1_faster, real) {
+    auto input_stream = aoc::get_real_ifstream(aoc::Day07);
+    auto input = day07::parse_input(input_stream);
+
+    long result = day07::part1(input);
+    long faster_result = day07::faster::part1(input);
+
+    ASSERT_EQ(faster_result, result);
+}
+
+TEST(day07_part2_faster, example) {
+    auto input_stream = aoc::get_example_ifstream(aoc::Day07);
+    auto input = day07::parse_input(input_stream);
+
+    long result = day07::faster::part2(input);
+
+    ASSERT_EQ(result, 11387);
+}
+
+TEST(day07_part2_faster, real) {
+    auto input_stream = aoc::get_real_ifstream(aoc::Day07);
+    auto input = day07::parse_input(input_stream);
+
+    long result = day07::part2(input);
+    long faster_result = day07::faster::part2(input);
+
+    ASSERT_EQ(faster_result, result);
+}
+
+TEST(day07_part2_faster, perf) {
+    auto input_stream = aoc::get_real_ifstream(aoc::Day07);
+    auto input = day07::parse_input(input_stream);
+
+    auto result = day07::faster::part2(input);
+
+    std::cout << result << std::endl;
+}

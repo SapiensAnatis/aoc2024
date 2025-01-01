@@ -16,6 +16,15 @@ struct Operation {
     Operation(NodeType result, std::vector<int> operands);
 };
 
+inline std::ostream &operator<<(std::ostream &os, const Operation &o) {
+    os << o.result << ": ";
+    for (const auto op : o.operands) {
+        os << op << " ";
+    }
+
+    return os;
+}
+
 struct ParsedInput {
     std::vector<Operation> operations;
 
@@ -28,6 +37,14 @@ NodeType part1(const ParsedInput &input);
 
 NodeType part2(const ParsedInput &input);
 
-} // namespace day7
+} // namespace day07
+
+namespace day07::faster {
+
+long part1(const ParsedInput &input);
+
+long part2(const ParsedInput &input);
+
+} // namespace day07::faster
 
 #endif // AOC2024_DAY07_H

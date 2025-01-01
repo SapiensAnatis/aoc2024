@@ -6,6 +6,7 @@ endif ()
 
 target_sources(aoc PRIVATE
         day07.cpp
+        day07_faster.cpp
         day07.h
         day07_test.cpp
 )

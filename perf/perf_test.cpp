@@ -35,16 +35,21 @@
 TEST(perf, under_1_second) {
     using namespace aoc;
 
+#ifndef NDEBUG
+    std::cerr << "This test should be run in release mode" << std::endl;
+    abort();
+#endif
+
     // clang-format off
-    Puzzle<day01::ParsedInput> day01(Day01, day01::parse_input, day01::part1, day01::part2        );
-    Puzzle<day02::ParsedInput> day02(Day02, day02::parse_input, day02::part1, day02::part2        );
-    Puzzle<day03::ParsedInput> day03(Day03, day03::parse_input, day03::part1, day03::part2        );
-    Puzzle<day04::ParsedInput> day04(Day04, day04::parse_input, day04::part1, day04::part2        );
-    Puzzle<day05::ParsedInput> day05(Day05, day05::parse_input, day05::part1, day05::part2        );
-    Puzzle<day06::ParsedInput> day06(Day06, day06::parse_input, day06::part1, day06::faster::part2);
-    Puzzle<day07::ParsedInput> day07(Day07, day07::parse_input, day07::part1, day07::part2        );
-    Puzzle<day08::ParsedInput> day08(Day08, day08::parse_input, day08::part1, day08::part2        );
-    Puzzle<day09::ParsedInput> day09(Day09, day09::parse_input, day09::part1, day09::part2        );
+    Puzzle<day01::ParsedInput> day01(Day01, day01::parse_input, day01::part1,         day01::part2        );
+    Puzzle<day02::ParsedInput> day02(Day02, day02::parse_input, day02::part1,         day02::part2        );
+    Puzzle<day03::ParsedInput> day03(Day03, day03::parse_input, day03::part1,         day03::part2        );
+    Puzzle<day04::ParsedInput> day04(Day04, day04::parse_input, day04::part1,         day04::part2        );
+    Puzzle<day05::ParsedInput> day05(Day05, day05::parse_input, day05::part1,         day05::part2        );
+    Puzzle<day06::ParsedInput> day06(Day06, day06::parse_input, day06::part1,         day06::faster::part2);
+    Puzzle<day07::ParsedInput> day07(Day07, day07::parse_input, day07::faster::part1, day07::faster::part2);
+    Puzzle<day08::ParsedInput> day08(Day08, day08::parse_input, day08::part1,         day08::part2        );
+    Puzzle<day09::ParsedInput> day09(Day09, day09::parse_input, day09::part1,         day09::part2        );
     // clang-format on
 
     std::vector<PuzzleRunResult> results;
@@ -57,7 +62,7 @@ TEST(perf, under_1_second) {
     results.push_back(day04.run());
     results.push_back(day05.run());
     results.push_back(day06.run());
-    results.push_back(day07.run()); // optimize this
+    results.push_back(day07.run());
 
     auto t_final = std::chrono::high_resolution_clock::now();
 
