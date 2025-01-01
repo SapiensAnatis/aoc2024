@@ -129,6 +129,7 @@ int puzzle_part2(const ParsedInput &input, const std::shared_ptr<aoc::Grid> &gri
     int second = 0;
     for (; second < 100000; second++) {
 
+        // todo: hoist this alloc?
         std::unordered_map<aoc::Point, int> robot_positions;
 
         for (auto &robot : robots) {
@@ -140,6 +141,8 @@ int puzzle_part2(const ParsedInput &input, const std::shared_ptr<aoc::Grid> &gri
 
         // CHEATED - had to look this up, otherwise I would have printed out
         // several thousand grids and checked them myself
+
+        // todo: can merge this check with the for loop above (don't return early though)
         if (std::all_of(robot_positions.begin(), robot_positions.end(),
                         [](const auto &pair) { return pair.second == 1; })) {
             break;

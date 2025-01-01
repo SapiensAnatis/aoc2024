@@ -47,4 +47,10 @@ int part2(const ParsedInput &input);
 
 } // namespace day14
 
+namespace day14::faster {
+
+int part2(const ParsedInput &input);
+
+}
+
 #endif // AOC2024_DAY14_H
