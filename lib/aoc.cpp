@@ -5,6 +5,7 @@
 #include "aoc.h"
 #include <cassert>
 #include <charconv>
+#include <chrono>
 #include <filesystem>
 #include <format>
 #include <iostream>
@@ -100,6 +101,23 @@ std::vector<std::string_view> split(const std::string_view &str, char separator)
 
 std::vector<std::string_view> split(const std::string &str, char separator) {
     return split(std::string_view(str), separator);
+}
+
+void time_execution(const std::string &label, const std::function<void()> &func) {
+    /*
+     * Using chrono for perf is crap. I know that. But in optimizing AOC,
+     * it's far more about finding a more efficient solution that changes
+     * the entire time complexity of the problem, and making your solution
+     * 10-1000x faster. So chrono is 'good enough' as we aren't going to be
+     * micro-benchmarking looking for 1-2ms improvements.
+     */
+
+    auto t1 = std::chrono::high_resolution_clock::now();
+    func();
+    auto t2 = std::chrono::high_resolution_clock::now();
+
+    std::cout << "Executed '" << label << "' in "
+              << std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1) << std::endl;
 }
 
 } // namespace aoc

@@ -6,6 +6,7 @@
 #define AOC2024_AOC_H
 
 #include <fstream>
+#include <functional>
 #include <optional>
 #include <sstream>
 #include <string_view>
@@ -74,6 +75,8 @@ std::string join(char separator, const Iterator &begin, const Iterator &end) {
 
     return ss.str();
 }
+
+void time_execution(const std::string &label, const std::function<void()> &func);
 
 } // namespace aoc
 
