@@ -55,4 +55,4 @@ input.txt
 build/
 
 # clangd
-.cache/clangd
+**/.cache/clangd
