@@ -13,8 +13,20 @@ TEST(day02_part1, example) {
     day02_part1(example);
 }
 
-TEST(day02_part1, real) {}
+TEST(day02_part1, real) {
+    FILE* real = get_real_input(2);
 
-TEST(day02_part2, example) {}
+    day02_part1(real);
+}
 
-TEST(day02_part2, real) {}
+TEST(day02_part2, example) {
+    FILE* example = get_example_input(2);
+
+    day02_part2(example);
+}
+
+TEST(day02_part2, real) {
+    FILE* real = get_real_input(2);
+
+    day02_part2(real);
+}
