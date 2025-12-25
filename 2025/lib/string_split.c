@@ -56,7 +56,7 @@ bool string_split_move_next(struct StringSplitIterator* iter) {
         return false;
     }
 
-    const char* search_start = &iter->string[search_start_position];
+    const char* search_start = iter->string + search_start_position;
     const char* next_ptr = strstr(search_start, iter->separator);
 
     if (next_ptr == nullptr) {
@@ -64,14 +64,16 @@ bool string_split_move_next(struct StringSplitIterator* iter) {
         size_t bytes_left = iter->string_length - search_start_position;
         memcpy(iter->current_segment, search_start, bytes_left);
         iter->current_segment[bytes_left] = '\0';
-        iter->current_position = iter->string_length;
+        iter->current_position = search_start_position;
+        iter->current_segment_length = bytes_left;
 
         DEBUG_PRINT("Reached last split segment in string: '%s'", iter->current_segment);
     } else {
         size_t segment_size = next_ptr - search_start;
         memcpy(iter->current_segment, search_start, segment_size);
         iter->current_segment[segment_size] = '\0';
-        iter->current_position = next_ptr - iter->string;
+        iter->current_position = search_start_position;
+        iter->current_segment_length = segment_size;
 
         DEBUG_PRINT("Reached next split segment in string: '%s'", iter->current_segment);
     }

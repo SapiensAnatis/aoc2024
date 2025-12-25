@@ -1,5 +1,5 @@
-#ifndef AOC2025_LIB_STRING_H
-#define AOC2025_LIB_STRING_H
+#ifndef AOC2025_LIB_STRING_SPLIT_H
+#define AOC2025_LIB_STRING_SPLIT_H
 
 struct StringSplitIterator;
 
@@ -11,4 +11,4 @@ const char* string_split_current(const struct StringSplitIterator* iter);
 
 void string_split_free(struct StringSplitIterator* iter);
 
-#endif // AOC2025_LIB_STRING_H
+#endif // AOC2025_LIB_STRING_SPLIT_H
