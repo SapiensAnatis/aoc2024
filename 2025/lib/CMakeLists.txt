@@ -11,5 +11,6 @@ target_sources(aoc_lib PRIVATE
   debug.h debug.c
   file.h file.c
   string_split.h string_split.c
+  string.h string.c
 )
 target_include_directories(aoc_lib PUBLIC ${CMAKE_CURRENT_LIST_DIR}/..)
