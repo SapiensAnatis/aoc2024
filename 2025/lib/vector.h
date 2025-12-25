@@ -6,7 +6,7 @@
 
 struct Vector;
 
-struct Vector *vector_create(size_t elementSize);
+struct Vector *vector_create(size_t element_size);
 
 void *vector_at(const struct Vector *vector, size_t index);
 
