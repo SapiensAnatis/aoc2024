@@ -1,12 +1,12 @@
-#include "lib/debug.h"
 #include "lib/vector.h"
+#include "lib/debug.h"
 
 #include <assert.h>
 #include <malloc.h>
 #include <string.h>
 
 struct Vector {
-    void *data;
+    void* data;
     size_t size;
     size_t capacity;
     size_t elementSize;
@@ -14,13 +14,13 @@ struct Vector {
 
 constexpr size_t VectorInitialCapacity = 4;
 
-struct Vector *vector_create(size_t elementSize) {
+struct Vector* vector_create(size_t elementSize) {
     DEBUG_PRINT("Creating new vector with elementSize %d", elementSize);
 
-    struct Vector *result = malloc(sizeof(struct Vector));
+    struct Vector* result = malloc(sizeof(struct Vector));
     assert(result != nullptr && "failed to allocate vector");
 
-    void *data = malloc(elementSize * VectorInitialCapacity);
+    void* data = malloc(elementSize * VectorInitialCapacity);
     assert(data != nullptr && "failed to allocate vector data");
 
     result->data = data;
@@ -31,15 +31,15 @@ struct Vector *vector_create(size_t elementSize) {
     return result;
 }
 
-void *vector_at(const struct Vector *vector, size_t index) {
+void* vector_at(const struct Vector* vector, size_t index) {
     assert(index < vector->size && "out of bounds accesss to vector");
 
-    void *elementPtr = ((char *)vector->data) + (index * vector->elementSize);
+    void* elementPtr = ((char*)vector->data) + (index * vector->elementSize);
 
     return elementPtr;
 }
 
-void vector_append(struct Vector *vector, const void *element) {
+void vector_append(struct Vector* vector, const void* element) {
     DEBUG_PRINT("Appending element to vector at %p: %p", vector, element);
 
     if (vector->size == vector->capacity) {
@@ -48,22 +48,22 @@ void vector_append(struct Vector *vector, const void *element) {
         DEBUG_PRINT("Expanding vector at %p: from %zu to %zu", vector, vector->capacity,
                     newCapacity);
 
-        void *newData = realloc(vector->data, newCapacity * vector->elementSize);
+        void* newData = realloc(vector->data, newCapacity * vector->elementSize);
         assert(newData != nullptr && "failed to allocate expanded vector data");
 
         vector->capacity = newCapacity;
         vector->data = newData;
     }
 
-    void *dest = ((char *)vector->data) + (vector->size * vector->elementSize);
+    void* dest = ((char*)vector->data) + (vector->size * vector->elementSize);
 
     memcpy(dest, element, vector->elementSize);
     vector->size += 1;
 }
 
-size_t vector_size(const struct Vector *vector) { return vector->size; }
+size_t vector_size(const struct Vector* vector) { return vector->size; }
 
-void vector_free(struct Vector *vector) {
+void vector_free(struct Vector* vector) {
     DEBUG_PRINT("Destroying vector at %p", vector);
 
     free(vector->data);

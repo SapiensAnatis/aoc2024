@@ -3,7 +3,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-void debug_print(const char *file, int line, const char *fmt, ...) {
+void debug_print(const char* file, int line, const char* fmt, ...) {
     fprintf(stderr, "[%s:%d] ", file, line);
 
     va_list ptr;
