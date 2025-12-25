@@ -1,10 +1,33 @@
-#include "day01.h"
+extern "C" {
+#include "day01/day01.h"
+#include "lib/file.h"
+}
+
 #include "gtest/gtest.h"
 
-TEST(day01_part1, example) {}
+#include <cstdio>
 
-TEST(day01_part1, real) {}
+TEST(day01_part1, example) {
+    FILE* example = get_example_input(1);
 
-TEST(day01_part2, example) {}
+    day01_part1(example);
+}
 
-TEST(day01_part2, real) {}
+TEST(day01_part1, real) {
+    FILE* real = get_real_input(1);
+
+    day01_part1(real);
+}
+
+TEST(day01_part2, example) {
+    FILE* example = get_example_input(1);
+
+    day01_part2(example);
+}
+
+TEST(day01_part2, real) {    
+    FILE* real = get_real_input(1);
+
+    day01_part2(real);
+}
+
