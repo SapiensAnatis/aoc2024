@@ -31,7 +31,7 @@ EOF
 c_file_name="./${day_name}/${day_name}.c"
 if [ ! -f "$c_file_name" ]; then
   tee "$c_file_name" <<EOF > /dev/null
-#include "${day_name}.h"
+#include "${day_name}/${day_name}.h"
 
 EOF
 fi
@@ -47,10 +47,14 @@ if [ ! -f "$h_file_name" ]; then
 EOF
 fi
 
-test_file_name="./${day_name}/${day_name}_test.c"
+test_file_name="./${day_name}/${day_name}_test.cpp"
 if [ ! -f "$test_file_name" ]; then
   tee "$test_file_name" <<EOF > /dev/null
-#include "${day_name}.h"
+extern "C" {
+#include "${day_name}/${day_name}.h"
+#include "lib/file.h"
+}
+
 #include "gtest/gtest.h"
 
 TEST(${day_name}_part1, example) {
