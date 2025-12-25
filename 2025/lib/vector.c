@@ -40,10 +40,19 @@ void* vector_at(const struct Vector* vector, size_t index) {
 }
 
 void vector_append(struct Vector* vector, const void* element) {
-    DEBUG_PRINT("Appending element to vector at %p: %p", vector, element);
+    vector_append_range(vector, element, 1);
+}
 
-    if (vector->size == vector->capacity) {
-        size_t new_capacity = vector->capacity * 2;
+void vector_append_range(struct Vector* vector, const void* elements, size_t elements_size) {
+    DEBUG_PRINT("Appending elements to vector at %p: %p -> +%d", vector, elements, elements_size);
+
+    size_t required_capacity = vector->size + elements_size;
+
+    if (required_capacity >= vector->capacity) {
+        size_t new_capacity = vector->capacity;
+        while (new_capacity < required_capacity) {
+            new_capacity *= 2;
+        }
 
         DEBUG_PRINT("Expanding vector at %p: from %zu to %zu", vector, vector->capacity,
                     new_capacity);
@@ -57,11 +66,18 @@ void vector_append(struct Vector* vector, const void* element) {
 
     void* dest = ((char*)vector->data) + (vector->size * vector->element_size);
 
-    memcpy(dest, element, vector->element_size);
-    vector->size += 1;
+    memcpy(dest, elements, elements_size * vector->element_size);
+    vector->size += elements_size;
 }
 
 size_t vector_size(const struct Vector* vector) { return vector->size; }
+
+void* vector_data(struct Vector* vector) { return vector->data; }
+
+void vector_pop(struct Vector* vector) {
+    assert(vector->size > 0 && "attempted to pop from empty vector");
+    vector->size -= 1;
+}
 
 void vector_free(struct Vector* vector) {
     DEBUG_PRINT("Destroying vector at %p", vector);
