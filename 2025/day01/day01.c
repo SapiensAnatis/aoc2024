@@ -1,5 +1,5 @@
 #include "day01/day01.h"
-#include "lib/vector.h"
+#include "lib/file.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -12,15 +12,10 @@ struct DialRotation {
 };
 
 int main() {
-    struct Vector* my_vector = vector_create(sizeof(int));
+    FILE* example = get_example(1);
 
-    for (int i = 0; i < 10; i++) {
-        vector_append(my_vector, &i);
+    char line_buffer[1024];
+    while (read_line(example, line_buffer, sizeof(line_buffer))) {
+        printf("Line: '%s'\n", line_buffer);
     }
-
-    for (size_t i = 0; i < vector_size(my_vector); i++) {
-        printf("Vector element: %d\n", *(int*)vector_at(my_vector, i));
-    }
-
-    vector_free(my_vector);
 }

@@ -1,0 +1,64 @@
+#include "file.h"
+
+#include <assert.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+FILE* get_example_input(int day) {
+    char filename[32];
+    sprintf(filename, "./day%02d/example.txt", day);
+    auto file = fopen(filename, "r");
+
+    if (file == nullptr) {
+        perror("get_example_input");
+        exit(1);
+    }
+
+    return file;
+}
+
+FILE* get_real_input(int day) {
+    char filename[32];
+    sprintf(filename, "./day%02d/input.txt", day);
+    auto file = fopen(filename, "r");
+
+    if (file == nullptr) {
+        perror("get_real_input");
+        exit(1);
+    }
+
+    return file;
+}
+
+bool read_line(FILE* file, char* buffer, size_t buffer_size) {
+    char* newline_ptr = nullptr;
+    char* write_position = buffer;
+    size_t remaining_size = buffer_size;
+
+    char internal_buffer[128];
+
+    do {
+        const char* fgets_result = fgets(internal_buffer, sizeof(internal_buffer), file);
+        if (fgets_result == nullptr) {
+            // Read error or EOF
+            assert(ferror(file) == 0 && "fgets error reading file");
+            return false;
+        }
+
+        newline_ptr = strstr(internal_buffer, "\n");
+        size_t read_size = strlen(internal_buffer);
+        if (newline_ptr) {
+            *newline_ptr = '\0'; // Don't include newline in returned string
+        }
+
+        assert(read_size < remaining_size && "buffer too small to contain line");
+
+        memcpy(write_position, internal_buffer, read_size);
+        write_position += read_size;
+        remaining_size -= read_size;
+    } while (newline_ptr == nullptr);
+
+    return true;
+}
