@@ -14,7 +14,7 @@
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "DEBUG_PRINT_ENABLED": "ON"
+        "DEBUG_PRINT_ENABLED": "$env{DEBUG_PRINT_ENABLED}"
       }
     }
   ],
@@ -28,13 +28,24 @@
     {
       "name": "default",
       "configurePreset": "default",
-      "output": {"outputOnFailure": true},
-      "execution": {"noTestsAction": "error", "stopOnFailure": true}
+      "output": {
+        "outputOnFailure": true,
+        "verbosity": "verbose"
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "stopOnFailure": true
+      },
+      "filter": {
+        "include": {
+          "name": "$env{TEST_FILTER}"
+        }
+      }
     }
   ],
   "workflowPresets": [
     {
-      "name": "default",
+      "name": "build",
       "steps": [
         {
           "type": "configure",
@@ -43,8 +54,24 @@
         {
           "type": "build",
           "name": "default"
+        } 
+      ]
+    },
+    {
+      "name": "test",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "default"
+        },
+        {
+          "type": "build",
+          "name": "default"
+        },
+        {
+          "type": "test",
+          "name": "default"
         }
-        
       ]
     }
   ]
