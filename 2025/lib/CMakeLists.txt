@@ -6,5 +6,10 @@ if (${DEBUG_PRINT_ENABLED})
   target_compile_definitions(aoc_lib PUBLIC DEBUG_PRINT_ENABLED)
 endif()
 
-target_sources(aoc_lib PRIVATE vector.h vector.c debug.h debug.c file.h file.c)
+target_sources(aoc_lib PRIVATE
+  vector.h vector.c
+  debug.h debug.c
+  file.h file.c
+  string_split.h string_split.c
+)
 target_include_directories(aoc_lib PUBLIC ${CMAKE_CURRENT_LIST_DIR}/..)
