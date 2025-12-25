@@ -1,4 +1,5 @@
 #include "file.h"
+#include "lib/string.h"
 
 #include <assert.h>
 #include <stddef.h>
@@ -30,6 +31,22 @@ FILE* get_real_input(int day) {
     }
 
     return file;
+}
+
+struct String* read_all_text(FILE* file) {
+    char internal_buffer[1024];
+
+    struct String* result = string_create("");
+    size_t bytes_read = 0;
+
+    while ((bytes_read = fread(internal_buffer, sizeof(char), sizeof(internal_buffer), file)),
+           bytes_read != 0) {
+        assert(ferror(file) == 0 && "ferror detected");
+        internal_buffer[bytes_read] = '\0';
+        string_append(result, internal_buffer);
+    }
+
+    return result;
 }
 
 bool read_line(FILE* file, char* buffer, size_t buffer_size) {
