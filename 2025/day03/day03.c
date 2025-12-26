@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 
-int find_max_jolts(const char* line) {
+long long find_max_jolts_part1(const char* line) {
     DEBUG_PRINT("Analysing line: '%s'", line);
 
     int max_digit = 0;
@@ -48,19 +48,92 @@ int find_max_jolts(const char* line) {
     return answer;
 }
 
-void day03_part1(FILE* file) {
+long long find_max_jolts_part2(const char* line) {
+    DEBUG_PRINT("Analysing line: '%s'", line);
+
+    constexpr size_t JOLT_LENGTH = 12;
+
+    size_t line_length = strlen(line);
+    const size_t max_skips_possible = line_length - JOLT_LENGTH;
+    size_t remaining_skips = max_skips_possible;
+    size_t line_position = 0;
+
+    int jolt_digits[JOLT_LENGTH] = {0};
+
+    for (size_t i = 0; i < JOLT_LENGTH; i++) {
+        char ch = line[line_position];
+        char max_skip_ch = ch;
+        size_t skip_usage = 0;
+
+        for (size_t skip_count = 1; skip_count <= remaining_skips; skip_count++) {
+            size_t pos = line_position + skip_count;
+            if (pos >= line_length) {
+                break;
+            }
+
+            char candidate_skip_ch = line[pos];
+
+            DEBUG_PRINT(
+                "Line position %zu. Evaluating skip to use %c instead of %c. Skip count: %zu",
+                line_position, candidate_skip_ch, max_skip_ch, skip_count);
+
+            if (candidate_skip_ch > max_skip_ch) {
+                max_skip_ch = candidate_skip_ch;
+                skip_usage = skip_count;
+            }
+        }
+
+        // clang-tidy sees these as identical empty branches in release mode
+        // NOLINTNEXTLINE(bugprone-branch-clone)
+        if (skip_usage >= 1) {
+            DEBUG_PRINT("Skipping %zu characters to use %c instead of %c", skip_usage, max_skip_ch,
+                        ch);
+        } else {
+            DEBUG_PRINT("Using character %c. Skips remaining: %zu. Skip usage: %zu", ch,
+                        remaining_skips, skip_usage);
+        }
+
+        remaining_skips -= skip_usage;
+        ch = max_skip_ch;
+        int digit = ch - '0';
+
+        jolt_digits[i] = digit;
+        line_position += 1;
+        line_position += skip_usage;
+    }
+
+    long long jolt_acc = 0;
+    for (size_t jolt_index = 0; jolt_index < JOLT_LENGTH; jolt_index++) {
+        jolt_acc += jolt_digits[jolt_index];
+
+        bool last_iteration = jolt_index == JOLT_LENGTH - 1;
+        if (!last_iteration) {
+            jolt_acc *= 10;
+        }
+    }
+
+    DEBUG_PRINT("Max jolts: %lld", jolt_acc);
+
+    return jolt_acc;
+}
+
+void parse_input_get_answer(FILE* file, long long (*find_jolts_func)(const char*)) {
     struct String* string = read_all_text(file);
     string_trim_end(string, '\n');
 
     const char* string_buffer = string_data(string);
 
-    int answer = 0;
+    long long answer = 0;
 
     struct StringSplitIterator* iter = string_split_create(string_buffer, "\n");
     do {
         const char* line = string_split_current(iter);
-        answer += find_max_jolts(line);
+        answer += find_jolts_func(line);
     } while (string_split_move_next(iter));
 
-    printf("Answer: %d\n", answer);
+    printf("Answer: %lld\n", answer);
 }
+
+void day03_part1(FILE* file) { parse_input_get_answer(file, find_max_jolts_part1); }
+
+void day03_part2(FILE* file) { parse_input_get_answer(file, find_max_jolts_part2); }

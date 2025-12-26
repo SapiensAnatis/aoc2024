@@ -21,7 +21,8 @@
   "buildPresets": [
     {
       "name": "default",
-      "configurePreset": "default"
+      "configurePreset": "default",
+      "jobs": 8
     }
   ],
   "testPresets": [
@@ -54,7 +55,7 @@
         {
           "type": "build",
           "name": "default"
-        } 
+        }
       ]
     },
     {
