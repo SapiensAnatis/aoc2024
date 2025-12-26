@@ -42,3 +42,4 @@ include(GoogleTest)
 gtest_discover_tests(aoc)
 
 add_subdirectory("day02")
+add_subdirectory("day03")

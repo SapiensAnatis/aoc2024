@@ -55,6 +55,8 @@ void string_trim_end(struct String* string, char target) {
 
 char* string_data(struct String* string) { return vector_data(string->char_buffer); }
 
+size_t string_length(const struct String* string) { return vector_size(string->char_buffer); }
+
 void string_free(struct String* string) {
     vector_free(string->char_buffer);
     free(string);
